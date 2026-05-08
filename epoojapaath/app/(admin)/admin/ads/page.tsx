@@ -65,7 +65,7 @@ export default function AdminAdsPage() {
     else devToast.error(data.error);
   }
 
-  const columns = [
+  const columns: any[] = [
     { key: "title",     header: "Title" },
     { key: "placement", header: "Placement", render: (a: AdRow) => <Badge variant="blue">{a.placement}</Badge> },
     { key: "isActive",  header: "Status",    render: (a: AdRow) => <Badge variant={a.isActive ? "approved" : "rejected"}>{a.isActive ? "Active" : "Inactive"}</Badge> },
@@ -102,7 +102,7 @@ export default function AdminAdsPage() {
           </form>
         </Card>
       )}
-      <DataTable columns={columns} data={ads as unknown as Record<string, unknown>[]} emptyMessage="No ads created yet." />
+      <DataTable columns={columns} data={ads as any} emptyMessage="No ads created yet." />
     </DashboardShell>
   );
 }

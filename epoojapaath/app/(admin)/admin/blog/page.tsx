@@ -22,7 +22,7 @@ export default async function AdminBlogPage() {
 
   const blogs = await getAllBlogs().catch(() => []) as BlogRow[];
 
-  const columns = [
+  const columns: any[] = [
     { key: "title",          header: "Title",    render: (b: BlogRow) => <span className="font-medium text-dark line-clamp-1">{b.title}</span> },
     { key: "author",         header: "Author",   render: (b: BlogRow) => (b.author as Partial<IUser>)?.name || "—" },
     { key: "category",       header: "Category", render: (b: BlogRow) => <Badge variant="saffron" className="capitalize">{b.category.replace("-", " ")}</Badge> },
@@ -35,7 +35,7 @@ export default async function AdminBlogPage() {
 
   return (
     <DashboardShell title="Blog Manager" subtitle={`${blogs.length} articles across all authors`}>
-      <DataTable columns={columns} data={blogs as unknown as Record<string, unknown>[]} emptyMessage="No blog posts yet." />
+      <DataTable columns={columns} data={blogs as any} emptyMessage="No blog posts yet." />
     </DashboardShell>
   );
 }

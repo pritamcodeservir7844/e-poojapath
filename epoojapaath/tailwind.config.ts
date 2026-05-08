@@ -16,43 +16,55 @@ const config: Config = {
     },
     extend: {
       colors: {
+        // Fixed brand colors (absolute — never flip with theme)
         saffron: "#D4820A",
         "deep-gold": "#B8860B",
-        "lotus-purple": "#8B6DB5",
-        "lotus-pink": "#C2567A",
-        "lotus-blue": "#5B8DD9",
+        // Logo-accurate lotus palette (purple-blue-pink gradient in logo petals)
+        "lotus-purple": "#9B7FD4",
+        "lotus-pink": "#C285B5",
+        "lotus-blue": "#7BA5D8",
+        "lotus-red": "#C2567A",
         cream: "#FDF8F0",
         dark: "#0F0A05",
-        "card-bg": "#FFFAF3",
-        muted: "#7A6652",
+
+        // CSS-variable tokens — auto-flip in dark mode
+        "card-bg": "var(--card-bg)",
+        "surface": "var(--surface)",
+        "muted-text": "var(--muted-color)",
+
+        // Shadcn/radix tokens
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
         primary: {
-          DEFAULT: "#D4820A",
-          foreground: "#FFFAF3",
+          DEFAULT: "hsl(var(--primary))",
+          foreground: "hsl(var(--primary-foreground))",
         },
         secondary: {
-          DEFAULT: "#8B6DB5",
-          foreground: "#FFFAF3",
+          DEFAULT: "hsl(var(--secondary))",
+          foreground: "hsl(var(--secondary-foreground))",
         },
         destructive: {
-          DEFAULT: "#C2567A",
-          foreground: "#FFFAF3",
+          DEFAULT: "hsl(var(--destructive))",
+          foreground: "hsl(var(--destructive-foreground))",
         },
         accent: {
-          DEFAULT: "#B8860B",
-          foreground: "#0F0A05",
+          DEFAULT: "hsl(var(--accent))",
+          foreground: "hsl(var(--accent-foreground))",
+        },
+        muted: {
+          DEFAULT: "hsl(var(--muted))",
+          foreground: "hsl(var(--muted-foreground))",
         },
         popover: {
-          DEFAULT: "#FFFAF3",
-          foreground: "#0F0A05",
+          DEFAULT: "hsl(var(--popover))",
+          foreground: "hsl(var(--popover-foreground))",
         },
         card: {
-          DEFAULT: "#FFFAF3",
-          foreground: "#0F0A05",
+          DEFAULT: "hsl(var(--card))",
+          foreground: "hsl(var(--card-foreground))",
         },
       },
       fontFamily: {
@@ -99,8 +111,12 @@ const config: Config = {
         shimmer: "shimmer 1.5s infinite",
       },
       backgroundImage: {
+        // Gold gradient from logo text/swirls
         "gold-gradient": "linear-gradient(135deg, #D4820A, #B8860B)",
-        "lotus-gradient": "linear-gradient(135deg, #8B6DB5, #C2567A, #5B8DD9)",
+        // Matches the logo lotus petal gradient: purple → blue → pink
+        "lotus-gradient": "linear-gradient(135deg, #9B7FD4, #7BA5D8, #C285B5)",
+        // Logo's top-to-bottom petal flow
+        "logo-gradient": "linear-gradient(160deg, #9B7FD4 0%, #7BA5D8 50%, #C285B5 100%)",
         "cream-gradient": "linear-gradient(135deg, #FDF8F0, #FFF5E1)",
         "dark-mandala": "radial-gradient(ellipse at center, #1A0E02 0%, #0F0A05 100%)",
       },

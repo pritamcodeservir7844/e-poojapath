@@ -16,8 +16,8 @@ import { AIChat } from "@/components/ai-chat/AIChat";
 import { getActiveAd } from "@/services/ad.service";
 
 export default async function HomePage() {
-  const heroAd    = await getActiveAd("hero").catch(() => null);
-  const sectionAd = await getActiveAd("between-sections").catch(() => null);
+  const heroAd    = await getActiveAd("hero").catch(() => null) as any;
+  const sectionAd = await getActiveAd("between-sections").catch(() => null) as any;
 
   return (
     <>

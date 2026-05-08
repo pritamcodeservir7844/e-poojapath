@@ -16,12 +16,12 @@ export default async function AdminTemplesPage() {
 
   const temples = await getAllTemplesAdmin().catch(() => []) as TempleRow[];
 
-  const columns = [
+  const columns: any[] = [
     { key: "name",     header: "Temple",   render: (t: TempleRow) => <span className="font-medium text-dark">{t.name}</span> },
     { key: "deity",    header: "Deity"     },
     { key: "location", header: "City",     render: (t: TempleRow) => `${t.location.city}, ${t.location.state}` },
     { key: "owner",    header: "Owner",    render: (t: TempleRow) => (t.owner as Partial<IUser>)?.name || "—" },
-    { key: "status",   header: "Status",   render: (t: TempleRow) => <Badge variant={t.status}>{t.status}</Badge> },
+    { key: "status",   header: "Status",   render: (t: TempleRow) => <Badge variant={t.status as any}>{t.status}</Badge> },
     { key: "featured", header: "Featured", render: (t: TempleRow) => t.featured ? "⭐ Yes" : "—" },
     { key: "createdAt",header: "Created",  render: (t: TempleRow) => formatDateShort(t.createdAt) },
     { key: "_id",      header: "Actions",  render: (t: TempleRow) => <TempleActions id={t._id.toString()} status={t.status} /> },
@@ -29,7 +29,7 @@ export default async function AdminTemplesPage() {
 
   return (
     <DashboardShell title="Temple Manager" subtitle={`${temples.length} temples registered`}>
-      <DataTable columns={columns} data={temples as unknown as Record<string, unknown>[]} emptyMessage="No temples yet." />
+      <DataTable columns={columns} data={temples as any} emptyMessage="No temples yet." />
     </DashboardShell>
   );
 }

@@ -12,13 +12,13 @@ import { formatCurrency } from "@/lib/utils";
 import { MapPin, Phone, Mail, Globe, Clock, Star } from "lucide-react";
 
 export async function generateMetadata({ params }: { params: { slug: string } }) {
-  const temple = await getTempleBySlug(params.slug).catch(() => null);
+  const temple = await getTempleBySlug(params.slug).catch(() => null) as any;
   if (!temple) return { title: "Temple Not Found" };
   return { title: `${temple.name} | ePoojapaath`, description: temple.shortDescription };
 }
 
 export default async function TempleDetailPage({ params }: { params: { slug: string } }) {
-  const temple = await getTempleBySlug(params.slug).catch(() => null);
+  const temple = await getTempleBySlug(params.slug).catch(() => null) as any;
   if (!temple) notFound();
 
   await connectDB();

@@ -67,11 +67,11 @@ export default function TempleMembersPage() {
     } finally { setAdding(false); }
   }
 
-  const columns = [
+  const columns: any[] = [
     { key: "user",        header: "Member",      render: (m: Record<string, unknown>) => (m.user as { name?: string })?.name || "—" },
     { key: "role",        header: "Role",         render: (m: Record<string, unknown>) => <Badge variant="saffron">{String(m.role)}</Badge> },
     { key: "permissions", header: "Permissions",  render: (m: Record<string, unknown>) => <span className="text-xs text-muted">{(m.permissions as string[])?.length || 0} permissions</span> },
-    { key: "status",      header: "Status",       render: (m: Record<string, unknown>) => <Badge variant={m.status as "pending" | "approved"}>{String(m.status)}</Badge> },
+    { key: "status",      header: "Status",       render: (m: Record<string, unknown>) => <Badge variant={m.status as any}>{String(m.status)}</Badge> },
   ];
 
   return (

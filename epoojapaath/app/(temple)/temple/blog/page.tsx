@@ -63,7 +63,7 @@ export default function TempleBlogPage() {
     } finally { setSaving(false); }
   }
 
-  const columns = [
+  const columns: any[] = [
     { key: "title",       header: "Title"    },
     { key: "category",    header: "Category", render: (b: BlogRow) => <Badge variant="saffron" className="capitalize">{b.category.replace("-", " ")}</Badge> },
     { key: "status",      header: "Status",   render: (b: BlogRow) => <Badge variant={b.status === "published" ? "approved" : "pending"}>{b.status}</Badge> },
@@ -98,7 +98,7 @@ export default function TempleBlogPage() {
           </form>
         </Card>
       )}
-      <DataTable columns={columns} data={blogs as unknown as Record<string, unknown>[]} emptyMessage="No blog posts yet." />
+      <DataTable columns={columns} data={blogs as any} emptyMessage="No blog posts yet." />
     </DashboardShell>
   );
 }

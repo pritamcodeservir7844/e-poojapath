@@ -24,15 +24,23 @@ export default async function AdminBookingsPage({ searchParams }: PageProps) {
     serviceType: searchParams.serviceType,
   }).catch(() => []) as BookingRow[];
 
-  const columns = [
+  const columns: any[] = [
     { key: "devoteeName", header: "Devotee" },
     { key: "serviceName", header: "Service"  },
     { key: "temple",      header: "Temple",   render: (b: BookingRow) => (b.temple as Partial<ITemple>)?.name || "—" },
     { key: "date",        header: "Date",     render: (b: BookingRow) => formatDateShort(b.date) },
     { key: "amount",      header: "Amount",   render: (b: BookingRow) => formatCurrency(b.amount) },
     { key: "serviceType", header: "Type",     render: (b: BookingRow) => <Badge variant={b.serviceType === "puja" ? "saffron" : "purple"}>{b.serviceType}</Badge> },
-    { key: "status",      header: "Status",   render: (b: BookingRow) => <Badge variant={b.status as "pending" | "confirmed" | "completed" | "cancelled"}>{b.status}</Badge> },
-    { key: "paymentStatus",header:"Payment",  render: (b: BookingRow) => <Badge variant={b.paymentStatus as "pending" | "paid" | "failed"}>{b.paymentStatus}</Badge> },
+    { key: "status",      header: "Status",   render: (b: BookingRow) => {
+      const statusMap: Record<string, any> = {
+        pending: "pending",
+        confirmed: "approved",
+        completed: "completed",
+        cancelled: "cancelled"
+      };
+      return <Badge variant={statusMap[b.status] || "pending"}>{b.status}</Badge>
+    }},
+    { key: "paymentStatus",header:"Payment",  render: (b: BookingRow) => <Badge variant={b.paymentStatus as any}>{b.paymentStatus}</Badge> },
   ];
 
   return (
@@ -50,7 +58,7 @@ export default async function AdminBookingsPage({ searchParams }: PageProps) {
           <a href="/admin/bookings" className="btn-outline-gold py-2 px-4 text-sm">Clear</a>
         )}
       </form>
-      <DataTable columns={columns} data={bookings as unknown as Record<string, unknown>[]} emptyMessage="No bookings found." />
+      <DataTable columns={columns} data={bookings as any} emptyMessage="No bookings found." />
     </DashboardShell>
   );
 }

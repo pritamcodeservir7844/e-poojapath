@@ -18,7 +18,7 @@ export default async function AdminUsersPage() {
     admin: "approved", temple_owner: "saffron", user: "purple",
   };
 
-  const columns = [
+  const columns: any[] = [
     { key: "name",      header: "Name",    render: (u: IUser & { _id: string }) => <span className="font-medium text-dark">{u.name}</span> },
     { key: "email",     header: "Email"    },
     { key: "phone",     header: "Phone",   render: (u: IUser & { _id: string }) => u.phone || "—" },
@@ -30,7 +30,7 @@ export default async function AdminUsersPage() {
 
   return (
     <DashboardShell title="User Manager" subtitle={`${users.length} registered users`}>
-      <DataTable columns={columns} data={users as unknown as Record<string, unknown>[]} emptyMessage="No users yet." />
+      <DataTable columns={columns} data={users as any} emptyMessage="No users yet." />
     </DashboardShell>
   );
 }

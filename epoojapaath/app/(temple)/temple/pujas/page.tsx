@@ -62,7 +62,7 @@ export default function TemplePujasPage() {
     } finally { setAdding(false); }
   }
 
-  const columns = [
+  const columns: any[] = [
     { key: "name",       header: "Name"    },
     { key: "nameHi",     header: "Hindi",  render: (p: PujaRow) => <span className="font-sanskrit text-saffron">{p.nameHi}</span> },
     { key: "price",      header: "Price",  render: (p: PujaRow) => formatCurrency(p.price) },
@@ -102,7 +102,7 @@ export default function TemplePujasPage() {
         </Card>
       )}
 
-      <DataTable columns={columns} data={pujas as unknown as Record<string, unknown>[]} emptyMessage="No pujas added yet." />
+      <DataTable columns={columns} data={pujas as any} emptyMessage="No pujas added yet." />
     </DashboardShell>
   );
 }

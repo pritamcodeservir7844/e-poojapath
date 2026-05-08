@@ -6,6 +6,7 @@ import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X, ChevronDown, User, LogOut, LayoutDashboard } from "lucide-react";
 import { useSession, signOut } from "next-auth/react";
+import { ThemeToggle } from "./ThemeToggle";
 
 const navLinks = [
   { label: "Home", href: "/" },
@@ -34,22 +35,34 @@ export function Navbar() {
         "/user/dashboard";
 
   return (
-    <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? "backdrop-blur-md bg-cream/90 shadow-md border-b border-deep-gold/30" : "bg-transparent"
-      }`}>
+    <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+      scrolled
+        ? "backdrop-blur-md bg-background/92 shadow-md border-b border-border"
+        : "bg-transparent"
+    }`}>
       <div className="max-w-7xl mx-auto px-4 md:px-8 flex items-center justify-between h-16">
+
         {/* Logo */}
-        <Link href="/" className="flex items-center gap-2">
-          <Image src="/logo.png" alt="ePoojapaath" width={40} height={40} className="rounded-full" />
-          <span className="font-heading text-xl text-saffron hidden sm:block">ePoojapaath</span>
+        <Link href="/" className="flex items-center">
+          <div className="bg-white dark:bg-white/8 rounded-xl px-2 py-1 shadow-sm shadow-saffron/10 dark:shadow-saffron/5">
+            <Image
+              src="/logo.png"
+              alt="ePoojapaath"
+              width={130}
+              height={44}
+              className="object-contain h-10 w-auto"
+              priority
+            />
+          </div>
         </Link>
 
-        {/* Desktop Nav */}
+        {/* Desktop Nav Links */}
         <div className="hidden md:flex items-center gap-6">
           {navLinks.map((link) => (
             <Link
               key={link.href}
               href={link.href}
-              className="text-dark hover:text-saffron font-medium transition-colors duration-200 relative group"
+              className="text-foreground hover:text-saffron font-medium transition-colors duration-200 relative group text-sm"
             >
               {link.label}
               <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-saffron group-hover:w-full transition-all duration-200" />
@@ -57,15 +70,17 @@ export function Navbar() {
           ))}
         </div>
 
-        {/* Right Side */}
+        {/* Desktop Right Side */}
         <div className="hidden md:flex items-center gap-3">
+          <ThemeToggle />
+
           {session ? (
             <div className="relative">
               <button
                 onClick={() => setDropdownOpen(!dropdownOpen)}
-                className="flex items-center gap-2 text-dark hover:text-saffron transition-colors"
+                className="flex items-center gap-2 text-foreground hover:text-saffron transition-colors"
               >
-                <div className="w-8 h-8 rounded-full bg-saffron/20 flex items-center justify-center text-saffron font-bold text-sm">
+                <div className="w-8 h-8 rounded-full bg-saffron/15 dark:bg-saffron/25 flex items-center justify-center text-saffron font-bold text-sm border border-saffron/30">
                   {session.user?.name?.[0]?.toUpperCase()}
                 </div>
                 <ChevronDown size={16} />
@@ -78,15 +93,15 @@ export function Navbar() {
                     exit={{ opacity: 0, y: -10 }}
                     className="absolute right-0 top-12 w-48 card-devotional rounded-xl shadow-xl py-2"
                   >
-                    <Link href={dashboardHref} className="flex items-center gap-2 px-4 py-2 hover:bg-saffron/10 text-dark transition-colors">
+                    <Link href={dashboardHref} className="flex items-center gap-2 px-4 py-2 hover:bg-saffron/10 text-foreground transition-colors text-sm">
                       <LayoutDashboard size={16} /> Dashboard
                     </Link>
-                    <Link href="/user/profile" className="flex items-center gap-2 px-4 py-2 hover:bg-saffron/10 text-dark transition-colors">
+                    <Link href="/user/profile" className="flex items-center gap-2 px-4 py-2 hover:bg-saffron/10 text-foreground transition-colors text-sm">
                       <User size={16} /> Profile
                     </Link>
                     <button
                       onClick={() => signOut()}
-                      className="w-full flex items-center gap-2 px-4 py-2 hover:bg-red-50 text-lotus-pink transition-colors"
+                      className="w-full flex items-center gap-2 px-4 py-2 hover:bg-red-500/10 text-lotus-red transition-colors text-sm"
                     >
                       <LogOut size={16} /> Sign Out
                     </button>
@@ -102,10 +117,17 @@ export function Navbar() {
           )}
         </div>
 
-        {/* Mobile Menu Button */}
-        <button onClick={() => setMobileOpen(!mobileOpen)} className="md:hidden text-dark">
-          {mobileOpen ? <X size={24} /> : <Menu size={24} />}
-        </button>
+        {/* Mobile — theme toggle + hamburger */}
+        <div className="md:hidden flex items-center gap-2">
+          <ThemeToggle />
+          <button
+            onClick={() => setMobileOpen(!mobileOpen)}
+            className="text-foreground p-1"
+            aria-label="Toggle mobile menu"
+          >
+            {mobileOpen ? <X size={24} /> : <Menu size={24} />}
+          </button>
+        </div>
       </div>
 
       {/* Mobile Menu */}
@@ -115,19 +137,23 @@ export function Navbar() {
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: "auto", opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
-            className="md:hidden bg-cream/95 backdrop-blur-md border-t border-deep-gold/20 overflow-hidden"
+            className="md:hidden bg-background/96 backdrop-blur-md border-t border-border overflow-hidden"
           >
-            <div className="px-4 py-4 flex flex-col gap-3">
+            <div className="px-4 py-4 flex flex-col gap-1">
               {navLinks.map((link) => (
-                <Link key={link.href} href={link.href} onClick={() => setMobileOpen(false)}
-                  className="text-dark hover:text-saffron font-medium py-2 border-b border-deep-gold/10">
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  onClick={() => setMobileOpen(false)}
+                  className="text-foreground hover:text-saffron font-medium py-2.5 px-3 rounded-lg hover:bg-saffron/8 border-b border-border/50 transition-colors"
+                >
                   {link.label}
                 </Link>
               ))}
               {!session && (
-                <div className="flex gap-3 pt-2">
+                <div className="flex gap-3 pt-3">
                   <Link href="/login" className="btn-outline-gold text-sm flex-1 text-center">Login</Link>
-                  <Link href="/register" className="btn-saffron    text-sm flex-1 text-center">Register</Link>
+                  <Link href="/register" className="btn-saffron text-sm flex-1 text-center">Register</Link>
                 </div>
               )}
             </div>

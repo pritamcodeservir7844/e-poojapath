@@ -53,7 +53,7 @@ export default function TempleChadawaPage() {
     } finally { setAdding(false); }
   }
 
-  const columns = [
+  const columns: any[] = [
     { key: "name",  header: "Name",  render: (r: Row) => <span>{r.name} <span className="font-sanskrit text-saffron text-xs ml-1">{r.nameHi}</span></span> },
     { key: "deity", header: "Deity" },
     { key: "price", header: "Price", render: (r: Row) => formatCurrency(r.price) },
@@ -88,7 +88,7 @@ export default function TempleChadawaPage() {
         </Card>
       )}
 
-      <DataTable columns={columns} data={rows as unknown as Record<string, unknown>[]} emptyMessage="No chadawa offerings yet." />
+      <DataTable columns={columns} data={rows as any} emptyMessage="No chadawa offerings yet." />
     </DashboardShell>
   );
 }

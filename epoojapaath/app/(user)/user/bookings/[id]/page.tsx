@@ -32,8 +32,10 @@ export default async function BookingDetailPage({ params }: { params: { id: stri
             <p className="text-muted text-sm mt-0.5">{formatDate(booking.date)}</p>
           </div>
           <div className="flex flex-col items-end gap-2">
-            <Badge variant={booking.status as "pending" | "confirmed" | "completed" | "cancelled"}>{booking.status}</Badge>
-            <Badge variant={booking.paymentStatus as "pending" | "paid" | "failed"}>{booking.paymentStatus}</Badge>
+            <Badge variant={({ pending: "pending", confirmed: "approved", completed: "completed", cancelled: "cancelled" } as any)[booking.status] || "pending"}>
+              {booking.status}
+            </Badge>
+            <Badge variant={booking.paymentStatus as any}>{booking.paymentStatus}</Badge>
           </div>
         </div>
 

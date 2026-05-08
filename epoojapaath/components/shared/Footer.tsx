@@ -1,33 +1,70 @@
 import Link from "next/link";
 import Image from "next/image";
-import { Phone, Mail, MapPin, Clock, Instagram, Twitter, Youtube, Facebook } from "lucide-react";
+import { Phone, Mail, MapPin, Clock } from "lucide-react";
+
+const SocialIcons = {
+  Instagram: () => (
+    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
+      <circle cx="12" cy="12" r="4" />
+      <circle cx="17.5" cy="6.5" r="0.5" fill="currentColor" stroke="none" />
+    </svg>
+  ),
+  X: () => (
+    <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+      <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.73-8.835L1.254 2.25H8.08l4.253 5.622zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+    </svg>
+  ),
+  YouTube: () => (
+    <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+      <path d="M23.5 6.19a3.02 3.02 0 0 0-2.12-2.14C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.02 3.02 0 0 0 .5 6.19C0 8.07 0 12 0 12s0 3.93.5 5.81a3.02 3.02 0 0 0 2.122 2.14c1.872.506 9.378.506 9.378.506s7.505 0 9.377-.505a3.02 3.02 0 0 0 2.122-2.14C24 15.93 24 12 24 12s0-3.93-.5-5.81zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" />
+    </svg>
+  ),
+  Facebook: () => (
+    <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+      <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
+    </svg>
+  ),
+};
 
 export function Footer() {
   return (
-    <footer className="bg-dark text-cream/80">
+    <footer className="bg-dark text-cream/80 dark:bg-[#0A0603] dark:text-cream/75">
       <div className="max-w-7xl mx-auto px-4 md:px-8 py-16">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
 
           {/* Brand */}
           <div className="lg:col-span-1">
             <div className="flex items-center gap-3 mb-4">
-              <Image src="/logo.png" alt="ePoojapaath" width={48} height={48} className="rounded-full ring-2 ring-saffron/30" />
-              <span className="font-heading text-2xl text-saffron">ePoojapaath</span>
+              <div className="bg-white/10 rounded-xl px-2 py-1">
+                <Image
+                  src="/logo.png"
+                  alt="ePoojapaath"
+                  width={120}
+                  height={40}
+                  className="object-contain h-9 w-auto"
+                />
+              </div>
             </div>
-            <p className="font-sanskrit text-sm text-cream/60 mb-4">ॐ सर्वे भवन्तु सुखिनः</p>
-            <p className="text-sm leading-relaxed text-cream/60">
-              India&apos;s trusted platform for online Puja booking, Chadawa offerings, and temple discovery. Connecting devotees with divine grace.
+            <p className="font-sanskrit text-sm text-cream/55 mb-4">ॐ सर्वे भवन्तु सुखिनः</p>
+            <p className="text-sm leading-relaxed text-cream/55">
+              India&apos;s trusted platform for online Puja booking, Chadawa offerings,
+              and temple discovery. Connecting devotees with divine grace.
             </p>
             <div className="flex gap-3 mt-6">
               {[
-                { icon: Instagram, href: "#", label: "Instagram" },
-                { icon: Twitter, href: "#", label: "Twitter" },
-                { icon: Youtube, href: "#", label: "YouTube" },
-                { icon: Facebook, href: "#", label: "Facebook" },
-              ].map(({ icon: Icon, href, label }) => (
-                <a key={label} href={href} aria-label={label}
-                  className="w-9 h-9 rounded-full border border-deep-gold/30 flex items-center justify-center hover:bg-saffron hover:border-saffron transition-all duration-200">
-                  <Icon size={16} />
+                { Icon: SocialIcons.Instagram, href: "#", label: "Instagram" },
+                { Icon: SocialIcons.X,         href: "#", label: "X (Twitter)" },
+                { Icon: SocialIcons.YouTube,   href: "#", label: "YouTube" },
+                { Icon: SocialIcons.Facebook,  href: "#", label: "Facebook" },
+              ].map(({ Icon, href, label }) => (
+                <a
+                  key={label}
+                  href={href}
+                  aria-label={label}
+                  className="w-9 h-9 rounded-full border border-saffron/25 flex items-center justify-center hover:bg-saffron hover:border-saffron transition-all duration-200"
+                >
+                  <Icon />
                 </a>
               ))}
             </div>
@@ -98,17 +135,16 @@ export function Footer() {
         </div>
 
         {/* Bottom Bar */}
-        <div className="mt-12 pt-6 border-t border-cream/10 flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-cream/40">
+        <div className="mt-12 pt-6 border-t border-cream/10 flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-cream/35">
           <p>© 2025 ePoojapaath. Made with 🙏 in India.</p>
           <div className="flex gap-4">
             <Link href="/privacy" className="hover:text-saffron transition-colors">Privacy Policy</Link>
             <Link href="/terms" className="hover:text-saffron transition-colors">Terms of Service</Link>
             <Link href="/sitemap.xml" className="hover:text-saffron transition-colors">Sitemap</Link>
           </div>
-          <p>
-            <span className="text-cream/20">|</span>{" "}
-            <Link href="/register-temple" className="hover:text-saffron transition-colors">Register Your Temple</Link>
-          </p>
+          <Link href="/register-temple" className="hover:text-saffron transition-colors">
+            Register Your Temple
+          </Link>
         </div>
       </div>
     </footer>

@@ -19,20 +19,23 @@ export default async function TempleBookingsPage() {
 
   const allBookings = (await Promise.all(
     approved.map((t) => getTempleBookings(t._id.toString()).catch(() => []))
-  )).flat() as BookingRow[];
+  )).flat() as any[];
 
-  const columns = [
+  const columns: any[] = [
     { key: "devoteeName", header: "Devotee" },
     { key: "serviceName", header: "Service"  },
     { key: "date",        header: "Date",    render: (b: BookingRow) => formatDateShort(b.date) },
     { key: "amount",      header: "Amount",  render: (b: BookingRow) => formatCurrency(b.amount) },
-    { key: "status",      header: "Status",  render: (b: BookingRow) => <Badge variant={b.status as "pending" | "confirmed" | "completed" | "cancelled"}>{b.status}</Badge> },
-    { key: "paymentStatus", header: "Payment", render: (b: BookingRow) => <Badge variant={b.paymentStatus as "pending" | "paid" | "failed"}>{b.paymentStatus}</Badge> },
+    { key: "status",      header: "Status",  render: (b: BookingRow) => {
+      const statusMap: Record<string, any> = { pending: "pending", confirmed: "approved", completed: "completed", cancelled: "cancelled" };
+      return <Badge variant={statusMap[b.status] || "pending"}>{b.status}</Badge>
+    }},
+    { key: "paymentStatus", header: "Payment", render: (b: BookingRow) => <Badge variant={b.paymentStatus as any}>{b.paymentStatus}</Badge> },
   ];
 
   return (
     <DashboardShell title="Temple Bookings" subtitle="All bookings across your approved temples.">
-      <DataTable columns={columns} data={allBookings as unknown as Record<string, unknown>[]} emptyMessage="No bookings yet." />
+      <DataTable columns={columns} data={allBookings as any} emptyMessage="No bookings yet." />
     </DashboardShell>
   );
 }

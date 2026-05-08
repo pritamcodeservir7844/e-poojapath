@@ -51,7 +51,7 @@ export default async function UserDashboard() {
                 </div>
                 <div className="flex items-center gap-3">
                   <span className="text-saffron font-medium text-sm">{formatCurrency(b.amount)}</span>
-                  <Badge variant={b.status as "pending" | "confirmed" | "completed" | "cancelled"}>{b.status}</Badge>
+                  <Badge variant={({ pending: "pending", confirmed: "approved", completed: "completed", cancelled: "cancelled" } as any)[b.status] || "pending"}>{b.status}</Badge>
                 </div>
               </Link>
             ))}

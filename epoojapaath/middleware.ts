@@ -1,11 +1,12 @@
-import { auth } from "@/lib/auth";
+import NextAuth from "next-auth";
+import { authConfig } from "@/lib/auth.config";
 import { NextResponse } from "next/server";
-import type { NextRequest } from "next/server";
 
-export default auth(async function middleware(req: NextRequest & { auth?: { user?: { role?: string; isBlocked?: boolean } } }) {
+const { auth } = NextAuth(authConfig);
+
+export default auth((req) => {
   const { pathname } = req.nextUrl;
-  const session = req.auth;
-  const user = session?.user;
+  const user = req.auth?.user;
 
   // Blocked users
   if (user?.isBlocked) {
