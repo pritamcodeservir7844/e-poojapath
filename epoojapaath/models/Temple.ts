@@ -59,7 +59,6 @@ const TempleSchema = new Schema<ITempleDoc>(
   { timestamps: true }
 );
 
-TempleSchema.index({ slug: 1 });
 TempleSchema.index({ status: 1, featured: 1 });
 TempleSchema.index({ "location.city": 1 });
 

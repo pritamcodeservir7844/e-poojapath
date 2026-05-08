@@ -1,0 +1,30 @@
+{
+  "nav": {
+    "home": "Home",
+    "temples": "Temples",
+    "puja": "Book Puja",
+    "chadawa": "Chadawa",
+    "blog": "Blog",
+    "astro": "Astrology",
+    "contact": "Contact",
+    "login": "Login",
+    "register": "Register",
+    "dashboard": "Dashboard",
+    "logout": "Logout"
+  },
+  "home": {
+    "hero_title": "Connect With the Divine",
+    "hero_subtitle": "Book sacred pujas, offer chadawa, and seek blessings from revered temples across India.",
+    "cta_book": "Book a Puja",
+    "cta_temple": "Register Temple"
+  },
+  "common": {
+    "loading": "Loading...",
+    "error": "Something went wrong",
+    "back": "Go Back",
+    "save": "Save Changes",
+    "cancel": "Cancel",
+    "submit": "Submit",
+    "view_all": "View All"
+  }
+}

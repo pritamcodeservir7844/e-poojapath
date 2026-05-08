@@ -4,6 +4,8 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
+import { Input } from "@/components/ui/Input";
+import { Button } from "@/components/ui/Button";
 import { devToast } from "@/lib/toast";
 
 export default function RegisterPage() {
@@ -43,25 +45,17 @@ export default function RegisterPage() {
           </div>
 
           <form onSubmit={handleRegister} className="space-y-4">
-            {[
-              { key: "name",     label: "Full Name",     type: "text",     placeholder: "Ramesh Kumar" },
-              { key: "email",    label: "Email Address", type: "email",    placeholder: "your@email.com" },
-              { key: "phone",    label: "Phone (Optional)", type: "tel",   placeholder: "+91 98765 43210" },
-              { key: "password", label: "Password",       type: "password", placeholder: "Min 8 characters" },
-            ].map(({ key, label, type, placeholder }) => (
-              <div key={key}>
-                <label className="block text-sm font-medium text-dark mb-1">{label}</label>
-                <input type={type} placeholder={placeholder}
-                  className="input-devotional w-full"
-                  required={key !== "phone"}
-                  value={form[key as keyof typeof form]}
-                  onChange={(e) => setForm({ ...form, [key]: e.target.value })} />
-              </div>
-            ))}
-
-            <button type="submit" disabled={loading} className="btn-saffron w-full py-3 text-base disabled:opacity-60">
+            <Input label="Full Name" required placeholder="Ramesh Kumar"
+              value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} />
+            <Input label="Email Address" type="email" required placeholder="your@email.com"
+              value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} />
+            <Input label="Phone (Optional)" type="tel" placeholder="+91 98765 43210"
+              value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} />
+            <Input label="Password" type="password" required placeholder="Min 8 characters"
+              value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })} />
+            <Button type="submit" loading={loading} fullWidth size="lg">
               {loading ? "Creating Account... 🪔" : "Create Account 🛕"}
-            </button>
+            </Button>
           </form>
 
           <p className="text-center text-muted text-sm mt-6">

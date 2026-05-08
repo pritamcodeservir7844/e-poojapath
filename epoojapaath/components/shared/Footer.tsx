@@ -21,9 +21,9 @@ export function Footer() {
             <div className="flex gap-3 mt-6">
               {[
                 { icon: Instagram, href: "#", label: "Instagram" },
-                { icon: Twitter,   href: "#", label: "Twitter"   },
-                { icon: Youtube,   href: "#", label: "YouTube"   },
-                { icon: Facebook,  href: "#", label: "Facebook"  },
+                { icon: Twitter, href: "#", label: "Twitter" },
+                { icon: Youtube, href: "#", label: "YouTube" },
+                { icon: Facebook, href: "#", label: "Facebook" },
               ].map(({ icon: Icon, href, label }) => (
                 <a key={label} href={href} aria-label={label}
                   className="w-9 h-9 rounded-full border border-deep-gold/30 flex items-center justify-center hover:bg-saffron hover:border-saffron transition-all duration-200">
@@ -38,13 +38,13 @@ export function Footer() {
             <h4 className="font-heading text-saffron text-lg mb-4">Quick Links</h4>
             <ul className="space-y-2">
               {[
-                { label: "Temples",   href: "/temples"  },
-                { label: "Book Puja", href: "/puja"     },
-                { label: "Chadawa",   href: "/chadawa"  },
-                { label: "Blog",      href: "/blog"     },
-                { label: "About Us",  href: "/about"    },
-                { label: "Contact",   href: "/contact"  },
-                { label: "Astrology", href: "/astro"    },
+                { label: "Temples", href: "/temples" },
+                { label: "Book Puja", href: "/puja" },
+                { label: "Chadawa", href: "/chadawa" },
+                { label: "Blog", href: "/blog" },
+                { label: "About Us", href: "/about" },
+                { label: "Contact", href: "/contact" },
+                { label: "Astrology", href: "/astro" },
               ].map(({ label, href }) => (
                 <li key={href}>
                   <Link href={href} className="text-sm hover:text-saffron transition-colors duration-200">
@@ -102,7 +102,7 @@ export function Footer() {
           <p>© 2025 ePoojapaath. Made with 🙏 in India.</p>
           <div className="flex gap-4">
             <Link href="/privacy" className="hover:text-saffron transition-colors">Privacy Policy</Link>
-            <Link href="/terms"   className="hover:text-saffron transition-colors">Terms of Service</Link>
+            <Link href="/terms" className="hover:text-saffron transition-colors">Terms of Service</Link>
             <Link href="/sitemap.xml" className="hover:text-saffron transition-colors">Sitemap</Link>
           </div>
           <p>

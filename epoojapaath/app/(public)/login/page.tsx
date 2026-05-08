@@ -5,6 +5,8 @@ import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
+import { Input } from "@/components/ui/Input";
+import { Button } from "@/components/ui/Button";
 import { devToast } from "@/lib/toast";
 
 export default function LoginPage() {
@@ -43,19 +45,13 @@ export default function LoginPage() {
           </div>
 
           <form onSubmit={handleLogin} className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-dark mb-1">Email Address</label>
-              <input type="email" required className="input-devotional w-full" placeholder="your@email.com"
-                value={email} onChange={(e) => setEmail(e.target.value)} />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-dark mb-1">Password</label>
-              <input type="password" required className="input-devotional w-full" placeholder="••••••••"
-                value={password} onChange={(e) => setPassword(e.target.value)} />
-            </div>
-            <button type="submit" disabled={loading} className="btn-saffron w-full py-3 text-base disabled:opacity-60">
+            <Input label="Email Address" type="email" required placeholder="your@email.com"
+              value={email} onChange={(e) => setEmail(e.target.value)} />
+            <Input label="Password" type="password" required placeholder="••••••••"
+              value={password} onChange={(e) => setPassword(e.target.value)} />
+            <Button type="submit" loading={loading} fullWidth size="lg">
               {loading ? "Signing in... 🪔" : "Sign In 🛕"}
-            </button>
+            </Button>
           </form>
 
           <p className="text-center text-muted text-sm mt-6">

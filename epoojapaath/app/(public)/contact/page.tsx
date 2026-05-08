@@ -1,14 +1,23 @@
 "use client";
 
 import { useState } from "react";
-import { Navbar } from "@/components/shared/Navbar";
-import { Footer } from "@/components/shared/Footer";
+import { PublicPage } from "@/components/shared/PublicPage";
 import { MandalaDivider } from "@/components/shared/MandalaDivider";
+import { Input, Textarea, Select } from "@/components/ui/Input";
+import { Button } from "@/components/ui/Button";
 import { devToast } from "@/lib/toast";
 import { MapPin, Phone, Mail, Clock } from "lucide-react";
 
+const SUBJECT_OPTIONS = [
+  { value: "Puja Booking Support",  label: "Puja Booking Support"  },
+  { value: "Temple Registration",   label: "Temple Registration"   },
+  { value: "Payment Issue",         label: "Payment Issue"         },
+  { value: "General Inquiry",       label: "General Inquiry"       },
+  { value: "Partnership",           label: "Partnership"           },
+];
+
 export default function ContactPage() {
-  const [form, setForm] = useState({ name: "", email: "", phone: "", subject: "", message: "" });
+  const [form, setForm]     = useState({ name: "", email: "", phone: "", subject: "", message: "" });
   const [loading, setLoading] = useState(false);
 
   async function handleSubmit(e: React.FormEvent) {
@@ -33,9 +42,8 @@ export default function ContactPage() {
   }
 
   return (
-    <>
-      <Navbar />
-      <main className="pt-20">
+    <PublicPage>
+      <div className="pt-4">
         {/* Hero */}
         <section className="py-16 bg-gradient-to-b from-dark to-dark/90 text-center">
           <p className="font-sanskrit text-saffron mb-3">सम्पर्क करें</p>
@@ -55,47 +63,24 @@ export default function ContactPage() {
               <div className="card-devotional h-full">
                 <h2 className="font-heading text-2xl text-dark mb-6">Get in Touch</h2>
                 <ul className="space-y-6">
-                  <li className="flex items-start gap-4">
-                    <div className="w-10 h-10 rounded-full bg-saffron/10 flex items-center justify-center shrink-0">
-                      <MapPin className="text-saffron" size={18} />
-                    </div>
-                    <div>
-                      <p className="font-medium text-dark">Address</p>
-                      <p className="text-muted text-sm">12, Assi Ghat Road<br />Varanasi, Uttar Pradesh – 221005</p>
-                    </div>
-                  </li>
-                  <li className="flex items-start gap-4">
-                    <div className="w-10 h-10 rounded-full bg-saffron/10 flex items-center justify-center shrink-0">
-                      <Phone className="text-saffron" size={18} />
-                    </div>
-                    <div>
-                      <p className="font-medium text-dark">Phone</p>
-                      <a href="tel:+919876543210" className="text-saffron hover:underline">+91 98765 43210</a>
-                    </div>
-                  </li>
-                  <li className="flex items-start gap-4">
-                    <div className="w-10 h-10 rounded-full bg-saffron/10 flex items-center justify-center shrink-0">
-                      <Mail className="text-saffron" size={18} />
-                    </div>
-                    <div>
-                      <p className="font-medium text-dark">Email</p>
-                      <a href="mailto:support@epoojapaath.com" className="text-saffron hover:underline">
-                        support@epoojapaath.com
-                      </a>
-                    </div>
-                  </li>
-                  <li className="flex items-start gap-4">
-                    <div className="w-10 h-10 rounded-full bg-saffron/10 flex items-center justify-center shrink-0">
-                      <Clock className="text-saffron" size={18} />
-                    </div>
-                    <div>
-                      <p className="font-medium text-dark">Business Hours</p>
-                      <p className="text-muted text-sm">Monday – Saturday<br />9:00 AM – 6:00 PM IST</p>
-                    </div>
-                  </li>
+                  {[
+                    { icon: <MapPin size={18} />, label: "Address",  content: <p className="text-muted text-sm">12, Assi Ghat Road<br />Varanasi, Uttar Pradesh – 221005</p> },
+                    { icon: <Phone size={18} />,  label: "Phone",    content: <a href="tel:+919876543210" className="text-saffron hover:underline">+91 98765 43210</a> },
+                    { icon: <Mail size={18} />,   label: "Email",    content: <a href="mailto:support@epoojapaath.com" className="text-saffron hover:underline">support@epoojapaath.com</a> },
+                    { icon: <Clock size={18} />,  label: "Hours",    content: <p className="text-muted text-sm">Monday – Saturday<br />9:00 AM – 6:00 PM IST</p> },
+                  ].map(({ icon, label, content }) => (
+                    <li key={label} className="flex items-start gap-4">
+                      <div className="w-10 h-10 rounded-full bg-saffron/10 flex items-center justify-center shrink-0 text-saffron">
+                        {icon}
+                      </div>
+                      <div>
+                        <p className="font-medium text-dark">{label}</p>
+                        {content}
+                      </div>
+                    </li>
+                  ))}
                 </ul>
 
-                {/* Map placeholder */}
                 <div className="mt-6 h-40 bg-cream rounded-xl border border-deep-gold/20 flex items-center justify-center">
                   <div className="text-center text-muted">
                     <MapPin className="mx-auto mb-2 text-saffron" size={28} />
@@ -112,52 +97,35 @@ export default function ContactPage() {
               <h2 className="font-heading text-2xl text-dark mb-2">Send a Message</h2>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-dark mb-1">Name *</label>
-                  <input className="input-devotional w-full" placeholder="Your full name" required
-                    value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-dark mb-1">Email *</label>
-                  <input type="email" className="input-devotional w-full" placeholder="your@email.com" required
-                    value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} />
-                </div>
+                <Input label="Name" required placeholder="Your full name"
+                  value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} />
+                <Input label="Email" type="email" required placeholder="your@email.com"
+                  value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} />
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-dark mb-1">Phone (Optional)</label>
-                  <input className="input-devotional w-full" placeholder="+91 XXXXX XXXXX"
-                    value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-dark mb-1">Subject *</label>
-                  <select className="input-devotional w-full" required
-                    value={form.subject} onChange={(e) => setForm({ ...form, subject: e.target.value })}>
-                    <option value="">Select subject</option>
-                    <option>Puja Booking Support</option>
-                    <option>Temple Registration</option>
-                    <option>Payment Issue</option>
-                    <option>General Inquiry</option>
-                    <option>Partnership</option>
-                  </select>
-                </div>
+                <Input label="Phone (Optional)" placeholder="+91 XXXXX XXXXX"
+                  value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} />
+                <Select
+                  label="Subject"
+                  required
+                  placeholder="Select subject"
+                  options={SUBJECT_OPTIONS}
+                  value={form.subject}
+                  onChange={(e) => setForm({ ...form, subject: e.target.value })}
+                />
               </div>
 
-              <div>
-                <label className="block text-sm font-medium text-dark mb-1">Message *</label>
-                <textarea rows={5} className="input-devotional w-full resize-none" placeholder="How may we assist you?" required
-                  value={form.message} onChange={(e) => setForm({ ...form, message: e.target.value })} />
-              </div>
+              <Textarea label="Message" rows={5} required placeholder="How may we assist you?"
+                value={form.message} onChange={(e) => setForm({ ...form, message: e.target.value })} />
 
-              <button type="submit" disabled={loading} className="btn-saffron w-full py-3 text-base disabled:opacity-60">
+              <Button type="submit" loading={loading} fullWidth size="lg">
                 {loading ? "Sending... 🙏" : "Send Message 🛕"}
-              </button>
+              </Button>
             </form>
           </div>
         </section>
-      </main>
-      <Footer />
-    </>
+      </div>
+    </PublicPage>
   );
 }

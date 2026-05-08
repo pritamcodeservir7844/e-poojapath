@@ -8,18 +8,18 @@ import { Menu, X, ChevronDown, User, LogOut, LayoutDashboard } from "lucide-reac
 import { useSession, signOut } from "next-auth/react";
 
 const navLinks = [
-  { label: "Home",    href: "/" },
+  { label: "Home", href: "/" },
   { label: "Temples", href: "/temples" },
-  { label: "Puja",    href: "/puja" },
+  { label: "Puja", href: "/puja" },
   { label: "Chadawa", href: "/chadawa" },
-  { label: "Blog",    href: "/blog" },
-  { label: "Astro",   href: "/astro" },
+  { label: "Blog", href: "/blog" },
+  { label: "Astro", href: "/astro" },
 ];
 
 export function Navbar() {
-  const [scrolled,      setScrolled]      = useState(false);
-  const [mobileOpen,    setMobileOpen]    = useState(false);
-  const [dropdownOpen,  setDropdownOpen]  = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
   const { data: session } = useSession();
 
   useEffect(() => {
@@ -29,14 +29,13 @@ export function Navbar() {
   }, []);
 
   const dashboardHref =
-    session?.user?.role === "admin"        ? "/admin/dashboard" :
-    session?.user?.role === "temple_owner" ? "/temple/dashboard" :
-    "/user/dashboard";
+    session?.user?.role === "admin" ? "/admin/dashboard" :
+      session?.user?.role === "temple_owner" ? "/temple/dashboard" :
+        "/user/dashboard";
 
   return (
-    <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-      scrolled ? "backdrop-blur-md bg-cream/90 shadow-md border-b border-deep-gold/30" : "bg-transparent"
-    }`}>
+    <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? "backdrop-blur-md bg-cream/90 shadow-md border-b border-deep-gold/30" : "bg-transparent"
+      }`}>
       <div className="max-w-7xl mx-auto px-4 md:px-8 flex items-center justify-between h-16">
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2">
@@ -127,7 +126,7 @@ export function Navbar() {
               ))}
               {!session && (
                 <div className="flex gap-3 pt-2">
-                  <Link href="/login"    className="btn-outline-gold text-sm flex-1 text-center">Login</Link>
+                  <Link href="/login" className="btn-outline-gold text-sm flex-1 text-center">Login</Link>
                   <Link href="/register" className="btn-saffron    text-sm flex-1 text-center">Register</Link>
                 </div>
               )}

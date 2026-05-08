@@ -2,7 +2,28 @@
   "permissions": {
     "allow": [
       "Bash(mkdir -p /Users/difmo/Documents/vama/epoojapaath)",
-      "Bash(mkdir -p 'app/\\(public\\)/page.tsx' 'app/\\(public\\)/temples' 'app/\\(public\\)/puja' 'app/\\(public\\)/chadawa' 'app/\\(public\\)/blog' 'app/\\(public\\)/login' 'app/\\(public\\)/register' 'app/\\(public\\)/contact' 'app/\\(public\\)/about' 'app/\\(public\\)/astro' 'app/\\(user\\)/user/dashboard' 'app/\\(user\\)/user/bookings' 'app/\\(user\\)/user/profile' 'app/\\(temple\\)/temple/dashboard' 'app/\\(temple\\)/temple/register' 'app/\\(temple\\)/temple/pujas' 'app/\\(temple\\)/temple/chadawa' 'app/\\(temple\\)/temple/bookings' 'app/\\(temple\\)/temple/members' 'app/\\(temple\\)/temple/blog' 'app/\\(temple\\)/temple/settings' 'app/\\(admin\\)/admin/dashboard' 'app/\\(admin\\)/admin/temples' 'app/\\(admin\\)/admin/users' 'app/\\(admin\\)/admin/bookings' 'app/\\(admin\\)/admin/blog' 'app/\\(admin\\)/admin/ads' 'app/\\(admin\\)/admin/featured' 'app/\\(admin\\)/admin/settings' app/api/auth/register 'app/api/temples/[id]/pujas' 'app/api/temples/[id]/chadawa' 'app/api/temples/[id]/members' 'app/api/pujas/[id]' 'app/api/chadawa/[id]' 'app/api/bookings/[id]' app/api/payment/create-order app/api/payment/verify app/api/upload 'app/api/blog/[slug]' app/api/ai-chat app/api/contact app/api/admin/stats 'app/api/admin/temples/[id]/status' 'app/api/admin/users/[id]/block' 'app/api/admin/users/[id]/role' app/api/admin/bookings app/api/admin/blog 'app/api/admin/ads/[id]' components/ui components/shared components/home components/temple components/booking components/ai-chat components/astro components/blog components/ads lib/validations services models hooks messages scripts public types styles)"
+      "Bash(mkdir -p 'app/\\(public\\)/page.tsx' 'app/\\(public\\)/temples' 'app/\\(public\\)/puja' 'app/\\(public\\)/chadawa' 'app/\\(public\\)/blog' 'app/\\(public\\)/login' 'app/\\(public\\)/register' 'app/\\(public\\)/contact' 'app/\\(public\\)/about' 'app/\\(public\\)/astro' 'app/\\(user\\)/user/dashboard' 'app/\\(user\\)/user/bookings' 'app/\\(user\\)/user/profile' 'app/\\(temple\\)/temple/dashboard' 'app/\\(temple\\)/temple/register' 'app/\\(temple\\)/temple/pujas' 'app/\\(temple\\)/temple/chadawa' 'app/\\(temple\\)/temple/bookings' 'app/\\(temple\\)/temple/members' 'app/\\(temple\\)/temple/blog' 'app/\\(temple\\)/temple/settings' 'app/\\(admin\\)/admin/dashboard' 'app/\\(admin\\)/admin/temples' 'app/\\(admin\\)/admin/users' 'app/\\(admin\\)/admin/bookings' 'app/\\(admin\\)/admin/blog' 'app/\\(admin\\)/admin/ads' 'app/\\(admin\\)/admin/featured' 'app/\\(admin\\)/admin/settings' app/api/auth/register 'app/api/temples/[id]/pujas' 'app/api/temples/[id]/chadawa' 'app/api/temples/[id]/members' 'app/api/pujas/[id]' 'app/api/chadawa/[id]' 'app/api/bookings/[id]' app/api/payment/create-order app/api/payment/verify app/api/upload 'app/api/blog/[slug]' app/api/ai-chat app/api/contact app/api/admin/stats 'app/api/admin/temples/[id]/status' 'app/api/admin/users/[id]/block' 'app/api/admin/users/[id]/role' app/api/admin/bookings app/api/admin/blog 'app/api/admin/ads/[id]' components/ui components/shared components/home components/temple components/booking components/ai-chat components/astro components/blog components/ads lib/validations services models hooks messages scripts public types styles)",
+      "Bash(mkdir -p /Users/difmo/Documents/vama/epoojapaath/app/api/users/\\\\[id\\\\] && mkdir -p /Users/difmo/Documents/vama/epoojapaath/app/api/admin/stats)",
+      "Bash(mkdir -p /Users/difmo/Documents/vama/epoojapaath/messages && mkdir -p /Users/difmo/Documents/vama/epoojapaath/app/\\\\\\(user\\\\\\)/user/bookings/\\\\[id\\\\])",
+      "Bash(mkdir -p /Users/difmo/Documents/vama/epoojapaath/app/\\\\\\(public\\\\\\)/chadawa/\\\\[id\\\\])",
+      "Bash(mkdir -p /Users/difmo/Documents/vama/epoojapaath/app/api/chadawa/\\\\[id\\\\])",
+      "Bash(npm install *)",
+      "Bash(npm run *)",
+      "Bash(curl -s http://localhost:3000 -o /dev/null -w \"%{http_code}\")",
+      "Bash(sleep 15 && cat /tmp/nextdev.log)",
+      "Read(//private/tmp/**)",
+      "Bash(pkill -f \"next dev\")",
+      "Bash(npm run dev > /tmp/nextdev.log 2>&1 & *)",
+      "Bash(curl -s http://localhost:3001 -o /dev/null -w \"%{http_code}\")",
+      "Bash(curl -s http://localhost:3001)",
+      "Bash(curl -s \"http://localhost:3001/_next/static/css/app/layout.css?v=1778263278817\")"
+    ],
+    "additionalDirectories": [
+      "/Users/difmo/Documents/vama/epoojapaath/app/api/users",
+      "/Users/difmo/Documents/vama/epoojapaath/app/(user)/user/bookings",
+      "/Users/difmo/Documents/vama/epoojapaath/app/(public)/chadawa",
+      "/Users/difmo/Documents/vama/epoojapaath/app/api/chadawa/[id]",
+      "/private/tmp"
     ]
   }
 }

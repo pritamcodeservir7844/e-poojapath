@@ -7,6 +7,8 @@ import Image from "next/image";
 import dynamic from "next/dynamic";
 import { devToast } from "@/lib/toast";
 import { formatCurrency } from "@/lib/utils";
+import { Input, Textarea } from "@/components/ui/Input";
+import { Button } from "@/components/ui/Button";
 import { Clock, CheckCircle2, Sparkles } from "lucide-react";
 
 const ReactConfetti = dynamic(() => import("react-confetti"), { ssr: false });
@@ -126,37 +128,54 @@ export default function BookPujaPage({ params }: { params: { slug: string; id: s
           {/* Booking Form */}
           <form onSubmit={handleBook} className="card-devotional h-fit space-y-4">
             <h2 className="font-heading text-2xl text-dark">Book This Puja</h2>
-            <div>
-              <label className="block text-sm font-medium text-dark mb-1">Devotee Name *</label>
-              <input required className="input-devotional w-full" placeholder="Name for Sankalp" value={form.devoteeName} onChange={(e) => setForm({ ...form, devoteeName: e.target.value })} />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-dark mb-1">Gotra (Optional)</label>
-              <input className="input-devotional w-full" placeholder="e.g. Kashyap, Bharadwaj" value={form.gotra} onChange={(e) => setForm({ ...form, gotra: e.target.value })} />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-dark mb-1">Sankalp / Intention</label>
-              <textarea rows={3} className="input-devotional w-full resize-none" placeholder="Your wish or prayer intention..." value={form.sankalp} onChange={(e) => setForm({ ...form, sankalp: e.target.value })} />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-dark mb-1">Puja Date *</label>
-              <input type="date" required className="input-devotional w-full" min={new Date().toISOString().split("T")[0]} value={form.date} onChange={(e) => setForm({ ...form, date: e.target.value })} />
-            </div>
+            <Input
+              label="Devotee Name"
+              required
+              placeholder="Name for Sankalp"
+              value={form.devoteeName}
+              onChange={(e) => setForm({ ...form, devoteeName: e.target.value })}
+            />
+            <Input
+              label="Gotra (Optional)"
+              placeholder="e.g. Kashyap, Bharadwaj"
+              value={form.gotra}
+              onChange={(e) => setForm({ ...form, gotra: e.target.value })}
+            />
+            <Textarea
+              label="Sankalp / Intention"
+              rows={3}
+              placeholder="Your wish or prayer intention..."
+              value={form.sankalp}
+              onChange={(e) => setForm({ ...form, sankalp: e.target.value })}
+            />
+            <Input
+              label="Puja Date"
+              type="date"
+              required
+              min={new Date().toISOString().split("T")[0]}
+              value={form.date}
+              onChange={(e) => setForm({ ...form, date: e.target.value })}
+            />
             <div className="flex items-center gap-3">
               <input type="checkbox" id="prasad" className="w-4 h-4 accent-saffron" checked={form.prasadDelivery} onChange={(e) => setForm({ ...form, prasadDelivery: e.target.checked })} />
               <label htmlFor="prasad" className="text-sm text-dark cursor-pointer">Request Prasad Delivery (+₹99)</label>
             </div>
             {form.prasadDelivery && (
-              <textarea rows={2} className="input-devotional w-full resize-none" placeholder="Delivery address..." value={form.prasadAddress} onChange={(e) => setForm({ ...form, prasadAddress: e.target.value })} />
+              <Textarea
+                rows={2}
+                placeholder="Delivery address..."
+                value={form.prasadAddress}
+                onChange={(e) => setForm({ ...form, prasadAddress: e.target.value })}
+              />
             )}
             <div className="border-t border-deep-gold/20 pt-4">
               <div className="flex justify-between text-sm mb-1"><span className="text-muted">Puja Fee</span><span className="text-dark font-medium">{formatCurrency(puja.price as number)}</span></div>
               {form.prasadDelivery && <div className="flex justify-between text-sm mb-1"><span className="text-muted">Prasad Delivery</span><span className="text-dark">₹99</span></div>}
               <div className="flex justify-between font-heading text-xl mt-2"><span className="text-dark">Total</span><span className="text-saffron">{formatCurrency((puja.price as number) + (form.prasadDelivery ? 99 : 0))}</span></div>
             </div>
-            <button type="submit" disabled={loading} className="btn-saffron w-full py-4 text-lg disabled:opacity-60">
+            <Button type="submit" loading={loading} fullWidth size="lg">
               {loading ? "Processing... 🪔" : `Proceed to Pay ${formatCurrency((puja.price as number) + (form.prasadDelivery ? 99 : 0))}`}
-            </button>
+            </Button>
           </form>
         </div>
       </div>

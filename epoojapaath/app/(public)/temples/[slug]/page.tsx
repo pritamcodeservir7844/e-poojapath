@@ -1,8 +1,7 @@
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
-import { Navbar } from "@/components/shared/Navbar";
-import { Footer } from "@/components/shared/Footer";
+import { PublicPage } from "@/components/shared/PublicPage";
 import { MandalaDivider } from "@/components/shared/MandalaDivider";
 import { getTempleBySlug } from "@/services/temple.service";
 import { connectDB } from "@/lib/db";
@@ -30,10 +29,8 @@ export default async function TempleDetailPage({ params }: { params: { slug: str
   ]);
 
   return (
-    <>
-      <Navbar />
-      <main className="pt-16">
-        {/* Hero */}
+    <PublicPage showAIChat>
+      {/* Hero */}
         <div className="relative h-72 md:h-96 w-full">
           <Image src={temple.coverImage || "/placeholder-temple.jpg"} alt={temple.name} fill className="object-cover" />
           <div className="absolute inset-0 bg-gradient-to-t from-dark/80 via-dark/30 to-transparent" />
@@ -206,8 +203,6 @@ export default async function TempleDetailPage({ params }: { params: { slug: str
             </div>
           </div>
         </div>
-      </main>
-      <Footer />
-    </>
+    </PublicPage>
   );
 }

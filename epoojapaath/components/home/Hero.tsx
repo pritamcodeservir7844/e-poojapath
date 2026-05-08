@@ -167,9 +167,9 @@ export function Hero() {
               className="flex flex-wrap gap-8"
             >
               {[
-                { val: "500+",    label: "Temples"  },
+                { val: "500+", label: "Temples" },
                 { val: "10,000+", label: "Bookings" },
-                { val: "50+",     label: "Cities"   },
+                { val: "50+", label: "Cities" },
               ].map(({ val, label }) => (
                 <div key={label}>
                   <div className="font-heading text-3xl text-saffron">{val}</div>
@@ -188,8 +188,8 @@ export function Hero() {
           >
             <Canvas camera={{ position: [0, 2, 7], fov: 50 }} gl={{ alpha: true }}>
               <ambientLight intensity={0.8} />
-              <pointLight position={[5, 5, 5]}   intensity={2}   color="#FFD700" />
-              <pointLight position={[-5, 3, -5]}  intensity={1.5} color="#D4820A" />
+              <pointLight position={[5, 5, 5]} intensity={2} color="#FFD700" />
+              <pointLight position={[-5, 3, -5]} intensity={1.5} color="#D4820A" />
               <Suspense fallback={null}>
                 <Temple3D />
               </Suspense>

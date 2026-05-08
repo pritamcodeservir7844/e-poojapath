@@ -42,7 +42,6 @@ const BlogSchema = new Schema<IBlogDoc>(
   { timestamps: true }
 );
 
-BlogSchema.index({ slug: 1 });
 BlogSchema.index({ status: 1, publishedAt: -1 });
 
 export default models.Blog || mongoose.model<IBlogDoc>("Blog", BlogSchema);

@@ -1,5 +1,4 @@
-import { Navbar } from "@/components/shared/Navbar";
-import { Footer } from "@/components/shared/Footer";
+import { PublicPage } from "@/components/shared/PublicPage";
 import { MandalaDivider } from "@/components/shared/MandalaDivider";
 import Link from "next/link";
 
@@ -12,9 +11,8 @@ const team = [
 
 export default function AboutPage() {
   return (
-    <>
-      <Navbar />
-      <main className="pt-20">
+    <PublicPage>
+      <div className="pt-4">
         {/* Hero */}
         <section className="py-20 bg-dark text-center relative overflow-hidden">
           <div className="absolute inset-0 opacity-5">
@@ -129,8 +127,7 @@ export default function AboutPage() {
           </div>
           <p className="text-cream/30 text-sm mt-6">📞 +91 98765 43210 • 📧 support@epoojapaath.com</p>
         </section>
-      </main>
-      <Footer />
-    </>
+      </div>
+    </PublicPage>
   );
 }

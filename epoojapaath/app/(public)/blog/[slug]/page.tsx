@@ -1,7 +1,6 @@
 import { notFound } from "next/navigation";
 import Image from "next/image";
-import { Navbar } from "@/components/shared/Navbar";
-import { Footer } from "@/components/shared/Footer";
+import { PublicPage } from "@/components/shared/PublicPage";
 import { getBlogBySlug, getPublishedBlogs } from "@/services/blog.service";
 import { getActiveAd } from "@/services/ad.service";
 import { AdBanner } from "@/components/ads/AdBanner";
@@ -29,9 +28,8 @@ export default async function BlogDetailPage({ params }: { params: { slug: strin
   const authorName = typeof blog.author === "object" ? (blog.author as IUser).name : "ePoojapaath";
 
   return (
-    <>
-      <Navbar />
-      <main className="pt-20">
+    <PublicPage showAIChat>
+      <div className="pt-4">
         <div className="relative h-72 md:h-96 w-full">
           <Image src={blog.coverImage || "/placeholder-blog.jpg"} alt={blog.title} fill className="object-cover" />
           <div className="absolute inset-0 bg-gradient-to-t from-dark/80 to-transparent" />
@@ -96,8 +94,7 @@ export default async function BlogDetailPage({ params }: { params: { slug: strin
             </aside>
           </div>
         </div>
-      </main>
-      <Footer />
-    </>
+      </div>
+    </PublicPage>
   );
 }

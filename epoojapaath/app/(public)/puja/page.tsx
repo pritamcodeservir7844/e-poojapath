@@ -3,6 +3,8 @@ import { PageHero } from "@/components/ui/PageHero";
 import { MandalaDivider } from "@/components/shared/MandalaDivider";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { PujaCard } from "@/components/temple/PujaCard";
+import { Input } from "@/components/ui/Input";
+import { Button } from "@/components/ui/Button";
 import { connectDB } from "@/lib/db";
 import Puja from "@/models/Puja";
 
@@ -31,8 +33,8 @@ export default async function PujaPage({ searchParams }: PageProps) {
       <section className="py-5 bg-card-bg border-b border-deep-gold/20">
         <div className="max-w-7xl mx-auto px-4 md:px-8">
           <form method="GET" className="flex gap-3 max-w-lg">
-            <input name="q" defaultValue={searchParams.q} placeholder="Search pujas (e.g. Rudrabhishek)..." className="input-devotional flex-1 py-2 text-sm" />
-            <button type="submit" className="btn-saffron py-2 px-5 text-sm">Search</button>
+            <Input name="q" defaultValue={searchParams.q} placeholder="Search pujas (e.g. Rudrabhishek)..." className="py-2 text-sm" />
+            <Button type="submit" size="sm">Search</Button>
           </form>
         </div>
       </section>
