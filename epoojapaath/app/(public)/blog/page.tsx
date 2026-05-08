@@ -44,11 +44,11 @@ export default async function BlogPage({ searchParams }: PageProps) {
             {sidebarAd && <AdBanner ad={sidebarAd} />}
             {featured.length > 0 && (
               <div className="card-devotional">
-                <h3 className="font-heading text-lg text-dark mb-4">Featured Articles</h3>
+                <h3 className="font-heading text-lg text-foreground mb-4">Featured Articles</h3>
                 <ul className="space-y-3">
                   {featured.map((b) => (
                     <li key={b._id.toString()}>
-                      <a href={`/blog/${b.slug}`} className="text-sm text-dark hover:text-saffron transition-colors line-clamp-2 block">
+                      <a href={`/blog/${b.slug}`} className="text-sm text-foreground hover:text-saffron transition-colors line-clamp-2 block">
                         {b.title}
                       </a>
                     </li>

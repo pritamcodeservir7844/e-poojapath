@@ -16,14 +16,19 @@
       "Bash(npm run dev > /tmp/nextdev.log 2>&1 & *)",
       "Bash(curl -s http://localhost:3001 -o /dev/null -w \"%{http_code}\")",
       "Bash(curl -s http://localhost:3001)",
-      "Bash(curl -s \"http://localhost:3001/_next/static/css/app/layout.css?v=1778263278817\")"
+      "Bash(curl -s \"http://localhost:3001/_next/static/css/app/layout.css?v=1778263278817\")",
+      "Bash(cp \"/Users/difmo/Documents/vama/epoojapaath/assets /image.png\" \"/Users/difmo/Documents/vama/epoojapaath/public/logo.png\" && echo \"Logo copied successfully\")",
+      "Bash(brew services *)",
+      "Bash(nslookup cluster.mongodb.net)",
+      "Bash(curl -s --max-time 5 \"https://cloud.mongodb.com\" -o /dev/null -w \"%{http_code}\")"
     ],
     "additionalDirectories": [
       "/Users/difmo/Documents/vama/epoojapaath/app/api/users",
       "/Users/difmo/Documents/vama/epoojapaath/app/(user)/user/bookings",
       "/Users/difmo/Documents/vama/epoojapaath/app/(public)/chadawa",
       "/Users/difmo/Documents/vama/epoojapaath/app/api/chadawa/[id]",
-      "/private/tmp"
+      "/private/tmp",
+      "/Users/difmo/Documents/vama/epoojapaath/assets "
     ]
   }
 }

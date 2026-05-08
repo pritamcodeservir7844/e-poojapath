@@ -4,7 +4,7 @@ import Link from "next/link";
 export default function UserLayout({ children }: { children: React.ReactNode }) {
   return (
     <SessionProvider>
-      <div className="min-h-screen bg-cream">
+      <div className="min-h-screen bg-background">
         <nav className="bg-white border-b border-deep-gold/20 px-6 py-3 flex items-center gap-6">
           <Link href="/" className="font-heading text-saffron text-lg">ePoojapaath</Link>
           <div className="flex gap-4 ml-auto">
@@ -13,7 +13,7 @@ export default function UserLayout({ children }: { children: React.ReactNode }) 
               { href: "/user/bookings",  label: "My Bookings" },
               { href: "/user/profile",   label: "Profile"     },
             ].map(({ href, label }) => (
-              <Link key={href} href={href} className="text-sm text-dark hover:text-saffron transition-colors">{label}</Link>
+              <Link key={href} href={href} className="text-sm text-foreground hover:text-saffron transition-colors">{label}</Link>
             ))}
           </div>
         </nav>

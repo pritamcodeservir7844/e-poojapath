@@ -79,7 +79,7 @@ export default function TempleBlogPage() {
     >
       {showForm && (
         <Card className="mb-6">
-          <h3 className="font-heading text-lg text-dark mb-4">New Blog Post</h3>
+          <h3 className="font-heading text-lg text-foreground mb-4">New Blog Post</h3>
           <form onSubmit={handleSave} className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <Input label="Title (English)"  required value={form.title}       onChange={set("title")}       placeholder="Post title" />
             <Input label="Title (Hindi)"    required value={form.titleHi}     onChange={set("titleHi")}     placeholder="पोस्ट शीर्षक" />

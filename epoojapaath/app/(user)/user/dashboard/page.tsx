@@ -31,23 +31,23 @@ export default async function UserDashboard() {
 
       <div className="card-devotional">
         <div className="flex items-center justify-between mb-4">
-          <h2 className="font-heading text-xl text-dark">Recent Bookings</h2>
+          <h2 className="font-heading text-xl text-foreground">Recent Bookings</h2>
           <Link href="/user/bookings" className="text-saffron text-sm hover:underline">View all →</Link>
         </div>
         {bookings.length === 0 ? (
           <div className="text-center py-10">
             <p className="text-4xl mb-3">🛕</p>
-            <p className="text-muted">No bookings yet.</p>
+            <p className="text-muted-foreground">No bookings yet.</p>
             <Link href="/puja" className="btn-saffron mt-4 inline-block text-sm py-2 px-5">Book a Puja</Link>
           </div>
         ) : (
           <div className="space-y-3">
             {bookings.slice(0, 5).map((b) => (
               <Link key={b._id.toString()} href={`/user/bookings/${b._id}`}
-                className="flex items-center justify-between p-3 bg-cream hover:bg-saffron/5 rounded-xl border border-deep-gold/10 hover:border-saffron/20 transition-all">
+                className="flex items-center justify-between p-3 bg-background hover:bg-saffron/5 rounded-xl border border-deep-gold/10 hover:border-saffron/20 transition-all">
                 <div>
-                  <p className="font-medium text-dark text-sm">{b.serviceName}</p>
-                  <p className="text-xs text-muted">{formatDateShort(b.date)}</p>
+                  <p className="font-medium text-foreground text-sm">{b.serviceName}</p>
+                  <p className="text-xs text-muted-foreground">{formatDateShort(b.date)}</p>
                 </div>
                 <div className="flex items-center gap-3">
                   <span className="text-saffron font-medium text-sm">{formatCurrency(b.amount)}</span>

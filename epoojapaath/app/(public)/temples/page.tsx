@@ -31,7 +31,7 @@ export default async function TemplesPage({ searchParams }: PageProps) {
           <EmptyState icon="🛕" title="No temples found" description="Try a different city or deity." />
         ) : (
           <>
-            <p className="text-muted text-sm mb-6">{temples.length} temple{temples.length !== 1 ? "s" : ""} found</p>
+            <p className="text-muted-foreground text-sm mb-6">{temples.length} temple{temples.length !== 1 ? "s" : ""} found</p>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {temples.map((t) => <TempleCard key={t._id.toString()} temple={t} />)}
             </div>

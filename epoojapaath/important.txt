@@ -1,0 +1,9 @@
+
+Role	Email	Password
+Admin	admin@epoojapaath.com	password123
+Temple Owner 1	temple1@example.com	password123
+Temple Owner 2	temple2@example.com	password123
+Temple Owner 3	temple3@example.com	password123
+User 1	user1@example.com	password123
+User 2	user2@example.com	password123
+All passwords are password123. Login at http://localhost:3000/login

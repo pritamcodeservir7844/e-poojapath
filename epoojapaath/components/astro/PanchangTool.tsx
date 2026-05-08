@@ -28,11 +28,11 @@ export function PanchangTool() {
       <Input type="date" label="Select Date" value={date} onChange={(e) => setDate(e.target.value)} />
       <Button onClick={calculate} fullWidth>Calculate Panchang 📅</Button>
       {result && (
-        <div className="bg-cream rounded-xl p-4 border border-deep-gold/20 grid grid-cols-2 gap-3 animate-in fade-in">
+        <div className="bg-background rounded-xl p-4 border border-deep-gold/20 grid grid-cols-2 gap-3 animate-in fade-in">
           {fields.map(({ label, value }) => (
             <div key={label} className="bg-white rounded-lg p-2.5 border border-deep-gold/10">
-              <p className="text-xs text-muted">{label}</p>
-              <p className="font-medium text-dark text-sm mt-0.5">{value}</p>
+              <p className="text-xs text-muted-foreground">{label}</p>
+              <p className="font-medium text-foreground text-sm mt-0.5">{value}</p>
             </div>
           ))}
         </div>

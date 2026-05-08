@@ -40,7 +40,7 @@ export default function RegisterPage() {
         <div className="card-devotional">
           <div className="text-center mb-8">
             <Image src="/logo.png" alt="ePoojapaath" width={64} height={64} className="mx-auto rounded-full mb-4 ring-2 ring-saffron" />
-            <h1 className="font-heading text-3xl text-dark">Create Account</h1>
+            <h1 className="font-heading text-3xl text-foreground">Create Account</h1>
             <p className="font-sanskrit text-saffron text-sm mt-1">🌸 Begin your devotional journey</p>
           </div>
 
@@ -58,7 +58,7 @@ export default function RegisterPage() {
             </Button>
           </form>
 
-          <p className="text-center text-muted text-sm mt-6">
+          <p className="text-center text-muted-foreground text-sm mt-6">
             Already have an account?{" "}
             <Link href="/login" className="text-saffron font-medium hover:underline">Sign In</Link>
           </p>

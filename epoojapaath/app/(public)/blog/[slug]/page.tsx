@@ -49,12 +49,12 @@ export default async function BlogDetailPage({ params }: { params: { slug: strin
         <div className="max-w-7xl mx-auto px-4 md:px-8 py-10">
           <div className="grid grid-cols-1 lg:grid-cols-4 gap-10">
             <article className="lg:col-span-3">
-              <div className="card-devotional prose prose-stone max-w-none prose-headings:font-heading prose-headings:text-dark prose-a:text-saffron"
+              <div className="card-devotional prose prose-stone max-w-none prose-headings:font-heading prose-headings:text-foreground prose-a:text-saffron"
                 dangerouslySetInnerHTML={{ __html: blog.content }} />
 
               {/* Share */}
               <div className="mt-8 card-devotional">
-                <p className="font-heading text-lg text-dark mb-3">Share this article</p>
+                <p className="font-heading text-lg text-foreground mb-3">Share this article</p>
                 <div className="flex gap-3">
                   <a href={`https://wa.me/?text=${encodeURIComponent(blog.title + " " + process.env.NEXT_PUBLIC_APP_URL + "/blog/" + blog.slug)}`}
                     target="_blank" rel="noopener noreferrer"
@@ -69,14 +69,14 @@ export default async function BlogDetailPage({ params }: { params: { slug: strin
                 </div>
               </div>
 
-              <div className="mt-6 p-4 bg-cream rounded-xl border border-deep-gold/20 text-center text-sm text-muted">
+              <div className="mt-6 p-4 bg-background rounded-xl border border-deep-gold/20 text-center text-sm text-muted-foreground">
                 💬 Comments coming soon
               </div>
 
               {/* Related */}
               {relatedFiltered.length > 0 && (
                 <div className="mt-10">
-                  <h2 className="font-heading text-2xl text-dark mb-6">Related Articles</h2>
+                  <h2 className="font-heading text-2xl text-foreground mb-6">Related Articles</h2>
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
                     {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
                     {relatedFiltered.map((b: any) => <BlogCard key={b._id.toString()} blog={b} />)}
@@ -88,8 +88,8 @@ export default async function BlogDetailPage({ params }: { params: { slug: strin
             <aside>
               {sidebarAd && <AdBanner ad={sidebarAd as Parameters<typeof AdBanner>[0]["ad"]} />}
               <div className="card-devotional mt-6">
-                <p className="font-heading text-lg text-dark mb-2">About Author</p>
-                <p className="text-muted text-sm">{authorName}</p>
+                <p className="font-heading text-lg text-foreground mb-2">About Author</p>
+                <p className="text-muted-foreground text-sm">{authorName}</p>
               </div>
             </aside>
           </div>

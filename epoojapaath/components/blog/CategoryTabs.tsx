@@ -20,7 +20,7 @@ export function CategoryTabs({ active }: { active?: string }) {
               className={`px-4 py-1.5 rounded-full text-sm font-medium whitespace-nowrap transition-all ${
                 isActive
                   ? "bg-saffron text-white"
-                  : "bg-cream text-muted hover:bg-saffron/10 hover:text-saffron border border-deep-gold/20"
+                  : "bg-background text-muted-foreground hover:bg-saffron/10 hover:text-saffron border border-deep-gold/20"
               }`}
             >
               {label}

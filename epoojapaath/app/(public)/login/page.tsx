@@ -40,7 +40,7 @@ export default function LoginPage() {
         <div className="card-devotional">
           <div className="text-center mb-8">
             <Image src="/logo.png" alt="ePoojapaath" width={64} height={64} className="mx-auto rounded-full mb-4 ring-2 ring-saffron" />
-            <h1 className="font-heading text-3xl text-dark">Welcome Back</h1>
+            <h1 className="font-heading text-3xl text-foreground">Welcome Back</h1>
             <p className="font-sanskrit text-saffron text-sm mt-1">ॐ नमः शिवाय</p>
           </div>
 
@@ -54,7 +54,7 @@ export default function LoginPage() {
             </Button>
           </form>
 
-          <p className="text-center text-muted text-sm mt-6">
+          <p className="text-center text-muted-foreground text-sm mt-6">
             Don&apos;t have an account?{" "}
             <Link href="/register" className="text-saffron font-medium hover:underline">Register</Link>
           </p>

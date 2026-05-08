@@ -90,7 +90,7 @@ export default function AdminAdsPage() {
     >
       {showForm && (
         <Card className="mb-6">
-          <h3 className="font-heading text-lg text-dark mb-4">Create Ad</h3>
+          <h3 className="font-heading text-lg text-foreground mb-4">Create Ad</h3>
           <form onSubmit={handleCreate} className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <Input label="Ad Title"       required value={form.title}    onChange={set("title")}    placeholder="Ad title" />
             <Select label="Placement"     options={PLACEMENTS} value={form.placement} onChange={set("placement") as (e: React.ChangeEvent<HTMLSelectElement>) => void} />

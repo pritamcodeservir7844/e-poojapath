@@ -73,7 +73,7 @@ export default function TempleChadawaPage() {
 
       {showForm && (
         <Card className="mb-6">
-          <h3 className="font-heading text-lg text-dark mb-4">Add Chadawa Offering</h3>
+          <h3 className="font-heading text-lg text-foreground mb-4">Add Chadawa Offering</h3>
           <form onSubmit={handleAdd} className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <Input label="Name (English)"  required value={form.name}           onChange={set("name")}           placeholder="Bilva Patra Offering" />
             <Input label="Name (Hindi)"    required value={form.nameHi}         onChange={set("nameHi")}         placeholder="बेलपत्र अर्पण" />

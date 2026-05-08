@@ -32,21 +32,21 @@ export function TempleCard({ temple }: { temple: Partial<ITemple> & { _id: strin
           </div>
         </div>
 
-        <div className="flex items-center gap-1 text-muted text-sm mb-2">
+        <div className="flex items-center gap-1 text-muted-foreground text-sm mb-2">
           <MapPin size={14} className="text-saffron" />
           <span>{temple.location?.city}, {temple.location?.state}</span>
         </div>
 
-        <p className="text-muted text-sm line-clamp-2 mb-3">{temple.shortDescription}</p>
+        <p className="text-muted-foreground text-sm line-clamp-2 mb-3">{temple.shortDescription}</p>
 
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-1">
             <Star size={14} className="text-saffron fill-saffron" />
-            <span className="text-sm font-medium text-dark">
+            <span className="text-sm font-medium text-foreground">
               {temple.rating ? temple.rating.toFixed(1) : "New"}
             </span>
             {temple.reviewCount ? (
-              <span className="text-xs text-muted">({temple.reviewCount})</span>
+              <span className="text-xs text-muted-foreground">({temple.reviewCount})</span>
             ) : null}
           </div>
           <span className="text-saffron text-sm font-medium hover:underline">

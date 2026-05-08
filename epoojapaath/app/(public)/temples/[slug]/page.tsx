@@ -58,13 +58,13 @@ export default async function TempleDetailPage({ params }: { params: { slug: str
             <div className="lg:col-span-2 space-y-10">
               {/* About */}
               <section className="card-devotional">
-                <h2 className="font-heading text-2xl text-dark mb-4">About This Temple</h2>
-                <p className="text-muted leading-relaxed mb-4">{temple.description}</p>
+                <h2 className="font-heading text-2xl text-foreground mb-4">About This Temple</h2>
+                <p className="text-muted-foreground leading-relaxed mb-4">{temple.description}</p>
                 <div className="grid grid-cols-2 gap-4 text-sm">
-                  <div><span className="font-medium text-dark">Deity:</span> <span className="text-muted">{temple.deity}</span></div>
-                  <div><span className="font-medium text-dark">Established:</span> <span className="text-muted">{temple.established || "Ancient"}</span></div>
-                  <div className="col-span-2"><span className="font-medium text-dark">Timings:</span> <span className="text-muted">{temple.timings}</span></div>
-                  <div className="col-span-2"><span className="font-medium text-dark">Address:</span> <span className="text-muted">{temple.location.address}, {temple.location.city}, {temple.location.state} – {temple.location.pincode}</span></div>
+                  <div><span className="font-medium text-foreground">Deity:</span> <span className="text-muted-foreground">{temple.deity}</span></div>
+                  <div><span className="font-medium text-foreground">Established:</span> <span className="text-muted-foreground">{temple.established || "Ancient"}</span></div>
+                  <div className="col-span-2"><span className="font-medium text-foreground">Timings:</span> <span className="text-muted-foreground">{temple.timings}</span></div>
+                  <div className="col-span-2"><span className="font-medium text-foreground">Address:</span> <span className="text-muted-foreground">{temple.location.address}, {temple.location.city}, {temple.location.state} – {temple.location.pincode}</span></div>
                 </div>
                 {temple.tags?.length > 0 && (
                   <div className="flex flex-wrap gap-2 mt-4">
@@ -78,14 +78,14 @@ export default async function TempleDetailPage({ params }: { params: { slug: str
               {/* Pujas */}
               {pujas.length > 0 && (
                 <section>
-                  <h2 className="font-heading text-2xl text-dark mb-6">Available Pujas</h2>
+                  <h2 className="font-heading text-2xl text-foreground mb-6">Available Pujas</h2>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
                     {pujas.map((puja: any) => (
                       <div key={puja._id.toString()} className="card-devotional">
-                        <h3 className="font-heading text-lg text-dark">{puja.name}</h3>
+                        <h3 className="font-heading text-lg text-foreground">{puja.name}</h3>
                         <p className="font-sanskrit text-saffron text-sm mb-2">{puja.nameHi}</p>
-                        <p className="text-muted text-sm mb-3 line-clamp-2">{puja.description}</p>
+                        <p className="text-muted-foreground text-sm mb-3 line-clamp-2">{puja.description}</p>
                         <div className="flex items-center justify-between">
                           <span className="font-heading text-xl text-saffron">{formatCurrency(puja.price)}</span>
                           <Link href={`/temples/${temple.slug}/puja/${puja._id}`} className="btn-saffron text-sm py-1.5 px-4">Book 🪔</Link>
@@ -99,13 +99,13 @@ export default async function TempleDetailPage({ params }: { params: { slug: str
               {/* Chadawa */}
               {chadawaItems.length > 0 && (
                 <section>
-                  <h2 className="font-heading text-2xl text-dark mb-6">Chadawa Offerings</h2>
+                  <h2 className="font-heading text-2xl text-foreground mb-6">Chadawa Offerings</h2>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
                     {chadawaItems.map((item: any) => (
                       <div key={item._id.toString()} className="card-devotional">
-                        <h3 className="font-heading text-lg text-dark">{item.name}</h3>
-                        <p className="text-muted text-sm mb-3 line-clamp-2">{item.description}</p>
+                        <h3 className="font-heading text-lg text-foreground">{item.name}</h3>
+                        <p className="text-muted-foreground text-sm mb-3 line-clamp-2">{item.description}</p>
                         <div className="flex items-center justify-between">
                           <span className="font-heading text-xl text-saffron">{formatCurrency(item.price)}</span>
                           <Link href={`/chadawa/${item._id}`} className="btn-outline-gold text-sm py-1.5 px-4">Offer 🌸</Link>
@@ -118,9 +118,9 @@ export default async function TempleDetailPage({ params }: { params: { slug: str
 
               {/* Reviews */}
               <section>
-                <h2 className="font-heading text-2xl text-dark mb-6">Devotee Reviews</h2>
+                <h2 className="font-heading text-2xl text-foreground mb-6">Devotee Reviews</h2>
                 {reviews.length === 0 ? (
-                  <p className="text-muted text-center py-8">No reviews yet. Be the first to review! 🙏</p>
+                  <p className="text-muted-foreground text-center py-8">No reviews yet. Be the first to review! 🙏</p>
                 ) : (
                   <div className="space-y-4">
                     {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
@@ -131,11 +131,11 @@ export default async function TempleDetailPage({ params }: { params: { slug: str
                             {r.user?.name?.[0] || "D"}
                           </div>
                           <div>
-                            <p className="font-medium text-dark text-sm">{r.user?.name || "Devotee"}</p>
+                            <p className="font-medium text-foreground text-sm">{r.user?.name || "Devotee"}</p>
                             <div className="flex gap-0.5">{"★".repeat(r.rating).split("").map((_: string, i: number) => <span key={i} className="text-saffron text-xs">★</span>)}</div>
                           </div>
                         </div>
-                        <p className="text-muted text-sm">{r.comment}</p>
+                        <p className="text-muted-foreground text-sm">{r.comment}</p>
                       </div>
                     ))}
                   </div>
@@ -146,7 +146,7 @@ export default async function TempleDetailPage({ params }: { params: { slug: str
             {/* Sidebar */}
             <div className="space-y-6">
               <div className="card-devotional">
-                <h3 className="font-heading text-lg text-dark mb-4">Contact Temple</h3>
+                <h3 className="font-heading text-lg text-foreground mb-4">Contact Temple</h3>
                 <ul className="space-y-3">
                   <li className="flex items-center gap-3 text-sm">
                     <Phone size={15} className="text-saffron shrink-0" />
@@ -164,16 +164,16 @@ export default async function TempleDetailPage({ params }: { params: { slug: str
                   )}
                   <li className="flex items-start gap-3 text-sm">
                     <Clock size={15} className="text-saffron shrink-0 mt-0.5" />
-                    <span className="text-muted">{temple.timings}</span>
+                    <span className="text-muted-foreground">{temple.timings}</span>
                   </li>
                 </ul>
               </div>
 
               {/* Map placeholder */}
               <div className="card-devotional">
-                <h3 className="font-heading text-lg text-dark mb-3">Location</h3>
-                <div className="h-36 bg-cream rounded-xl border border-deep-gold/20 flex items-center justify-center mb-3">
-                  <div className="text-center text-muted">
+                <h3 className="font-heading text-lg text-foreground mb-3">Location</h3>
+                <div className="h-36 bg-background rounded-xl border border-deep-gold/20 flex items-center justify-center mb-3">
+                  <div className="text-center text-muted-foreground">
                     <MapPin className="mx-auto mb-1 text-saffron" size={24} />
                     <p className="text-xs">{temple.location.city}</p>
                   </div>
@@ -188,7 +188,7 @@ export default async function TempleDetailPage({ params }: { params: { slug: str
 
               {/* Share */}
               <div className="card-devotional">
-                <h3 className="font-heading text-lg text-dark mb-3">Share Temple</h3>
+                <h3 className="font-heading text-lg text-foreground mb-3">Share Temple</h3>
                 <div className="flex gap-2">
                   <a href={`https://wa.me/?text=Check out ${temple.name} on ePoojapaath!`} target="_blank" rel="noopener noreferrer"
                     className="flex-1 bg-green-50 border border-green-200 text-green-700 text-xs text-center py-2 rounded-lg hover:bg-green-100 transition-colors">

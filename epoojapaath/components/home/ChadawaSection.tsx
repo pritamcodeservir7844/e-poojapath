@@ -19,8 +19,8 @@ export async function ChadawaSection() {
     <section className="section-padding max-w-7xl mx-auto">
       <div className="text-center mb-12">
         <p className="text-saffron font-medium mb-2 font-sanskrit">देवताओं को अर्पण</p>
-        <h2 className="font-heading text-4xl md:text-5xl text-dark mb-4">Chadawa Offerings</h2>
-        <p className="text-muted max-w-xl mx-auto">
+        <h2 className="font-heading text-4xl md:text-5xl text-foreground mb-4">Chadawa Offerings</h2>
+        <p className="text-muted-foreground max-w-xl mx-auto">
           Offer flowers, sweets, and sacred items to your chosen deity — delivered by temple pandits on your behalf.
         </p>
       </div>
@@ -38,9 +38,9 @@ export async function ChadawaSection() {
               />
               <div className="absolute inset-0 bg-gradient-to-t from-dark/40 to-transparent" />
             </div>
-            <h3 className="font-heading text-dark text-lg mb-1">{item.name}</h3>
-            <p className="text-xs text-muted mb-1 font-sanskrit">{item.nameHi}</p>
-            <p className="text-sm text-muted mb-3 line-clamp-2">{item.description}</p>
+            <h3 className="font-heading text-foreground text-lg mb-1">{item.name}</h3>
+            <p className="text-xs text-muted-foreground mb-1 font-sanskrit">{item.nameHi}</p>
+            <p className="text-sm text-muted-foreground mb-3 line-clamp-2">{item.description}</p>
             <div className="flex items-center justify-between">
               <span className="font-bold text-saffron text-lg">{formatCurrency(item.price)}</span>
               <Link

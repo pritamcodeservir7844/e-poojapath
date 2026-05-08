@@ -35,11 +35,10 @@ export function Navbar() {
         "/user/dashboard";
 
   return (
-    <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-      scrolled
-        ? "backdrop-blur-md bg-background/92 shadow-md border-b border-border"
-        : "bg-transparent"
-    }`}>
+    <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled
+      ? "backdrop-blur-md bg-background/92 shadow-md border-b border-border"
+      : "bg-transparent"
+      }`}>
       <div className="max-w-7xl mx-auto px-4 md:px-8 flex items-center justify-between h-16">
 
         {/* Logo */}
@@ -62,7 +61,8 @@ export function Navbar() {
             <Link
               key={link.href}
               href={link.href}
-              className="text-foreground hover:text-saffron font-medium transition-colors duration-200 relative group text-sm"
+              className={`${scrolled ? "text-foreground" : "text-cream/90"
+                } hover:text-saffron font-medium transition-colors duration-200 relative group text-sm`}
             >
               {link.label}
               <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-saffron group-hover:w-full transition-all duration-200" />
@@ -78,7 +78,8 @@ export function Navbar() {
             <div className="relative">
               <button
                 onClick={() => setDropdownOpen(!dropdownOpen)}
-                className="flex items-center gap-2 text-foreground hover:text-saffron transition-colors"
+                className={`flex items-center gap-2 ${scrolled ? "text-foreground" : "text-cream/90"
+                  } hover:text-saffron transition-colors`}
               >
                 <div className="w-8 h-8 rounded-full bg-saffron/15 dark:bg-saffron/25 flex items-center justify-center text-saffron font-bold text-sm border border-saffron/30">
                   {session.user?.name?.[0]?.toUpperCase()}
@@ -122,7 +123,7 @@ export function Navbar() {
           <ThemeToggle />
           <button
             onClick={() => setMobileOpen(!mobileOpen)}
-            className="text-foreground p-1"
+            className={`${scrolled ? "text-foreground" : "text-cream"} p-1`}
             aria-label="Toggle mobile menu"
           >
             {mobileOpen ? <X size={24} /> : <Menu size={24} />}
@@ -140,12 +141,48 @@ export function Navbar() {
             className="md:hidden bg-background/96 backdrop-blur-md border-t border-border overflow-hidden"
           >
             <div className="px-4 py-4 flex flex-col gap-1">
+              {session && (
+                <div className="mb-4 pb-4 border-b border-border/50">
+                  <div className="flex items-center gap-3 px-3 mb-4">
+                    <div className="w-10 h-10 rounded-full bg-saffron/15 flex items-center justify-center text-saffron font-bold border border-saffron/30">
+                      {session.user?.name?.[0]?.toUpperCase()}
+                    </div>
+                    <div className="min-w-0">
+                      <p className="text-foreground font-semibold truncate">{session.user?.name}</p>
+                      <p className="text-muted-foreground text-xs truncate">{session.user?.email}</p>
+                    </div>
+                  </div>
+                  <div className="space-y-1">
+                    <Link
+                      href={dashboardHref}
+                      onClick={() => setMobileOpen(false)}
+                      className="flex items-center gap-3 text-foreground hover:text-saffron py-2 px-3 rounded-lg hover:bg-saffron/8 transition-colors text-sm"
+                    >
+                      <LayoutDashboard size={18} className="text-saffron" /> Dashboard
+                    </Link>
+                    <Link
+                      href="/user/profile"
+                      onClick={() => setMobileOpen(false)}
+                      className="flex items-center gap-3 text-foreground hover:text-saffron py-2 px-3 rounded-lg hover:bg-saffron/8 transition-colors text-sm"
+                    >
+                      <User size={18} className="text-saffron" /> Profile
+                    </Link>
+                    <button
+                      onClick={() => signOut()}
+                      className="w-full flex items-center gap-3 text-lotus-red py-2 px-3 rounded-lg hover:bg-red-500/10 transition-colors text-sm text-left"
+                    >
+                      <LogOut size={18} /> Sign Out
+                    </button>
+                  </div>
+                </div>
+              )}
+
               {navLinks.map((link) => (
                 <Link
                   key={link.href}
                   href={link.href}
                   onClick={() => setMobileOpen(false)}
-                  className="text-foreground hover:text-saffron font-medium py-2.5 px-3 rounded-lg hover:bg-saffron/8 border-b border-border/50 transition-colors"
+                  className="text-foreground hover:text-saffron font-medium py-2.5 px-3 rounded-lg hover:bg-saffron/8 border-b border-border/50 last:border-0 transition-colors"
                 >
                   {link.label}
                 </Link>

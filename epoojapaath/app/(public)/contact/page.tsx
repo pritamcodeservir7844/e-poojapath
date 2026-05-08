@@ -61,28 +61,28 @@ export default function ContactPage() {
             {/* Contact Info */}
             <div className="lg:col-span-2">
               <div className="card-devotional h-full">
-                <h2 className="font-heading text-2xl text-dark mb-6">Get in Touch</h2>
+                <h2 className="font-heading text-2xl text-foreground mb-6">Get in Touch</h2>
                 <ul className="space-y-6">
                   {[
-                    { icon: <MapPin size={18} />, label: "Address",  content: <p className="text-muted text-sm">12, Assi Ghat Road<br />Varanasi, Uttar Pradesh – 221005</p> },
+                    { icon: <MapPin size={18} />, label: "Address",  content: <p className="text-muted-foreground text-sm">12, Assi Ghat Road<br />Varanasi, Uttar Pradesh – 221005</p> },
                     { icon: <Phone size={18} />,  label: "Phone",    content: <a href="tel:+919876543210" className="text-saffron hover:underline">+91 98765 43210</a> },
                     { icon: <Mail size={18} />,   label: "Email",    content: <a href="mailto:support@epoojapaath.com" className="text-saffron hover:underline">support@epoojapaath.com</a> },
-                    { icon: <Clock size={18} />,  label: "Hours",    content: <p className="text-muted text-sm">Monday – Saturday<br />9:00 AM – 6:00 PM IST</p> },
+                    { icon: <Clock size={18} />,  label: "Hours",    content: <p className="text-muted-foreground text-sm">Monday – Saturday<br />9:00 AM – 6:00 PM IST</p> },
                   ].map(({ icon, label, content }) => (
                     <li key={label} className="flex items-start gap-4">
                       <div className="w-10 h-10 rounded-full bg-saffron/10 flex items-center justify-center shrink-0 text-saffron">
                         {icon}
                       </div>
                       <div>
-                        <p className="font-medium text-dark">{label}</p>
+                        <p className="font-medium text-foreground">{label}</p>
                         {content}
                       </div>
                     </li>
                   ))}
                 </ul>
 
-                <div className="mt-6 h-40 bg-cream rounded-xl border border-deep-gold/20 flex items-center justify-center">
-                  <div className="text-center text-muted">
+                <div className="mt-6 h-40 bg-background rounded-xl border border-deep-gold/20 flex items-center justify-center">
+                  <div className="text-center text-muted-foreground">
                     <MapPin className="mx-auto mb-2 text-saffron" size={28} />
                     <p className="text-sm">Assi Ghat, Varanasi</p>
                     <a href="https://maps.google.com" target="_blank" rel="noopener noreferrer"
@@ -94,7 +94,7 @@ export default function ContactPage() {
 
             {/* Contact Form */}
             <form onSubmit={handleSubmit} className="lg:col-span-3 card-devotional space-y-5">
-              <h2 className="font-heading text-2xl text-dark mb-2">Send a Message</h2>
+              <h2 className="font-heading text-2xl text-foreground mb-2">Send a Message</h2>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <Input label="Name" required placeholder="Your full name"

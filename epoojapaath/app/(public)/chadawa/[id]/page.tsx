@@ -102,16 +102,16 @@ export default function ChadawaDetailPage({ params }: { params: { id: string } }
             <div className="relative h-56 rounded-2xl overflow-hidden mb-6 ring-2 ring-deep-gold/30">
               <Image src={item.image as string || "/placeholder-chadawa.jpg"} alt={item.name as string} fill className="object-cover" />
             </div>
-            <h1 className="font-heading text-3xl text-dark mb-1">{item.name as string}</h1>
+            <h1 className="font-heading text-3xl text-foreground mb-1">{item.name as string}</h1>
             <p className="font-sanskrit text-saffron mb-4">{item.nameHi as string}</p>
-            <p className="text-muted mb-6">{item.description as string}</p>
+            <p className="text-muted-foreground mb-6">{item.description as string}</p>
 
             {Array.isArray(item.items) && item.items.length > 0 && (
               <div className="card-devotional">
-                <h3 className="font-heading text-lg text-dark mb-3">Offering Includes</h3>
+                <h3 className="font-heading text-lg text-foreground mb-3">Offering Includes</h3>
                 <ul className="space-y-2">
                   {(item.items as string[]).map((inc) => (
-                    <li key={inc} className="flex items-center gap-2 text-sm text-muted">
+                    <li key={inc} className="flex items-center gap-2 text-sm text-muted-foreground">
                       <CheckCircle2 size={14} className="text-saffron shrink-0" />{inc}
                     </li>
                   ))}
@@ -119,15 +119,15 @@ export default function ChadawaDetailPage({ params }: { params: { id: string } }
               </div>
             )}
 
-            <div className="mt-4 flex items-center gap-2 text-muted text-sm">
+            <div className="mt-4 flex items-center gap-2 text-muted-foreground text-sm">
               <Flower2 size={16} className="text-lotus-pink" />
-              <span>Deity: <span className="font-medium text-dark">{item.deity as string}</span></span>
+              <span>Deity: <span className="font-medium text-foreground">{item.deity as string}</span></span>
             </div>
           </div>
 
           {/* Offering Form */}
           <form onSubmit={handleOffer} className="card-devotional h-fit space-y-4">
-            <h2 className="font-heading text-2xl text-dark">Make an Offering</h2>
+            <h2 className="font-heading text-2xl text-foreground">Make an Offering</h2>
             <Input
               label="Devotee Name"
               required
@@ -158,7 +158,7 @@ export default function ChadawaDetailPage({ params }: { params: { id: string } }
             />
             <div className="border-t border-deep-gold/20 pt-4">
               <div className="flex justify-between font-heading text-xl">
-                <span className="text-dark">Total</span>
+                <span className="text-foreground">Total</span>
                 <span className="text-saffron">{formatCurrency(item.price as number)}</span>
               </div>
             </div>

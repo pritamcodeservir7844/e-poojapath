@@ -29,15 +29,15 @@ export function BlogCard({ blog }: { blog: Partial<IBlog> & { _id: string } }) {
           <span className={`text-xs px-2.5 py-1 rounded-full font-medium capitalize ${categoryColors[blog.category || "devotional"] || "bg-saffron/10 text-saffron"}`}>
             {blog.category?.replace("-", " ")}
           </span>
-          <span className="text-muted text-xs">{calculateReadTime(blog.content || "")} min read</span>
+          <span className="text-muted-foreground text-xs">{calculateReadTime(blog.content || "")} min read</span>
         </div>
 
-        <h3 className="font-heading text-dark text-xl mb-2 line-clamp-2 group-hover:text-saffron transition-colors">
+        <h3 className="font-heading text-foreground text-xl mb-2 line-clamp-2 group-hover:text-saffron transition-colors">
           {blog.title}
         </h3>
-        <p className="text-muted text-sm line-clamp-2 mb-4">{blog.excerpt}</p>
+        <p className="text-muted-foreground text-sm line-clamp-2 mb-4">{blog.excerpt}</p>
 
-        <div className="flex items-center justify-between text-xs text-muted border-t border-deep-gold/10 pt-3">
+        <div className="flex items-center justify-between text-xs text-muted-foreground border-t border-deep-gold/10 pt-3">
           <span>
             {typeof blog.author === "object" && blog.author !== null
               ? (blog.author as { name?: string }).name

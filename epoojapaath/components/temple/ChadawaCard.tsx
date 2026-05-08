@@ -29,14 +29,14 @@ export function ChadawaCard({ item }: { item: ChadawaWithTemple }) {
         </span>
       </div>
 
-      <h3 className="font-heading text-xl text-dark mb-0.5">{item.name}</h3>
+      <h3 className="font-heading text-xl text-foreground mb-0.5">{item.name}</h3>
       <p className="font-sanskrit text-saffron text-sm mb-2">{item.nameHi}</p>
-      <p className="text-muted text-sm mb-3 line-clamp-2">{item.description}</p>
+      <p className="text-muted-foreground text-sm mb-3 line-clamp-2">{item.description}</p>
 
       {item.items.length > 0 && (
         <div className="flex flex-wrap gap-1 mb-4">
           {item.items.slice(0, 3).map((i) => (
-            <span key={i} className="bg-cream text-muted text-xs px-2 py-0.5 rounded-full border border-deep-gold/20">{i}</span>
+            <span key={i} className="bg-background text-muted-foreground text-xs px-2 py-0.5 rounded-full border border-deep-gold/20">{i}</span>
           ))}
         </div>
       )}
@@ -44,7 +44,7 @@ export function ChadawaCard({ item }: { item: ChadawaWithTemple }) {
       <div className="flex items-center justify-between">
         <div>
           <span className="font-heading text-2xl text-saffron">{formatCurrency(item.price)}</span>
-          {templeName && <p className="text-xs text-muted mt-0.5">at {templeName}</p>}
+          {templeName && <p className="text-xs text-muted-foreground mt-0.5">at {templeName}</p>}
         </div>
         <Link href={`/chadawa/${item._id}`} className="btn-saffron text-sm py-2 px-5">Offer 🌸</Link>
       </div>

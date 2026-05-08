@@ -70,7 +70,7 @@ export default function TempleMembersPage() {
   const columns: any[] = [
     { key: "user",        header: "Member",      render: (m: Record<string, unknown>) => (m.user as { name?: string })?.name || "—" },
     { key: "role",        header: "Role",         render: (m: Record<string, unknown>) => <Badge variant="saffron">{String(m.role)}</Badge> },
-    { key: "permissions", header: "Permissions",  render: (m: Record<string, unknown>) => <span className="text-xs text-muted">{(m.permissions as string[])?.length || 0} permissions</span> },
+    { key: "permissions", header: "Permissions",  render: (m: Record<string, unknown>) => <span className="text-xs text-muted-foreground">{(m.permissions as string[])?.length || 0} permissions</span> },
     { key: "status",      header: "Status",       render: (m: Record<string, unknown>) => <Badge variant={m.status as any}>{String(m.status)}</Badge> },
   ];
 
@@ -83,17 +83,17 @@ export default function TempleMembersPage() {
         </div>
 
         <Card>
-          <h3 className="font-heading text-lg text-dark mb-4">Invite Member</h3>
+          <h3 className="font-heading text-lg text-foreground mb-4">Invite Member</h3>
           <form onSubmit={addMember} className="space-y-4">
             <Input label="Email Address" required type="email" placeholder="member@example.com" value={email} onChange={(e) => setEmail(e.target.value)} />
             <Select label="Role" options={ROLES} value={role} onChange={(e) => setRole(e.target.value)} />
             <div>
-              <p className="text-sm font-medium text-dark mb-2">Permissions</p>
+              <p className="text-sm font-medium text-foreground mb-2">Permissions</p>
               <div className="space-y-2">
                 {PERMISSIONS.map(({ id, label }) => (
                   <label key={id} className="flex items-center gap-2 cursor-pointer">
                     <input type="checkbox" checked={permissions.includes(id)} onChange={() => togglePermission(id)} className="w-4 h-4 accent-saffron" />
-                    <span className="text-sm text-dark">{label}</span>
+                    <span className="text-sm text-foreground">{label}</span>
                   </label>
                 ))}
               </div>

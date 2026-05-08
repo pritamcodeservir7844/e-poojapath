@@ -9,8 +9,8 @@ export async function BlogPreview() {
     <section className="section-padding max-w-7xl mx-auto">
       <div className="text-center mb-12">
         <p className="text-saffron font-medium mb-2 font-sanskrit">ज्ञान और भक्ति</p>
-        <h2 className="font-heading text-4xl md:text-5xl text-dark mb-4">Sacred Wisdom & Temple Stories</h2>
-        <p className="text-muted max-w-xl mx-auto">
+        <h2 className="font-heading text-4xl md:text-5xl text-foreground mb-4">Sacred Wisdom & Temple Stories</h2>
+        <p className="text-muted-foreground max-w-xl mx-auto">
           Explore devotional articles, festival guides, temple histories, and Vedic wisdom.
         </p>
       </div>

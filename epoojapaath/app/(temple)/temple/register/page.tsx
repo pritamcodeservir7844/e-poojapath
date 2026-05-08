@@ -57,10 +57,10 @@ export default function TempleRegisterPage() {
       <div className="flex items-center gap-2 mb-8 overflow-x-auto pb-2">
         {STEPS.map((s, i) => (
           <div key={s} className="flex items-center gap-2 shrink-0">
-            <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ${i <= step ? "bg-saffron text-white" : "bg-cream text-muted border border-deep-gold/20"}`}>
+            <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ${i <= step ? "bg-saffron text-white" : "bg-background text-muted-foreground border border-deep-gold/20"}`}>
               {i < step ? "✓" : i + 1}
             </div>
-            <span className={`text-sm ${i === step ? "text-dark font-medium" : "text-muted"}`}>{s}</span>
+            <span className={`text-sm ${i === step ? "text-foreground font-medium" : "text-muted-foreground"}`}>{s}</span>
             {i < STEPS.length - 1 && <div className="w-8 h-px bg-deep-gold/20" />}
           </div>
         ))}
@@ -70,7 +70,7 @@ export default function TempleRegisterPage() {
         <Card>
           {step === 0 && (
             <div className="space-y-5">
-              <h2 className="font-heading text-xl text-dark">Basic Information</h2>
+              <h2 className="font-heading text-xl text-foreground">Basic Information</h2>
               <Input label="Temple Name"        required value={form.name}             onChange={set("name")}             placeholder="e.g. Shri Kashi Vishwanath Mandir" />
               <Select label="Presiding Deity"   required value={form.deity}            onChange={set("deity") as (e: React.ChangeEvent<HTMLSelectElement>) => void} options={DEITIES.map((d) => ({ value: d, label: d }))} placeholder="Select deity" />
               <Input label="Short Description"  required value={form.shortDescription} onChange={set("shortDescription")} placeholder="One line about your temple" />
@@ -83,7 +83,7 @@ export default function TempleRegisterPage() {
 
           {step === 1 && (
             <div className="space-y-5">
-              <h2 className="font-heading text-xl text-dark">Location Details</h2>
+              <h2 className="font-heading text-xl text-foreground">Location Details</h2>
               <Textarea label="Address"   required value={form.address}   onChange={set("address")} rows={2} placeholder="Full street address" />
               <div className="grid grid-cols-2 gap-4">
                 <Input label="City"    required value={form.city}    onChange={set("city")}    placeholder="City name" />
@@ -96,7 +96,7 @@ export default function TempleRegisterPage() {
 
           {step === 2 && (
             <div className="space-y-5">
-              <h2 className="font-heading text-xl text-dark">Contact & Media</h2>
+              <h2 className="font-heading text-xl text-foreground">Contact & Media</h2>
               <Input label="Contact Phone" required value={form.contactPhone} onChange={set("contactPhone")} placeholder="+91 98765 43210" />
               <Input label="Contact Email" required value={form.contactEmail} onChange={set("contactEmail")} placeholder="temple@example.com" type="email" />
               <Input label="Website (optional)"       value={form.website}      onChange={set("website")}      placeholder="https://yourtemple.org" />
@@ -106,8 +106,8 @@ export default function TempleRegisterPage() {
 
           {step === 3 && (
             <div className="space-y-4">
-              <h2 className="font-heading text-xl text-dark">Review & Submit</h2>
-              <div className="bg-cream rounded-xl p-4 border border-deep-gold/20 space-y-2 text-sm">
+              <h2 className="font-heading text-xl text-foreground">Review & Submit</h2>
+              <div className="bg-background rounded-xl p-4 border border-deep-gold/20 space-y-2 text-sm">
                 {[
                   ["Name",    form.name],
                   ["Deity",   form.deity],
@@ -116,10 +116,10 @@ export default function TempleRegisterPage() {
                   ["Email",   form.contactEmail],
                   ["Timings", form.timings],
                 ].map(([k, v]) => (
-                  <div key={k} className="flex gap-3"><span className="font-medium text-dark w-20 shrink-0">{k}:</span><span className="text-muted">{v}</span></div>
+                  <div key={k} className="flex gap-3"><span className="font-medium text-foreground w-20 shrink-0">{k}:</span><span className="text-muted-foreground">{v}</span></div>
                 ))}
               </div>
-              <p className="text-xs text-muted">Your temple will be reviewed by our team within 24–48 hours. You&apos;ll be notified once approved. 🙏</p>
+              <p className="text-xs text-muted-foreground">Your temple will be reviewed by our team within 24–48 hours. You&apos;ll be notified once approved. 🙏</p>
             </div>
           )}
 

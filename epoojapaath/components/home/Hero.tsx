@@ -15,7 +15,7 @@ function Temple3D() {
   });
 
   return (
-    <group ref={groupRef}>
+    <group ref={groupRef} position={[0, -0.5, 0]}>
       {/* Mandapa base */}
       <mesh position={[0, -1, 0]}>
         <boxGeometry args={[3, 1, 3]} />
@@ -74,18 +74,68 @@ const floatingDiyas = Array.from({ length: 8 }).map((_, i) => ({
 export function Hero() {
   return (
     <section className="relative min-h-screen bg-dark overflow-hidden flex items-center">
-      {/* Mandala SVG overlay */}
-      <div className="absolute inset-0 opacity-5 pointer-events-none">
-        <svg viewBox="0 0 800 800" className="w-full h-full">
-          {[80, 120, 160, 200, 240, 280].map((r) => (
-            <circle key={r} cx="400" cy="400" r={r} stroke="#D4820A" strokeWidth="0.5" fill="none" />
+      {/* Devotional Background Vectors */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden">
+        {/* Main Rotating Mandala */}
+        <motion.div
+          animate={{ rotate: 360 }}
+          transition={{ duration: 120, repeat: Infinity, ease: "linear" }}
+          className="absolute -top-[10%] -right-[10%] w-[1000px] h-[1000px] opacity-[0.04]"
+        >
+          <svg viewBox="0 0 200 200" fill="none" stroke="#D4820A" strokeWidth="0.2">
+            <circle cx="100" cy="100" r="90" />
+            <circle cx="100" cy="100" r="70" />
+            <circle cx="100" cy="100" r="50" />
+            {Array.from({ length: 24 }).map((_, i) => (
+              <path
+                key={i}
+                d="M100 100 L100 10 Q110 30 100 50 Q90 30 100 10"
+                transform={`rotate(${i * 15} 100 100)`}
+              />
+            ))}
+            {Array.from({ length: 12 }).map((_, i) => (
+              <path
+                key={`p-${i}`}
+                d="M100 100 Q120 70 100 40 Q80 70 100 100"
+                transform={`rotate(${i * 30 + 15} 100 100)`}
+                fill="#D4820A"
+                fillOpacity="0.2"
+              />
+            ))}
+          </svg>
+        </motion.div>
+
+        {/* Floating Icons */}
+        <div className="absolute inset-0">
+          {[
+            { top: "15%", left: "10%", size: 40, delay: 0 },
+            { top: "65%", left: "5%", size: 30, delay: 2 },
+            { top: "25%", left: "85%", size: 45, delay: 1 },
+            { top: "75%", left: "90%", size: 35, delay: 3 },
+            { top: "45%", left: "50%", size: 50, delay: 1.5 },
+          ].map((item, i) => (
+            <motion.div
+              key={i}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: [0, 0.1, 0], y: [-20, -60, -20] }}
+              transition={{ duration: 8, delay: item.delay, repeat: Infinity, ease: "easeInOut" }}
+              className="absolute"
+              style={{ top: item.top, left: item.left }}
+            >
+              {i % 2 === 0 ? (
+                /* Lotus Icon */
+                <svg width={item.size} height={item.size} viewBox="0 0 24 24" fill="none" stroke="#D4820A" strokeWidth="1">
+                  <path d="M12 22C12 22 20 18 20 12C20 6 12 2 12 2C12 2 4 6 4 12C4 18 12 22 12 22Z" />
+                  <path d="M12 22C12 22 16 18 16 13C16 8 12 5 12 5C12 5 8 8 8 13C8 18 12 22 12 22Z" />
+                  <circle cx="12" cy="13" r="2" />
+                </svg>
+              ) : (
+                /* Om Icon (simplified) */
+                <div className="font-sanskrit text-saffron text-2xl opacity-20">ॐ</div>
+              )}
+            </motion.div>
           ))}
-          {Array.from({ length: 12 }).map((_, i) => (
-            <line key={i} x1="400" y1="120" x2="400" y2="280"
-              stroke="#D4820A" strokeWidth="0.5"
-              transform={`rotate(${i * 30} 400 400)`} />
-          ))}
-        </svg>
+        </div>
       </div>
 
       {/* Floating diya particles */}
@@ -186,7 +236,7 @@ export function Hero() {
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 1, delay: 0.4 }}
           >
-            <Canvas camera={{ position: [0, 2, 7], fov: 50 }} gl={{ alpha: true }}>
+            <Canvas camera={{ position: [0, 2, 10], fov: 45 }} gl={{ alpha: true }}>
               <ambientLight intensity={0.8} />
               <pointLight position={[5, 5, 5]} intensity={2} color="#FFD700" />
               <pointLight position={[-5, 3, -5]} intensity={1.5} color="#D4820A" />

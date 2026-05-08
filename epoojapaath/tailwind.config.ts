@@ -109,6 +109,7 @@ const config: Config = {
         "glow-pulse": "glow-pulse 2s ease-in-out infinite",
         marquee: "marquee 30s linear infinite",
         shimmer: "shimmer 1.5s infinite",
+        "spin-slow": "spin 120s linear infinite",
       },
       backgroundImage: {
         // Gold gradient from logo text/swirls

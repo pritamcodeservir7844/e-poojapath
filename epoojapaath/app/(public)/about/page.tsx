@@ -35,15 +35,15 @@ export default function AboutPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <div className="card-devotional">
               <div className="text-4xl mb-4">🎯</div>
-              <h2 className="font-heading text-2xl text-dark mb-3">Our Mission</h2>
-              <p className="text-muted leading-relaxed">
+              <h2 className="font-heading text-2xl text-foreground mb-3">Our Mission</h2>
+              <p className="text-muted-foreground leading-relaxed">
                 To make divine worship accessible to every devotee — regardless of geography. We empower temples with technology and connect millions of believers with their chosen deities through authentic, verified puja bookings and offerings.
               </p>
             </div>
             <div className="card-devotional">
               <div className="text-4xl mb-4">🔭</div>
-              <h2 className="font-heading text-2xl text-dark mb-3">Our Vision</h2>
-              <p className="text-muted leading-relaxed">
+              <h2 className="font-heading text-2xl text-foreground mb-3">Our Vision</h2>
+              <p className="text-muted-foreground leading-relaxed">
                 A world where no devotee is too far from their deity. We envision India&apos;s spiritual infrastructure powered by technology — with every temple, pandit, and devotee connected through a single divine platform.
               </p>
             </div>
@@ -56,14 +56,14 @@ export default function AboutPage() {
         <section className="section-padding bg-gradient-to-b from-cream to-card-bg">
           <div className="max-w-3xl mx-auto text-center">
             <p className="font-sanskrit text-saffron mb-3">संस्थापन की कहानी</p>
-            <h2 className="font-heading text-3xl text-dark mb-6">The Founding Story</h2>
-            <p className="text-muted leading-relaxed mb-4">
+            <h2 className="font-heading text-3xl text-foreground mb-6">The Founding Story</h2>
+            <p className="text-muted-foreground leading-relaxed mb-4">
               In 2023, our founder Acharya Ramkrishna Das was living in Bangalore, unable to attend his family&apos;s annual puja at Kashi Vishwanath. He called the temple trust — but there was no way to book online, no live stream, no confirmation. Just uncertainty.
             </p>
-            <p className="text-muted leading-relaxed mb-4">
+            <p className="text-muted-foreground leading-relaxed mb-4">
               That night, ePoojapaath was conceived — a platform where technology serves spirituality, not replaces it. Where a devotee in London can offer flowers to Mata Vaishno Devi, and a family in Chennai can participate in a Navgrah puja at Ujjain.
             </p>
-            <p className="text-muted leading-relaxed">
+            <p className="text-muted-foreground leading-relaxed">
               Today, we serve 1,00,000+ devotees across 500+ temples with the same devotional intent — <em className="text-saffron font-medium">ॐ सर्वे भवन्तु सुखिनः</em>.
             </p>
           </div>
@@ -96,7 +96,7 @@ export default function AboutPage() {
         <section className="section-padding max-w-6xl mx-auto">
           <div className="text-center mb-12">
             <p className="font-sanskrit text-saffron mb-2">हमारी टीम</p>
-            <h2 className="font-heading text-4xl text-dark">Meet the Team</h2>
+            <h2 className="font-heading text-4xl text-foreground">Meet the Team</h2>
           </div>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
             {team.map(({ name, role, avatar }) => (
@@ -104,8 +104,8 @@ export default function AboutPage() {
                 <div className="w-16 h-16 mx-auto rounded-full bg-saffron/10 flex items-center justify-center text-4xl mb-3">
                   {avatar}
                 </div>
-                <h3 className="font-heading text-dark text-base">{name}</h3>
-                <p className="text-muted text-xs mt-1">{role}</p>
+                <h3 className="font-heading text-foreground text-base">{name}</h3>
+                <p className="text-muted-foreground text-xs mt-1">{role}</p>
               </div>
             ))}
           </div>

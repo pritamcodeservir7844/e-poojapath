@@ -19,7 +19,7 @@ export default async function AdminUsersPage() {
   };
 
   const columns: any[] = [
-    { key: "name",      header: "Name",    render: (u: IUser & { _id: string }) => <span className="font-medium text-dark">{u.name}</span> },
+    { key: "name",      header: "Name",    render: (u: IUser & { _id: string }) => <span className="font-medium text-foreground">{u.name}</span> },
     { key: "email",     header: "Email"    },
     { key: "phone",     header: "Phone",   render: (u: IUser & { _id: string }) => u.phone || "—" },
     { key: "role",      header: "Role",    render: (u: IUser & { _id: string }) => <Badge variant={roleBadge[u.role] || "saffron"}>{u.role}</Badge> },

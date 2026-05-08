@@ -39,12 +39,12 @@ export function RashifalTool() {
       />
       <Button onClick={calculate} disabled={!rashi} fullWidth>Get Today&apos;s Rashifal 🔮</Button>
       {result && (
-        <div className="bg-cream rounded-xl p-4 border border-deep-gold/20 space-y-2 animate-in fade-in">
-          <p className="text-dark leading-relaxed text-sm">{result.reading}</p>
+        <div className="bg-background rounded-xl p-4 border border-deep-gold/20 space-y-2 animate-in fade-in">
+          <p className="text-foreground leading-relaxed text-sm">{result.reading}</p>
           <div className="grid grid-cols-3 gap-2 pt-2">
-            <div className="text-center"><p className="text-xs text-muted">Lucky Color</p><p className="font-medium text-saffron text-sm">{result.luckyColor}</p></div>
-            <div className="text-center"><p className="text-xs text-muted">Lucky Number</p><p className="font-medium text-saffron text-sm">{result.luckyNumber}</p></div>
-            <div className="text-center"><p className="text-xs text-muted">Auspicious Time</p><p className="font-medium text-saffron text-sm">{result.auspiciousTime}</p></div>
+            <div className="text-center"><p className="text-xs text-muted-foreground">Lucky Color</p><p className="font-medium text-saffron text-sm">{result.luckyColor}</p></div>
+            <div className="text-center"><p className="text-xs text-muted-foreground">Lucky Number</p><p className="font-medium text-saffron text-sm">{result.luckyNumber}</p></div>
+            <div className="text-center"><p className="text-xs text-muted-foreground">Auspicious Time</p><p className="font-medium text-saffron text-sm">{result.auspiciousTime}</p></div>
           </div>
         </div>
       )}

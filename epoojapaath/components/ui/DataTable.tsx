@@ -15,7 +15,7 @@ interface DataTableProps<T extends Record<string, unknown>> {
 
 export function DataTable<T extends Record<string, unknown>>({ columns, data, emptyMessage = "No data found" }: DataTableProps<T>) {
   if (data.length === 0) {
-    return <p className="text-center text-muted py-10">{emptyMessage}</p>;
+    return <p className="text-center text-muted-foreground py-10">{emptyMessage}</p>;
   }
 
   return (
@@ -24,7 +24,7 @@ export function DataTable<T extends Record<string, unknown>>({ columns, data, em
         <thead className="bg-saffron/5 border-b border-deep-gold/20">
           <tr>
             {columns.map((col) => (
-              <th key={col.key} className={cn("px-4 py-3 text-left font-semibold text-dark whitespace-nowrap", col.className)}>
+              <th key={col.key} className={cn("px-4 py-3 text-left font-semibold text-foreground whitespace-nowrap", col.className)}>
                 {col.header}
               </th>
             ))}
@@ -34,7 +34,7 @@ export function DataTable<T extends Record<string, unknown>>({ columns, data, em
           {data.map((row, i) => (
             <tr key={i} className="hover:bg-saffron/5 transition-colors">
               {columns.map((col) => (
-                <td key={col.key} className={cn("px-4 py-3 text-muted", col.className)}>
+                <td key={col.key} className={cn("px-4 py-3 text-muted-foreground", col.className)}>
                   {col.render ? col.render(row) : String(row[col.key] ?? "—")}
                 </td>
               ))}

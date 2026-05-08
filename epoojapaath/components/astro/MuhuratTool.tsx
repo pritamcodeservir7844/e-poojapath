@@ -33,16 +33,16 @@ export function MuhuratTool() {
       </div>
       <Button onClick={calculate} disabled={!event || !fromDate} fullWidth>Find Muhurats ⏰</Button>
       {results && (
-        <div className="bg-cream rounded-xl p-4 border border-deep-gold/20 space-y-2 animate-in fade-in">
+        <div className="bg-background rounded-xl p-4 border border-deep-gold/20 space-y-2 animate-in fade-in">
           {results.length === 0 ? (
-            <p className="text-muted text-sm text-center">No auspicious muhurats found in this range.</p>
+            <p className="text-muted-foreground text-sm text-center">No auspicious muhurats found in this range.</p>
           ) : (
             results.map((m, i) => (
               <div key={i} className="flex items-center gap-3 bg-white rounded-lg p-2.5 border border-deep-gold/10">
                 <span className="text-lg">🪔</span>
                 <div>
-                  <p className="font-medium text-dark text-sm">{m.date}</p>
-                  <p className="text-xs text-muted">{m.time} • {m.tithi}</p>
+                  <p className="font-medium text-foreground text-sm">{m.date}</p>
+                  <p className="text-xs text-muted-foreground">{m.time} • {m.tithi}</p>
                 </div>
               </div>
             ))

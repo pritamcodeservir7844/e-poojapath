@@ -30,21 +30,21 @@ export default async function TempleDashboard() {
       </div>
 
       <div className="card-devotional">
-        <h2 className="font-heading text-xl text-dark mb-5">Your Temples</h2>
+        <h2 className="font-heading text-xl text-foreground mb-5">Your Temples</h2>
         {temples.length === 0 ? (
           <div className="text-center py-10">
             <p className="text-4xl mb-3">🛕</p>
-            <p className="text-muted mb-4">No temples registered yet.</p>
+            <p className="text-muted-foreground mb-4">No temples registered yet.</p>
             <Link href="/temple/register" className="btn-saffron text-sm py-2 px-5">Register Your Temple</Link>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {temples.map((t) => (
-              <div key={t._id.toString()} className="flex items-start gap-4 p-4 bg-cream rounded-xl border border-deep-gold/10 hover:border-saffron/30 transition-all">
+              <div key={t._id.toString()} className="flex items-start gap-4 p-4 bg-background rounded-xl border border-deep-gold/10 hover:border-saffron/30 transition-all">
                 <div className="flex-1 min-w-0">
-                  <p className="font-heading text-dark text-lg truncate">{t.name}</p>
-                  <p className="text-muted text-xs">{t.location?.city}, {t.location?.state}</p>
-                  <p className="text-xs text-muted mt-1">{t.totalBookings} bookings</p>
+                  <p className="font-heading text-foreground text-lg truncate">{t.name}</p>
+                  <p className="text-muted-foreground text-xs">{t.location?.city}, {t.location?.state}</p>
+                  <p className="text-xs text-muted-foreground mt-1">{t.totalBookings} bookings</p>
                 </div>
                 <div className="flex flex-col items-end gap-2 shrink-0">
                   <Badge variant={t.status as any}>{t.status}</Badge>

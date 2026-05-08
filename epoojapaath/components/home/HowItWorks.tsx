@@ -51,7 +51,7 @@ export function HowItWorks() {
               transition={{ duration: 0.5, delay: i * 0.15 }}
               className="relative group"
             >
-              <div className="border border-saffron/20 rounded-2xl p-6 bg-cream/5 hover:bg-cream/10 hover:border-saffron/40 transition-all duration-300 h-full">
+              <div className="border border-saffron/20 rounded-2xl p-6 bg-background/5 hover:bg-cream/10 hover:border-saffron/40 transition-all duration-300 h-full">
                 <div className="text-4xl mb-4 group-hover:scale-110 transition-transform duration-300">
                   {icon}
                 </div>

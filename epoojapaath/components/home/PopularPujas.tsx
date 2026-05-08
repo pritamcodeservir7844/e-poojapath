@@ -19,8 +19,8 @@ export async function PopularPujas() {
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-12">
           <p className="text-saffron font-medium mb-2 font-sanskrit">लोकप्रिय पूजाएँ</p>
-          <h2 className="font-heading text-4xl md:text-5xl text-dark mb-4">Popular Pujas</h2>
-          <p className="text-muted max-w-xl mx-auto">
+          <h2 className="font-heading text-4xl md:text-5xl text-foreground mb-4">Popular Pujas</h2>
+          <p className="text-muted-foreground max-w-xl mx-auto">
             From Rudrabhishek to Satyanarayan Katha — book sacred rituals performed by learned pandits.
           </p>
         </div>

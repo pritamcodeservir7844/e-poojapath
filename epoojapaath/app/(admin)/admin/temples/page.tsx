@@ -17,7 +17,7 @@ export default async function AdminTemplesPage() {
   const temples = await getAllTemplesAdmin().catch(() => []) as TempleRow[];
 
   const columns: any[] = [
-    { key: "name",     header: "Temple",   render: (t: TempleRow) => <span className="font-medium text-dark">{t.name}</span> },
+    { key: "name",     header: "Temple",   render: (t: TempleRow) => <span className="font-medium text-foreground">{t.name}</span> },
     { key: "deity",    header: "Deity"     },
     { key: "location", header: "City",     render: (t: TempleRow) => `${t.location.city}, ${t.location.state}` },
     { key: "owner",    header: "Owner",    render: (t: TempleRow) => (t.owner as Partial<IUser>)?.name || "—" },

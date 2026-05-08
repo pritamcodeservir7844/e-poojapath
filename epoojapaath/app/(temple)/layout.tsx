@@ -30,7 +30,7 @@ export default function TempleLayout({ children }: { children: React.ReactNode }
             ))}
           </nav>
         </aside>
-        <main className="flex-1 bg-cream overflow-auto">{children}</main>
+        <main className="flex-1 bg-background overflow-auto">{children}</main>
       </div>
     </SessionProvider>
   );

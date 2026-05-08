@@ -81,10 +81,10 @@ export default function BookPujaPage({ params }: { params: { slug: string; id: s
     finally { setLoading(false); }
   }
 
-  if (!puja) return <div className="min-h-screen bg-cream flex items-center justify-center"><div className="text-4xl animate-float">🛕</div></div>;
+  if (!puja) return <div className="min-h-screen bg-background flex items-center justify-center"><div className="text-4xl animate-float">🛕</div></div>;
 
   return (
-    <div className="min-h-screen bg-cream pt-20">
+    <div className="min-h-screen bg-background pt-20">
       {booked && <ReactConfetti recycle={false} numberOfPieces={400} colors={["#D4820A","#B8860B","#8B6DB5","#C2567A"]} />}
       <div className="max-w-5xl mx-auto px-4 py-10">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
@@ -93,18 +93,18 @@ export default function BookPujaPage({ params }: { params: { slug: string; id: s
             <div className="relative h-56 rounded-2xl overflow-hidden mb-6 ring-2 ring-deep-gold/30">
               <Image src={puja.image as string || "/placeholder-puja.jpg"} alt={puja.name as string} fill className="object-cover" />
             </div>
-            <h1 className="font-heading text-3xl text-dark mb-1">{puja.name as string}</h1>
+            <h1 className="font-heading text-3xl text-foreground mb-1">{puja.name as string}</h1>
             <p className="font-sanskrit text-saffron mb-4">{puja.nameHi as string}</p>
-            <p className="text-muted mb-4">{puja.description as string}</p>
-            <div className="flex items-center gap-4 text-sm text-muted mb-6">
+            <p className="text-muted-foreground mb-4">{puja.description as string}</p>
+            <div className="flex items-center gap-4 text-sm text-muted-foreground mb-6">
               <span className="flex items-center gap-1"><Clock size={14} /> {puja.duration as string}</span>
             </div>
             {Array.isArray(puja.benefits) && puja.benefits.length > 0 && (
               <div className="card-devotional mb-4">
-                <h3 className="font-heading text-lg text-dark mb-3">Benefits</h3>
+                <h3 className="font-heading text-lg text-foreground mb-3">Benefits</h3>
                 <ul className="space-y-2">
                   {(puja.benefits as string[]).map((b) => (
-                    <li key={b} className="flex items-center gap-2 text-sm text-muted">
+                    <li key={b} className="flex items-center gap-2 text-sm text-muted-foreground">
                       <CheckCircle2 size={14} className="text-saffron shrink-0" />{b}
                     </li>
                   ))}
@@ -113,10 +113,10 @@ export default function BookPujaPage({ params }: { params: { slug: string; id: s
             )}
             {Array.isArray(puja.includes) && puja.includes.length > 0 && (
               <div className="card-devotional">
-                <h3 className="font-heading text-lg text-dark mb-3">What&apos;s Included</h3>
+                <h3 className="font-heading text-lg text-foreground mb-3">What&apos;s Included</h3>
                 <ul className="space-y-2">
                   {(puja.includes as string[]).map((inc) => (
-                    <li key={inc} className="flex items-center gap-2 text-sm text-muted">
+                    <li key={inc} className="flex items-center gap-2 text-sm text-muted-foreground">
                       <Sparkles size={14} className="text-saffron shrink-0" />{inc}
                     </li>
                   ))}
@@ -127,7 +127,7 @@ export default function BookPujaPage({ params }: { params: { slug: string; id: s
 
           {/* Booking Form */}
           <form onSubmit={handleBook} className="card-devotional h-fit space-y-4">
-            <h2 className="font-heading text-2xl text-dark">Book This Puja</h2>
+            <h2 className="font-heading text-2xl text-foreground">Book This Puja</h2>
             <Input
               label="Devotee Name"
               required
@@ -158,7 +158,7 @@ export default function BookPujaPage({ params }: { params: { slug: string; id: s
             />
             <div className="flex items-center gap-3">
               <input type="checkbox" id="prasad" className="w-4 h-4 accent-saffron" checked={form.prasadDelivery} onChange={(e) => setForm({ ...form, prasadDelivery: e.target.checked })} />
-              <label htmlFor="prasad" className="text-sm text-dark cursor-pointer">Request Prasad Delivery (+₹99)</label>
+              <label htmlFor="prasad" className="text-sm text-foreground cursor-pointer">Request Prasad Delivery (+₹99)</label>
             </div>
             {form.prasadDelivery && (
               <Textarea
@@ -169,9 +169,9 @@ export default function BookPujaPage({ params }: { params: { slug: string; id: s
               />
             )}
             <div className="border-t border-deep-gold/20 pt-4">
-              <div className="flex justify-between text-sm mb-1"><span className="text-muted">Puja Fee</span><span className="text-dark font-medium">{formatCurrency(puja.price as number)}</span></div>
-              {form.prasadDelivery && <div className="flex justify-between text-sm mb-1"><span className="text-muted">Prasad Delivery</span><span className="text-dark">₹99</span></div>}
-              <div className="flex justify-between font-heading text-xl mt-2"><span className="text-dark">Total</span><span className="text-saffron">{formatCurrency((puja.price as number) + (form.prasadDelivery ? 99 : 0))}</span></div>
+              <div className="flex justify-between text-sm mb-1"><span className="text-muted-foreground">Puja Fee</span><span className="text-foreground font-medium">{formatCurrency(puja.price as number)}</span></div>
+              {form.prasadDelivery && <div className="flex justify-between text-sm mb-1"><span className="text-muted-foreground">Prasad Delivery</span><span className="text-foreground">₹99</span></div>}
+              <div className="flex justify-between font-heading text-xl mt-2"><span className="text-foreground">Total</span><span className="text-saffron">{formatCurrency((puja.price as number) + (form.prasadDelivery ? 99 : 0))}</span></div>
             </div>
             <Button type="submit" loading={loading} fullWidth size="lg">
               {loading ? "Processing... 🪔" : `Proceed to Pay ${formatCurrency((puja.price as number) + (form.prasadDelivery ? 99 : 0))}`}

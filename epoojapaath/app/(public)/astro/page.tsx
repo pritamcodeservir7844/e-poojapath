@@ -29,8 +29,8 @@ export default function AstroPage() {
               <div className="flex items-center gap-3 mb-5">
                 <span className="text-3xl">{icon}</span>
                 <div>
-                  <h2 className="font-heading text-2xl text-dark">{title}</h2>
-                  <p className="text-muted text-sm">{subtitle}</p>
+                  <h2 className="font-heading text-2xl text-foreground">{title}</h2>
+                  <p className="text-muted-foreground text-sm">{subtitle}</p>
                 </div>
               </div>
               {component}

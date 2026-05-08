@@ -62,7 +62,7 @@ export function AIChat() {
             initial={{ opacity: 0, y: 40, scale: 0.9 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 40, scale: 0.9 }}
-            className="fixed bottom-24 right-6 z-50 w-[350px] h-[500px] bg-cream rounded-2xl shadow-2xl ring-1 ring-deep-gold/20 flex flex-col overflow-hidden"
+            className="fixed bottom-24 right-6 z-50 w-[350px] h-[500px] bg-background rounded-2xl shadow-2xl ring-1 ring-deep-gold/20 flex flex-col overflow-hidden"
           >
             {/* Header */}
             <div className="bg-gradient-to-r from-saffron to-deep-gold px-4 py-3 flex items-center justify-between">
@@ -82,7 +82,7 @@ export function AIChat() {
                   <div className={`max-w-[80%] px-3 py-2 rounded-xl text-sm leading-relaxed ${
                     msg.role === "user"
                       ? "bg-saffron text-white rounded-br-none"
-                      : "bg-card-bg border border-deep-gold/20 text-dark rounded-bl-none"
+                      : "bg-card-bg border border-deep-gold/20 text-foreground rounded-bl-none"
                   }`}>
                     {msg.content}
                   </div>

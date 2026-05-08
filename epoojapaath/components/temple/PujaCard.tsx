@@ -29,11 +29,11 @@ export function PujaCard({ puja }: { puja: PujaWithTemple }) {
         </div>
       </div>
 
-      <h3 className="font-heading text-dark text-xl mb-0.5">{puja.name}</h3>
+      <h3 className="font-heading text-foreground text-xl mb-0.5">{puja.name}</h3>
       <p className="font-sanskrit text-saffron text-sm mb-2">{puja.nameHi}</p>
-      <p className="text-muted text-sm line-clamp-2 mb-3">{puja.description}</p>
+      <p className="text-muted-foreground text-sm line-clamp-2 mb-3">{puja.description}</p>
 
-      <div className="flex items-center gap-4 text-xs text-muted mb-4">
+      <div className="flex items-center gap-4 text-xs text-muted-foreground mb-4">
         <span className="flex items-center gap-1"><Clock size={12} /> {puja.duration}</span>
         <span className="flex items-center gap-1"><Bookmark size={12} /> {puja.totalBooked}+ booked</span>
       </div>

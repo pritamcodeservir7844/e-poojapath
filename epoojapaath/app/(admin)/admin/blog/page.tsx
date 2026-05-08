@@ -23,7 +23,7 @@ export default async function AdminBlogPage() {
   const blogs = await getAllBlogs().catch(() => []) as BlogRow[];
 
   const columns: any[] = [
-    { key: "title",          header: "Title",    render: (b: BlogRow) => <span className="font-medium text-dark line-clamp-1">{b.title}</span> },
+    { key: "title",          header: "Title",    render: (b: BlogRow) => <span className="font-medium text-foreground line-clamp-1">{b.title}</span> },
     { key: "author",         header: "Author",   render: (b: BlogRow) => (b.author as Partial<IUser>)?.name || "—" },
     { key: "category",       header: "Category", render: (b: BlogRow) => <Badge variant="saffron" className="capitalize">{b.category.replace("-", " ")}</Badge> },
     { key: "status",         header: "Status",   render: (b: BlogRow) => <Badge variant={b.status === "published" ? "approved" : "pending"}>{b.status}</Badge> },
