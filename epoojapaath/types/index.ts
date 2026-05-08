@@ -1,0 +1,155 @@
+export interface IUser {
+  _id: string;
+  name: string;
+  email: string;
+  phone?: string;
+  role: "user" | "temple_owner" | "admin";
+  avatar?: string;
+  gotra?: string;
+  city?: string;
+  language: "en" | "hi";
+  isBlocked: boolean;
+  createdAt: string;
+}
+
+export interface ITemple {
+  _id: string;
+  name: string;
+  slug: string;
+  description: string;
+  shortDescription: string;
+  deity: string;
+  location: {
+    address: string;
+    city: string;
+    state: string;
+    pincode: string;
+    lat?: number;
+    lng?: number;
+  };
+  images: string[];
+  coverImage: string;
+  timings: string;
+  established?: string;
+  status: "pending" | "approved" | "rejected";
+  featured: boolean;
+  owner: string | IUser;
+  totalBookings: number;
+  rating: number;
+  reviewCount: number;
+  tags: string[];
+  contactPhone: string;
+  contactEmail: string;
+  website?: string;
+  googleMapsUrl?: string;
+  createdAt: string;
+}
+
+export interface IPuja {
+  _id: string;
+  name: string;
+  nameHi: string;
+  description: string;
+  descriptionHi: string;
+  price: number;
+  duration: string;
+  image: string;
+  benefits: string[];
+  benefitsHi: string[];
+  includes: string[];
+  temple: string | ITemple;
+  isActive: boolean;
+  totalBooked: number;
+  createdAt: string;
+}
+
+export interface IChadawa {
+  _id: string;
+  name: string;
+  nameHi: string;
+  description: string;
+  descriptionHi: string;
+  price: number;
+  image: string;
+  items: string[];
+  deity: string;
+  temple: string | ITemple;
+  isActive: boolean;
+  createdAt: string;
+}
+
+export interface IBooking {
+  _id: string;
+  user: string | IUser;
+  temple: string | ITemple;
+  service: string;
+  serviceType: "puja" | "chadawa";
+  serviceName: string;
+  serviceNameHi: string;
+  amount: number;
+  devoteeName: string;
+  gotra?: string;
+  sankalp?: string;
+  date: string;
+  status: "pending" | "confirmed" | "completed" | "cancelled";
+  paymentId?: string;
+  orderId?: string;
+  paymentStatus: "pending" | "paid" | "failed";
+  prasadDelivery: boolean;
+  prasadAddress?: string;
+  videoUrl?: string;
+  createdAt: string;
+}
+
+export interface IBlog {
+  _id: string;
+  title: string;
+  titleHi: string;
+  slug: string;
+  content: string;
+  contentHi: string;
+  excerpt: string;
+  excerptHi: string;
+  coverImage: string;
+  author: string | IUser;
+  temple?: string | ITemple;
+  category: "devotional" | "temple-story" | "festival" | "astrology" | "announcement";
+  tags: string[];
+  status: "draft" | "published" | "archived";
+  isAdminFeatured: boolean;
+  views: number;
+  publishedAt?: string;
+  createdAt: string;
+}
+
+export interface IAd {
+  _id: string;
+  title: string;
+  imageUrl: string;
+  linkUrl: string;
+  placement: "hero" | "sidebar" | "footer" | "between-sections";
+  isActive: boolean;
+  startDate: string;
+  endDate: string;
+  clicks: number;
+  impressions: number;
+  createdBy: string | IUser;
+  createdAt: string;
+}
+
+export interface IReview {
+  _id: string;
+  user: string | IUser;
+  temple: string | ITemple;
+  booking?: string | IBooking;
+  rating: number;
+  comment: string;
+  createdAt: string;
+}
+
+export interface ApiResponse<T = unknown> {
+  success: boolean;
+  data?: T;
+  error?: string;
+  message?: string;
+}

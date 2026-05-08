@@ -1,0 +1,692 @@
+Here's your refined prompt to use directly in Cursor AI (or any AI coding assistant):
+
+Build a complete full-stack Next.js 14 (App Router + TypeScript) spiritual SaaS platform called "ePoojapaath" — online Puja booking, Chadawa offering, Temple discovery. This must feel like a real funded startup, not an AI-generated template. Every detail should be handcrafted.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+CRITICAL PHILOSOPHY
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+- Domain-driven folder structure with reusable service layers
+- NO generic AI purple gradients. NO Inter font. NO white cards on white bg.
+- Warm cream/saffron/gold aesthetic throughout — feels devotional, not corporate
+- Every interaction has micro-animations (Framer Motion)
+- Real loading skeletons, error boundaries, empty states — all devotional-themed
+- Human-crafted UI: cards with personality, not dashboards with tables
+- This is a real product — treat it like one
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+BRAND & DESIGN IDENTITY
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Name: ePoojapaath
+Logo: /public/logo.png (lotus + Om + diya)
+
+CSS Variables:
+  --saffron:        #D4820A
+  --deep-gold:      #B8860B
+  --lotus-purple:   #8B6DB5
+  --lotus-pink:     #C2567A
+  --lotus-blue:     #5B8DD9
+  --cream:          #FDF8F0
+  --dark:           #0F0A05
+  --card-bg:        #FFFAF3
+  --muted:          #7A6652
+
+Google Fonts:
+  "Yatra One" → H1, H2, H3
+  "Hind" → body text
+  "Tiro Devanagari Sanskrit" → Sanskrit shlokas only
+
+Design Rules:
+  - Cards: warm off-white bg, gold left-border, soft shadow
+  - Buttons: saffron bg, rounded-full, gold border on hover
+  - Images: rounded-2xl with gold ring border
+  - Decorative SVG mandala dividers between every major section
+  - Section spacing: py-20 minimum
+  - Mobile-first, fully responsive
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+TECH STACK
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+- Next.js 14 App Router + TypeScript
+- MongoDB + Mongoose (NO Prisma)
+- NextAuth.js v5 (Credentials Provider + JWT)
+- Tailwind CSS + shadcn/ui (stone base, CSS variables)
+- Three.js + @react-three/fiber + @react-three/drei (hero 3D temple)
+- Framer Motion (scroll reveals, page transitions, count-up)
+- Cloudinary via next-cloudinary (image uploads)
+- Razorpay (payments with signature verification)
+- Zod + React Hook Form (all form validation)
+- Sonner (custom devotional toasts)
+- next-intl (Hindi/English: /en/... and /hi/... routes)
+- next-themes (light/dark mode)
+- date-fns (Indian date formatting)
+- react-confetti (booking success celebration)
+- recharts (admin dashboard charts)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+FOLDER STRUCTURE (Domain-Driven)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+/app
+  /(public)/                  ← public routes group
+    page.tsx                  ← Home
+    /temples/
+    /puja/
+    /chadawa/
+    /blog/
+    /login/
+    /register/
+    /contact/
+    /about/
+  /(user)/user/               ← protected user dashboard
+    /dashboard/
+    /bookings/[id]/
+    /profile/
+  /(temple)/temple/           ← temple owner panel
+    /register/
+    /dashboard/
+    /pujas/
+    /chadawa/
+    /bookings/
+    /members/                 ← NEW: team member management
+    /settings/
+  /(admin)/admin/             ← admin panel
+    /dashboard/
+    /temples/[id]/
+    /users/
+    /bookings/
+    /blog/                    ← admin blog management
+    /ads/                     ← NEW: ad management
+    /featured/
+    /settings/
+/components
+  /ui/                        ← shadcn + extended brand components
+  /shared/                    ← Navbar, Footer, MandalaDiv, LoadingSkeleton
+  /home/                      ← Hero, FeaturedTemples, PopularPujas, HowItWorks, Stats, Testimonials
+  /temple/                    ← TempleCard, TempleGrid, TempleDetail
+  /booking/                   ← BookingForm, BookingCard, BookingStatus
+  /ai-chat/                   ← DevotionalChatBubble (floating AI assistant)
+  /astro/                     ← Astrology tools (no API needed)
+  /blog/                      ← BlogCard, BlogEditor, BlogDetail
+  /ads/                       ← AdBanner, AdSidebar (admin-controlled)
+/lib
+  /db.ts                      ← Mongoose connection caching
+  /auth.ts                    ← NextAuth config export
+  /toast.ts                   ← Custom devotional toasts
+  /utils.ts                   ← formatCurrency, formatDate, cn()
+  /validations/               ← All Zod schemas
+/services                     ← Business logic layer (NOT in API routes)
+  /temple.service.ts
+  /booking.service.ts
+  /payment.service.ts
+  /user.service.ts
+  /blog.service.ts
+/models
+  User.ts, Temple.ts, Puja.ts, Chadawa.ts, Booking.ts
+  Review.ts, Blog.ts, Ad.ts, TempleMember.ts
+/hooks
+  /useRazorpay.ts
+  /useTemple.ts
+  /useBooking.ts
+  /useAIChat.ts
+/messages
+  en.json, hi.json
+/scripts
+  seed.ts
+/public
+  /logo.png
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+MONGOOSE MODELS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+// User.ts
+name, email (unique), phone, password (bcrypt),
+role: enum['user','temple_owner','admin'] default:'user',
+avatar, gotra, city,
+language: enum['en','hi'] default:'en',
+isBlocked: Boolean default:false,
+createdAt
+
+// Temple.ts
+name, slug (unique), description, shortDescription,
+deity, location: { address, city, state, pincode, lat, lng },
+images: [String], coverImage,
+timings, established,
+status: enum['pending','approved','rejected'] default:'pending',
+featured: Boolean default:false,
+owner: ObjectId ref User,
+members: [{ user: ObjectId, role: enum['manager','pandit','staff'], permissions: [String] }],
+totalBookings: Number default:0,
+rating, reviewCount,
+tags: [String],
+contactPhone, contactEmail, website,
+googleMapsUrl,
+createdAt
+
+// Puja.ts
+name, nameHi, description, descriptionHi,
+price, duration, image,
+benefits: [String], benefitsHi: [String], includes: [String],
+temple: ObjectId ref Temple,
+isActive: Boolean default:true,
+totalBooked: Number default:0,
+createdAt
+
+// Chadawa.ts
+name, nameHi, description, descriptionHi,
+price, image, items: [String], deity,
+temple: ObjectId ref Temple,
+isActive: Boolean, createdAt
+
+// Booking.ts
+user: ObjectId ref User,
+temple: ObjectId ref Temple,
+service: ObjectId,
+serviceType: enum['puja','chadawa'],
+serviceName, serviceNameHi, amount,
+devoteeName, gotra, sankalp,
+date, status: enum['pending','confirmed','completed','cancelled'],
+paymentId, orderId,
+paymentStatus: enum['pending','paid','failed'],
+prasadDelivery: Boolean, prasadAddress,
+videoUrl, createdAt
+
+// Review.ts
+user, temple, booking, rating (1-5), comment, createdAt
+
+// Blog.ts
+title, titleHi, slug (unique),
+content, contentHi,
+excerpt, excerptHi,
+coverImage,
+author: ObjectId ref User,
+temple: ObjectId ref Temple (optional — temple-specific blog),
+category: enum['devotional','temple-story','festival','astrology','announcement'],
+tags: [String],
+status: enum['draft','published','archived'],
+isAdminFeatured: Boolean default:false,
+views: Number default:0,
+publishedAt, createdAt
+
+// Ad.ts
+title, imageUrl, linkUrl,
+placement: enum['hero','sidebar','footer','between-sections'],
+isActive: Boolean default:true,
+startDate, endDate,
+clicks: Number default:0,
+impressions: Number default:0,
+createdBy: ObjectId ref User (admin only),
+createdAt
+
+// TempleMember.ts
+temple: ObjectId ref Temple,
+user: ObjectId ref User,
+role: enum['manager','pandit','staff'],
+permissions: [enum['manage_pujas','manage_chadawa','view_bookings','update_bookings','manage_blog']],
+invitedBy: ObjectId ref User,
+status: enum['pending','active','revoked'],
+createdAt
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+TOAST NOTIFICATIONS — DEVOTIONAL STYLE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+// lib/toast.ts
+import { toast } from 'sonner'
+
+export const devToast = {
+  success: (msg) => toast(msg, { icon: '🪔', style: { background: '#FDF8F0', border: '1px solid #D4820A', color: '#0F0A05', fontFamily: 'Hind' }}),
+  error: (msg) => toast(msg, { icon: '🙏', style: { background: '#FFF0F0', border: '1px solid #C2567A', color: '#0F0A05' }}),
+  loading: (msg) => toast.loading(msg, { icon: '🛕', style: { background: '#FDF8F0', border: '1px solid #8B6DB5' }}),
+  blessing: (msg) => toast(msg, { description: 'ॐ नमः शिवाय • Har Har Mahadev', icon: '🌸', duration: 4000, style: { background: 'linear-gradient(135deg, #FDF8F0, #FFF5E1)', border: '1px solid #B8860B' }})
+}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+API ROUTES — /app/api/
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+/api/auth/[...nextauth]/route.ts
+/api/auth/register/route.ts
+/api/temples/route.ts                          GET all approved, POST new
+/api/temples/[id]/route.ts                     GET, PUT, DELETE
+/api/temples/[id]/pujas/route.ts
+/api/temples/[id]/chadawa/route.ts
+/api/temples/[id]/members/route.ts             GET, POST invite member
+/api/temples/[id]/members/[memberId]/route.ts  PUT permissions, DELETE revoke
+/api/pujas/route.ts
+/api/pujas/[id]/route.ts
+/api/chadawa/route.ts
+/api/chadawa/[id]/route.ts
+/api/bookings/route.ts
+/api/bookings/[id]/route.ts
+/api/payment/create-order/route.ts
+/api/payment/verify/route.ts
+/api/upload/route.ts
+/api/blog/route.ts                             GET published blogs, POST (owner/admin)
+/api/blog/[slug]/route.ts                      GET one, PUT, DELETE
+/api/ai-chat/route.ts                          POST → AI devotional assistant
+/api/contact/route.ts                          POST contact form
+/api/admin/stats/route.ts
+/api/admin/temples/route.ts
+/api/admin/temples/[id]/status/route.ts
+/api/admin/users/route.ts
+/api/admin/users/[id]/block/route.ts           PUT toggle block
+/api/admin/users/[id]/role/route.ts            PUT change role
+/api/admin/bookings/route.ts
+/api/admin/blog/route.ts                       GET all blogs, manage
+/api/admin/ads/route.ts                        GET, POST, PUT, DELETE ads
+/api/admin/ads/[id]/route.ts
+
+All routes return: { success: boolean, data?: any, error?: string }
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+HOME PAGE — FULL SECTIONS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+NAVBAR (sticky, glassmorphism on scroll):
+  Left: Logo
+  Center: Home | Temples | Puja | Chadawa | Blog
+  Right: EN|हिं toggle, Login, Register (or avatar dropdown if logged in)
+  Gold bottom border, backdrop-blur-md bg-cream/80
+
+HERO (full viewport):
+  Dark bg (#0F0A05) with subtle mandala SVG overlay
+  Left 60%:
+    - Badge: "🛕 India's Devotional Platform"
+    - H1 Yatra One: "Connect with the Divine"
+    - Sanskrit tagline Tiro Devanagari: "ॐ सर्वे भवन्तु सुखिनः"
+    - CTAs: "Book Puja" (saffron filled) | "Explore Temples" (gold outlined)
+    - Stats row: 500+ Temples | 10,000+ Bookings | 50+ Cities
+  Right 40%:
+    Three.js 3D temple using basic geometries:
+      - CylinderGeometry for shikhara (tall tapering tower)
+      - BoxGeometry for mandapa (hall base)
+      - ConeGeometry for gopuram peaks
+      - SphereGeometry for kalash on top
+    MeshStandardMaterial: saffron #D4820A, emissive #B8860B
+    Auto-rotate Y axis 0.003/frame, OrbitControls (no pan, damping)
+    Floating particle diya flames (Points geometry, orange/yellow)
+    Canvas transparent background, React.Suspense fallback
+
+  CSS animated floating diya particles across full hero
+
+ADMIN-CONTROLLED AD BANNER:
+  Between hero and next section — renders if active ad with placement:'hero' exists
+  Fetched server-side from Ad collection
+
+MARQUEE STRIP:
+  Slow scroll: "ॐ नमः शिवाय • जय माता दी • हर हर महादेव • जय श्री राम •"
+  Saffron text on deep-gold bg
+
+FEATURED TEMPLES (featured:true, status:'approved')
+POPULAR PUJAS GRID
+CHADAWA SECTION
+
+AD BANNER (placement:'between-sections' if active)
+
+HOW IT WORKS (3 steps with custom SVG icons)
+STATS (count-up animation, dark bg)
+
+BLOG PREVIEW SECTION:
+  Title: "Sacred Wisdom & Temple Stories"
+  3 latest published blogs, card grid
+  "Read All Articles" CTA → /blog
+
+TESTIMONIALS (3 cards)
+TEMPLE REGISTRATION CTA SECTION
+
+FOOTER:
+  Logo + tagline
+  Links: Temples | Puja | Chadawa | Blog | About | Contact
+  Contact: support@epoojapaath.com | +91 XXXXX XXXXX
+  Address: [Real-looking Indian address]
+  Social icons
+  Language toggle: English | हिंदी
+  © 2025 ePoojapaath. Made with 🙏 in India
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+CONTACT PAGE — /contact
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Left: Contact info card
+  - Address: 12, Assi Ghat Road, Varanasi, UP 221005
+  - Phone: +91 98765 43210
+  - Email: support@epoojapaath.com
+  - Hours: Mon–Sat, 9 AM – 6 PM IST
+  - Google Maps embed (placeholder)
+
+Right: Contact form
+  - Name, Email, Phone (optional), Subject dropdown, Message
+  - POST /api/contact → saves to DB or emails
+  - devToast.success on submit
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ABOUT PAGE — /about
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Mission, vision, founding story
+Team section (placeholder avatars)
+Stats: 500+ temples, 50+ cities, 1L+ devotees
+"Partner With Us" CTA
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+TEMPLE DETAIL PAGE — /temples/[slug]
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Hero image with gold overlay + temple name
+Gallery (lightbox on click)
+About section: deity, timings, established, address with map
+Contact info: phone, email, website (if provided)
+Tabs: Pujas | Chadawa | Reviews | Blog (temple-specific blogs)
+Review section: stars, comments, add review (logged in only)
+Share buttons: WhatsApp, Twitter, copy link
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+BOOKING FLOW — /temples/[slug]/puja/[id]
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Left: Puja details (image, benefits, includes)
+Right booking card:
+  - Devotee Name, Gotra, Sankalp (intention textarea)
+  - Date picker (future only)
+  - Prasad Delivery toggle → address fields
+  - Price summary breakdown
+  - "Proceed to Pay ₹XXX" (saffron, full-width)
+
+On pay:
+  1. POST /api/payment/create-order → Razorpay order_id
+  2. Razorpay checkout modal (theme: #D4820A)
+  3. On success → POST /api/payment/verify
+  4. On verified → POST /api/bookings
+  5. react-confetti burst
+  6. devToast.blessing("🙏 Puja Booked! Blessings incoming...")
+  7. Redirect /user/bookings/[id]
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+TEMPLE OWNER PANEL — /temple/*
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Sidebar: Dashboard | My Temples | Pujas | Chadawa | Bookings | Blog | Members | Settings
+
+IMPORTANT: One owner can register MULTIPLE temples.
+  - /temple/dashboard shows all their temples with status badges
+  - All management screens have a temple selector dropdown at top
+  - Each temple managed independently
+
+My Temples (/temple/my-temples):
+  Grid of all temples owned by this user
+  Status: pending (yellow) / approved (green) / rejected (red)
+  "+ Add New Temple" button → /temple/register
+
+Members (/temple/members):
+  List of invited members per temple
+  Invite by email: sends invite link (or just adds by email lookup)
+  Set role: Manager | Pandit | Staff
+  Set permissions per member (checkboxes):
+    ✓ Manage Pujas
+    ✓ Manage Chadawa
+    ✓ View Bookings
+    ✓ Update Booking Status
+    ✓ Manage Blog
+  Revoke access button
+  Member sees their assigned temple in a limited temple panel
+  Access controlled by permissions in middleware
+
+Settings (/temple/settings):
+  Edit temple info, contact details
+  Manage gallery images
+  Danger zone: deactivate temple
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+TEMPLE REGISTRATION — MULTI-STEP (/temple/register)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Left sidebar: vertical stepper progress
+Right: form content
+
+Step 1 — Basic Info: name, deity, shortDesc, fullDesc, established, timings, tags (multi-select)
+Step 2 — Location: address, city, state (all Indian states dropdown), pincode, Google Maps URL, contact phone, contact email, website (optional)
+Step 3 — Images: cover image (required), gallery up to 6 (Cloudinary drag-drop, preview, progress bar)
+Step 4 — Verification: owner name, phone, email, ID proof type, ID number, declaration checkbox
+
+On submit: POST /api/temples → status:'pending' → devToast.success → redirect /temple/dashboard
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ADMIN PANEL — /admin/*
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Sidebar dark (#1A1208), saffron active items
+Professional dashboard — less devotional, more clean enterprise
+
+Dashboard: 4 stat cards, recharts line chart (bookings/30 days), donut (puja vs chadawa), recent pending temples, recent bookings
+
+Temples manager: full table, status badges, approve/reject/toggle featured
+Temple review: full info, gallery, maps, approve/reject buttons, reject reason textarea
+
+Users: table, role badges, block/unblock toggle, change role dropdown
+  - Blocked users cannot login (check isBlocked in NextAuth)
+  - Role change: user → temple_owner → admin
+
+Bookings: full table, date range filter, status filter, serviceType filter, Export CSV
+
+Blog Manager (/admin/blog):
+  All blogs from all authors
+  Can edit, delete, feature, archive any blog
+  Can write their own admin blogs
+  "Feature on Homepage" toggle
+  Bulk actions: archive, delete
+
+Ads Manager (/admin/ads):
+  Create ads: title, image (Cloudinary), link URL, placement, start/end date
+  Placements: hero | sidebar | footer | between-sections
+  Toggle active/inactive
+  See clicks + impressions stats
+  Ads auto-expire after endDate
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+BLOG SECTION — /blog
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Public /blog:
+  Hero with Sanskrit quote
+  Category filter tabs: All | Devotional | Temple Stories | Festival | Astrology | Announcements
+  Blog card grid: cover image, title, excerpt, author, date, category badge, read time
+  Search by keyword
+  Sidebar: featured blogs (admin-picked), popular tags, ad slot
+
+/blog/[slug]:
+  Full article with rich text rendering (store as HTML in DB)
+  Author card (avatar, name, if temple owner → temple link)
+  Related blogs (same category)
+  Share: WhatsApp, Twitter, copy link
+  Ad slot (sidebar placement)
+  Comments disabled for v1 (show "Comments coming soon")
+
+Temple owners can write blogs only for their approved temples
+  → /temple/blog → list their posts, create/edit/delete
+  → Blog tied to their temple, appears on temple detail page too
+
+Admin writes platform-level blogs (no temple required)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+AI DEVOTIONAL CHAT — FLOATING BUBBLE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Floating chat bubble: bottom-right corner, saffron color, 🪔 icon
+Click → expands to chat panel (350px wide, 500px tall)
+Header: "ePoojapaath AI Guide 🛕"
+
+The AI can answer:
+  - Temple queries: "Tell me temples in Varanasi" → queries DB and returns results
+  - Puja info: "What is Rudrabhishek?" → answers from knowledge
+  - Devotional Q&A: "What is the significance of Ekadashi?" 
+  - Booking help: "How do I book a puja?" → explains flow
+  - General Hindu philosophy, festivals, mantras
+
+Implementation:
+  POST /api/ai-chat
+  System prompt: You are a spiritual assistant for ePoojapaath, an Indian temple puja booking platform. Answer devotional, temple, and booking-related questions warmly. When asked about temples or pujas, fetch from the platform's database. Respond in English or Hindi based on user preference.
+  
+  Try Anthropic API first (ANTHROPIC_API_KEY in env)
+  Fallback: if no API key or API fails → use a curated local knowledge base
+    - hardcoded answers for 30+ common devotional questions
+    - temple data from DB still fetched and returned
+    - graceful degradation: "I can help with temple info. For detailed spiritual guidance, our AI is temporarily unavailable."
+  
+  Chat UI:
+    Message bubbles: user right (saffron), AI left (cream with gold border)
+    Typing indicator (3 animated dots)
+    Quick suggestion chips below input:
+      "Temples near me" | "Book a Puja" | "What is Chadawa?" | "Today's panchang"
+    Remembers last 10 messages in session (useState, no DB storage)
+    Sanskrit greeting on open: "🙏 नमस्ते! How may I assist you today?"
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ASTROLOGY TOOLS — /astro (all work WITHOUT external API)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Page: /astro — "Sacred Astrology Tools"
+Grid of tool cards, each opens in modal or dedicated page
+
+TOOL 1: Rashifal (Zodiac Horoscope)
+  User selects their Rashi (zodiac sign) + today's date
+  Shows pre-written daily guidance (12 signs × 7 days = 84 entries, rotated)
+  Includes: lucky color, lucky number, auspicious time, general reading
+  NO API needed — use deterministic content based on sign + day of week
+
+TOOL 2: Kundali Birth Chart Calculator
+  Inputs: name, date of birth, time of birth, place of birth
+  Calculate and display: Sun sign, Moon sign (approximated by birth date + time), Rising sign (approximated), Nakshatra (27 nakshatras based on birth date)
+  Show a stylized circular birth chart SVG (static representation)
+  Show planetary positions table (simplified calculations using JS Date)
+  Note: "For detailed Kundali, consult a Jyotishi"
+
+TOOL 3: Muhurat Finder (Auspicious Time)
+  User selects: event type (marriage, griha pravesh, naming ceremony, business start, travel)
+  User selects: date range (from/to)
+  Returns: list of auspicious Muhurats based on pre-defined rules
+    - No Rahu Kaal hours
+    - Avoid Amavasya, Chaturdashi
+    - Prefer specific tithis per event type
+    - All logic pure JS, no API
+
+TOOL 4: Panchang Calculator
+  Input: any date
+  Shows: Tithi, Vara (weekday), Nakshatra, Yoga, Karana, Rahu Kaal, Gulika Kaal, Abhijit Muhurat
+  All calculated using traditional formulas in pure TypeScript
+
+TOOL 5: Name Numerology (Vedic)
+  Input: full name
+  Calculate Vedic numerology number using Chaldean/Vedic system (a=1, b=2...)
+  Show: life path number, personality traits, lucky numbers, compatible signs
+  Pure JS calculation, no API
+
+TOOL 6: Gotra Finder
+  User enters their gotra name
+  Shows: gotra's origin rishi, pravara (lineage), clan deity, traditional rules
+  Pre-built database of 50 common gotras
+
+All tools:
+  Attractive card UI with saffron/gold accents
+  Mandala decorative elements
+  Share result button (generates shareable text)
+  "Book a Puja" CTA below each result (contextual: muhurat → book griha pravesh puja)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+MIDDLEWARE — middleware.ts
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+/admin/* → role === 'admin', else /login
+/temple/* → role === 'temple_owner' OR (role === 'user' AND is TempleMember with active status), permission-check per route
+/user/* → any logged-in user
+/api/admin/* → admin only, 403 if not
+Blocked users (isBlocked:true) → forced logout, redirect /login with ?reason=blocked
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+LANGUAGE SWITCHING — next-intl
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Support: English (en) + Hindi (hi)
+Routes: /en/... and /hi/...
+Nav toggle: EN | हिं always visible top-right
+All labels, buttons, headings use useTranslations()
+
+messages/en.json covers: nav, hero, booking, toasts, forms, blog, astro, errors
+messages/hi.json: same in Hindi
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+SMALL BUT ESSENTIAL DETAILS (do not skip)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+- Footer: full address, phone, email, social links, sitemap
+- Contact page: real form + contact info card + Google Maps embed
+- About page: mission, team placeholders, stats
+- Every temple detail page: show phone, email, website, address, map embed
+- 404 page: devotional themed "ॐ Page Not Found 🛕" with home CTA
+- Loading skeletons: cream/gold pulse animation on all data pages
+- Error pages: "Something went wrong — 🙏 Please try again"
+- Empty states: "No temples found 🛕 Be the first to register!"
+- All tables: horizontal scroll on mobile
+- All monetary values: ₹1,100 (Indian number format)
+- All dates: "15 January 2025" via date-fns
+- All images: next/image with width/height
+- Share buttons on: temple pages, blog posts, booking confirmation
+- WhatsApp share deeplink on booking success
+- sitemap.xml and robots.txt generated
+- SEO: dynamic metadata per page (temple name, puja name in title/og)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+.ENV.LOCAL — COMPLETE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+MONGODB_URI=mongodb+srv://<user>:<pass>@cluster.mongodb.net/epoojapaath
+NEXTAUTH_SECRET=<openssl rand -base64 32>
+NEXTAUTH_URL=http://localhost:3000
+NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME=your_cloud_name
+CLOUDINARY_API_KEY=your_api_key
+CLOUDINARY_API_SECRET=your_api_secret
+RAZORPAY_KEY_ID=rzp_test_xxxxxxxxxx
+RAZORPAY_KEY_SECRET=your_secret
+NEXT_PUBLIC_RAZORPAY_KEY_ID=rzp_test_xxxxxxxxxx
+ANTHROPIC_API_KEY=sk-ant-xxxxxxxx        ← for AI chat (optional, fallback if missing)
+NEXT_PUBLIC_APP_URL=http://localhost:3000
+NEXT_PUBLIC_APP_NAME=ePoojapaath
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+SEED DATA — /scripts/seed.ts
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Seed: 1 admin, 3 temple owners, 5 regular users (all pw: "password123")
+Seed: 5 approved temples (3 featured), each with 3 pujas + 3 chadawa
+Seed: 10 bookings (mix of statuses and payment states)
+Seed: 5 published blog posts (2 admin, 3 temple owner)
+Seed: 2 active ads (hero + sidebar placements)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+QUALITY RULES — MANDATORY
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+1. Every page: loading.tsx (skeleton) + error.tsx (devotional)
+2. Server components default, 'use client' only when needed
+3. All forms: React Hook Form + Zod
+4. Business logic in /services layer, NOT in API route handlers
+5. API routes: thin — call service, return response
+6. No placeholder comments — full working code every file
+7. shadcn/ui init: baseColor stone, style default, cssVariables yes
+8. tailwind.config.ts: extend with all brand CSS variables
+9. lib/db.ts: mongoose connection caching pattern
+10. lib/auth.ts: export { auth, signIn, signOut } from NextAuth
+11. The product must feel handcrafted — every hover state, every transition, every empty state should feel intentional and devotional
+
+Build all files completely. Full working production-grade code. No shortcuts.
+
+
+
+
+https://www.npmjs.com/package/react-lottie
+
+see this and here notification broadcasting whatsapp broadcasting email broadcasting added or not check it
+
