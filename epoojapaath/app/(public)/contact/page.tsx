@@ -45,12 +45,17 @@ export default function ContactPage() {
     <PublicPage>
       <div className="pt-4">
         {/* Hero */}
-        <section className="py-16 bg-gradient-to-b from-dark to-dark/90 text-center">
-          <p className="font-sanskrit text-saffron mb-3">सम्पर्क करें</p>
-          <h1 className="font-heading text-5xl text-cream mb-4">Contact Us</h1>
-          <p className="text-cream/60 max-w-xl mx-auto">
-            We&apos;re here to help you connect with the divine. Reach out for support, temple registration, or any queries.
-          </p>
+        <section className="py-16 bg-gradient-to-br from-lotus-pink/15 via-lotus-purple/10 to-lotus-blue/15 text-center relative overflow-hidden">
+          <div className="absolute inset-0 opacity-10 pointer-events-none">
+            <div className="w-full h-full bg-[radial-gradient(circle_at_center,#EC9DD4_0%,transparent_70%)]" />
+          </div>
+          <div className="relative z-10">
+            <p className="font-sanskrit text-saffron mb-3">सम्पर्क करें</p>
+            <h1 className="font-heading text-5xl text-foreground mb-4">Contact Us</h1>
+            <p className="text-muted-foreground max-w-xl mx-auto">
+              We&apos;re here to help you connect with the divine. Reach out for support, temple registration, or any queries.
+            </p>
+          </div>
         </section>
 
         <MandalaDivider />

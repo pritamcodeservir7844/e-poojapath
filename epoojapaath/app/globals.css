@@ -15,10 +15,11 @@
     --popover-foreground: 25 90% 6%;
     --primary: 35 90% 44%;
     --primary-foreground: 40 60% 98%;
-    --secondary: 270 42% 62%;
-    --secondary-foreground: 40 60% 98%;
-    --muted: 35 25% 94%;
-    --muted-foreground: 35 20% 42%;
+    /* Lotus blue (periwinkle — inner petals of logo) */
+    --secondary: 228 55% 72%;
+    --secondary-foreground: 25 90% 6%;
+    --muted: 300 20% 96%;
+    --muted-foreground: 270 15% 42%;
     --accent: 43 87% 38%;
     --accent-foreground: 25 90% 6%;
     --destructive: 340 65% 52%;
@@ -29,14 +30,19 @@
     --radius: 0.75rem;
 
     /* Logo-derived custom properties — auto-swap in .dark */
-    --card-bg: #FFFAF3;
-    --surface: #FFFEF9;
-    --muted-color: #7A6652;
+    --card-bg: #FDF8FF;
+    --surface: #FAFAFF;
+    --muted-color: #7A6680;
     --nav-bg: 40 60% 98%;
-    --nav-border: 35 35% 88%;
-    --scrollbar-track: #FDF8F0;
-    --scrollbar-thumb: #D4820A;
-    --scrollbar-thumb-hover: #B8860B;
+    --nav-border: 270 30% 90%;
+    /* Lotus-colored scrollbar */
+    --scrollbar-track: #F5F0FF;
+    --scrollbar-thumb: #C4AAEE;
+    --scrollbar-thumb-hover: #94AAEE;
+    /* Lotus hex vars for use in arbitrary values */
+    --lotus-pink: #EC9DD4;
+    --lotus-blue: #94AAEE;
+    --lotus-lavender: #C4AAEE;
   }
 
   .dark {
@@ -49,10 +55,11 @@
     --popover-foreground: 40 55% 92%;
     --primary: 35 92% 52%;
     --primary-foreground: 20 55% 5%;
-    --secondary: 268 42% 65%;
+    /* Lotus blue — more vivid on dark bg */
+    --secondary: 228 60% 72%;
     --secondary-foreground: 20 55% 5%;
-    --muted: 22 20% 16%;
-    --muted-foreground: 35 18% 68%;
+    --muted: 270 18% 16%;
+    --muted-foreground: 270 15% 68%;
     --accent: 43 88% 50%;
     --accent-foreground: 40 55% 92%;
     --destructive: 340 60% 50%;
@@ -62,9 +69,15 @@
     --ring: 35 92% 52%;
 
     /* Custom dark mode tokens */
-    --card-bg: #1C1008;
-    --surface: #160C04;
-    --muted-color: #9E8A78;
+    --card-bg: #120B1A;
+    --surface: #0D0812;
+    --muted-color: #9E90B0;
+    --scrollbar-track: #0D0812;
+    --scrollbar-thumb: #9B80CC;
+    --scrollbar-thumb-hover: #C4AAEE;
+    --lotus-pink: #F4B0DC;
+    --lotus-blue: #A8BEFF;
+    --lotus-lavender: #D0BAFF;
     --nav-bg: 20 55% 5%;
     --nav-border: 22 22% 18%;
     --scrollbar-track: #160C04;
@@ -100,26 +113,41 @@
   }
 
   .btn-lotus {
-    @apply bg-lotus-gradient text-white font-semibold px-6 py-3 rounded-full
+    @apply text-white font-semibold px-6 py-3 rounded-full
            hover:opacity-90 hover:shadow-lg transition-all duration-300 active:scale-95;
+    background: linear-gradient(135deg, #EC9DD4, #C4AAEE, #94AAEE);
+  }
+
+  .btn-outline-lotus {
+    @apply bg-transparent font-semibold px-6 py-3 rounded-full
+           hover:text-white transition-all duration-300 active:scale-95;
+    border: 2px solid var(--lotus-lavender);
+    color: var(--lotus-blue);
+  }
+  .btn-outline-lotus:hover {
+    background: linear-gradient(135deg, #EC9DD4, #C4AAEE, #94AAEE);
+    border-color: transparent;
   }
 
   /* ── Cards ── */
   .card-devotional {
-    @apply bg-card-bg border-l-4 border-l-saffron rounded-2xl p-6
-           shadow-[0_4px_20px_rgba(212,_130,_10,_0.1)]
-           hover:shadow-[0_8px_30px_rgba(212,_130,_10,_0.18)]
-           dark:shadow-[0_4px_20px_rgba(212,_130,_10,_0.06)]
-           dark:hover:shadow-[0_8px_30px_rgba(212,_130,_10,_0.12)]
-           transition-all duration-300;
+    @apply bg-card-bg rounded-2xl p-6 transition-all duration-300;
+    border-left: 4px solid var(--lotus-pink);
+    box-shadow: 0 4px 20px rgba(196, 170, 238, 0.12);
+  }
+  .card-devotional:hover {
+    box-shadow: 0 8px 30px rgba(148, 170, 238, 0.22);
+    border-left-color: var(--lotus-blue);
   }
 
   .card-lotus {
-    @apply bg-card-bg rounded-2xl p-6 border border-border
-           shadow-[0_4px_20px_rgba(155,_127,_212,_0.08)]
-           hover:shadow-[0_8px_30px_rgba(155,_127,_212,_0.16)]
-           dark:shadow-[0_4px_20px_rgba(155,_127,_212,_0.05)]
-           transition-all duration-300;
+    @apply bg-card-bg rounded-2xl p-6 transition-all duration-300;
+    border: 1px solid rgba(196, 170, 238, 0.35);
+    box-shadow: 0 4px 20px rgba(236, 157, 212, 0.08);
+  }
+  .card-lotus:hover {
+    border-color: rgba(148, 170, 238, 0.5);
+    box-shadow: 0 8px 30px rgba(196, 170, 238, 0.18);
   }
 
   /* ── Form inputs ── */

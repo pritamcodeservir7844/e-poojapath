@@ -37,8 +37,8 @@ export default async function BlogDetailPage({ params }: { params: { slug: strin
             <span className={`inline-block text-xs px-3 py-1 rounded-full font-medium capitalize mb-3 bg-saffron text-white`}>
               {blog.category?.replace("-", " ")}
             </span>
-            <h1 className="font-heading text-3xl md:text-4xl text-cream mb-3">{blog.title}</h1>
-            <div className="flex items-center gap-4 text-cream/60 text-sm">
+            <h1 className="font-heading text-3xl md:text-4xl text-white mb-3">{blog.title}</h1>
+            <div className="flex items-center gap-4 text-white/60 text-sm">
               <span>By {authorName}</span>
               <span>{blog.publishedAt ? formatDate(blog.publishedAt) : ""}</span>
               <span>{calculateReadTime(blog.content)} min read</span>

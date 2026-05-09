@@ -29,7 +29,7 @@ const SocialIcons = {
 
 export function Footer() {
   return (
-    <footer className="bg-dark text-cream/80 dark:bg-[#0A0603] dark:text-cream/75">
+    <footer className="bg-[#1E1035] dark:bg-[#0A0603] text-white/80">
       <div className="max-w-7xl mx-auto px-4 md:px-8 py-16">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
 
@@ -38,7 +38,7 @@ export function Footer() {
             <div className="flex items-center gap-3 mb-4">
               <div className="bg-white/10 rounded-xl px-2 py-1">
                 <Image
-                  src="/logo.png"
+                  src="/epoojalogo.png"
                   alt="ePoojapaath"
                   width={120}
                   height={40}
@@ -46,8 +46,8 @@ export function Footer() {
                 />
               </div>
             </div>
-            <p className="font-sanskrit text-sm text-cream/55 mb-4">ॐ सर्वे भवन्तु सुखिनः</p>
-            <p className="text-sm leading-relaxed text-cream/55">
+            <p className="font-sanskrit text-sm text-white/55 mb-4">ॐ सर्वे भवन्तु सुखिनः</p>
+            <p className="text-sm leading-relaxed text-white/55">
               India&apos;s trusted platform for online Puja booking, Chadawa offerings,
               and temple discovery. Connecting devotees with divine grace.
             </p>
@@ -135,7 +135,7 @@ export function Footer() {
         </div>
 
         {/* Bottom Bar */}
-        <div className="mt-12 pt-6 border-t border-cream/10 flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-cream/35">
+        <div className="mt-12 pt-6 border-t border-white/10 flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-white/35">
           <p>© 2025 ePoojapaath. Made with 🙏 in India.</p>
           <div className="flex gap-4">
             <Link href="/privacy" className="hover:text-saffron transition-colors">Privacy Policy</Link>

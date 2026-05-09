@@ -36,8 +36,8 @@ export default async function TempleDetailPage({ params }: { params: { slug: str
           <div className="absolute inset-0 bg-gradient-to-t from-dark/80 via-dark/30 to-transparent" />
           <div className="absolute bottom-8 left-8 right-8">
             <p className="font-sanskrit text-saffron mb-1">{temple.deity}</p>
-            <h1 className="font-heading text-4xl md:text-5xl text-cream">{temple.name}</h1>
-            <div className="flex items-center gap-2 text-cream/70 mt-2">
+            <h1 className="font-heading text-4xl md:text-5xl text-white">{temple.name}</h1>
+            <div className="flex items-center gap-2 text-white/70 mt-2">
               <MapPin size={16} className="text-saffron" />
               <span>{temple.location.city}, {temple.location.state}</span>
               {temple.rating > 0 && (

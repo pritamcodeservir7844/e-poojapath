@@ -19,11 +19,11 @@ const config: Config = {
         // Fixed brand colors (absolute — never flip with theme)
         saffron: "#D4820A",
         "deep-gold": "#B8860B",
-        // Logo-accurate lotus palette (purple-blue-pink gradient in logo petals)
-        "lotus-purple": "#9B7FD4",
-        "lotus-pink": "#C285B5",
-        "lotus-blue": "#7BA5D8",
-        "lotus-red": "#C2567A",
+        // Logo-accurate lotus palette — pink → lavender → periwinkle blue
+        "lotus-pink": "#EC9DD4",     // outer/lower petals
+        "lotus-purple": "#C4AAEE",   // mid-petal lavender bridge
+        "lotus-blue": "#94AAEE",     // inner/top periwinkle petals
+        "lotus-red": "#E05580",      // deep rose accent
         cream: "#FDF8F0",
         dark: "#0F0A05",
 
@@ -112,12 +112,14 @@ const config: Config = {
         "spin-slow": "spin 120s linear infinite",
       },
       backgroundImage: {
-        // Gold gradient from logo text/swirls
+        // Gold gradient from logo Om + swirl decoration
         "gold-gradient": "linear-gradient(135deg, #D4820A, #B8860B)",
-        // Matches the logo lotus petal gradient: purple → blue → pink
-        "lotus-gradient": "linear-gradient(135deg, #9B7FD4, #7BA5D8, #C285B5)",
-        // Logo's top-to-bottom petal flow
-        "logo-gradient": "linear-gradient(160deg, #9B7FD4 0%, #7BA5D8 50%, #C285B5 100%)",
+        // Lotus petal gradient — pink → lavender → periwinkle (matches logo exactly)
+        "lotus-gradient": "linear-gradient(135deg, #EC9DD4, #C4AAEE, #94AAEE)",
+        // Top-to-bottom petal flow (blue at top, pink at base — as in the logo)
+        "logo-gradient": "linear-gradient(160deg, #94AAEE 0%, #C4AAEE 50%, #EC9DD4 100%)",
+        // Pink → gold blend for devotional warm highlights
+        "divine-gradient": "linear-gradient(135deg, #EC9DD4, #D4820A)",
         "cream-gradient": "linear-gradient(135deg, #FDF8F0, #FFF5E1)",
         "dark-mandala": "radial-gradient(ellipse at center, #1A0E02 0%, #0F0A05 100%)",
       },

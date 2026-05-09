@@ -20,7 +20,15 @@
       "Bash(cp \"/Users/difmo/Documents/vama/epoojapaath/assets /image.png\" \"/Users/difmo/Documents/vama/epoojapaath/public/logo.png\" && echo \"Logo copied successfully\")",
       "Bash(brew services *)",
       "Bash(nslookup cluster.mongodb.net)",
-      "Bash(curl -s --max-time 5 \"https://cloud.mongodb.com\" -o /dev/null -w \"%{http_code}\")"
+      "Bash(curl -s --max-time 5 \"https://cloud.mongodb.com\" -o /dev/null -w \"%{http_code}\")",
+      "WebFetch(domain:e-poojapath.vercel.app)",
+      "Bash(lsof -ti:3000)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:3000/)",
+      "Bash(ls /Users/difmo/.claude/referenceimages/ 2>/dev/null || find /Users/difmo/.claude -name \"*.png\" -o -name \"*.jpg\" -o -name \"*.jpeg\" 2>/dev/null | head -20)",
+      "Read(//Users/difmo/.claude/**)",
+      "Bash(find /Users/difmo -name \"*.png\" -o -name \"*.jpg\" -o -name \"*.jpeg\" 2>/dev/null | grep -v \"node_modules\\\\|\\\\.next\\\\|Library\" | head -30)",
+      "Read(//Users/difmo/**)",
+      "Bash(npx tsc *)"
     ],
     "additionalDirectories": [
       "/Users/difmo/Documents/vama/epoojapaath/app/api/users",

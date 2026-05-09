@@ -3,7 +3,7 @@ export function MarqueeStrip() {
 
   return (
     <div className="bg-deep-gold overflow-hidden py-3 border-y border-saffron/40">
-      <div className="flex whitespace-nowrap animate-marquee font-sanskrit text-cream text-base tracking-wider">
+      <div className="flex whitespace-nowrap animate-marquee font-sanskrit text-white text-base tracking-wider">
         <span className="pr-8">{text}</span>
         <span className="pr-8">{text}</span>
         <span className="pr-8">{text}</span>

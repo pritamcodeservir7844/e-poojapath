@@ -20,7 +20,7 @@ export function AdBanner({ ad }: { ad: Partial<IAd> & { _id: string } }) {
         <div className="relative h-24 md:h-32">
           <Image src={ad.imageUrl || "/placeholder-ad.jpg"} alt={ad.title || "Ad"} fill className="object-cover" />
           <div className="absolute inset-0 bg-gradient-to-r from-dark/20 to-transparent" />
-          <span className="absolute top-2 right-2 bg-dark/40 text-cream/60 text-xs px-2 py-0.5 rounded">Ad</span>
+          <span className="absolute top-2 right-2 bg-black/40 text-white/60 text-xs px-2 py-0.5 rounded">Ad</span>
         </div>
       </a>
     </div>

@@ -14,14 +14,14 @@ export default function AboutPage() {
     <PublicPage>
       <div className="pt-4">
         {/* Hero */}
-        <section className="py-20 bg-dark text-center relative overflow-hidden">
-          <div className="absolute inset-0 opacity-5">
-            <div className="w-full h-full bg-[radial-gradient(circle_at_center,#D4820A_0%,transparent_70%)]" />
+        <section className="py-20 bg-gradient-to-br from-lotus-pink/15 via-lotus-purple/10 to-lotus-blue/15 text-center relative overflow-hidden">
+          <div className="absolute inset-0 opacity-10">
+            <div className="w-full h-full bg-[radial-gradient(circle_at_center,#EC9DD4_0%,transparent_70%)]" />
           </div>
           <div className="relative z-10 max-w-4xl mx-auto px-4">
             <p className="font-sanskrit text-saffron mb-3 text-lg">हमारे बारे में</p>
-            <h1 className="font-heading text-5xl md:text-6xl text-cream mb-6">Our Story</h1>
-            <p className="text-cream/60 text-xl leading-relaxed">
+            <h1 className="font-heading text-5xl md:text-6xl text-foreground mb-6">Our Story</h1>
+            <p className="text-muted-foreground text-xl leading-relaxed">
               Born from a devotee&apos;s wish to connect with their ancestral temple in Varanasi —
               ePoojapaath bridges the gap between devotion and distance.
             </p>
@@ -53,7 +53,7 @@ export default function AboutPage() {
         <MandalaDivider />
 
         {/* Founding Story */}
-        <section className="section-padding bg-gradient-to-b from-cream to-card-bg">
+        <section className="section-padding bg-gradient-to-b from-background to-card-bg">
           <div className="max-w-3xl mx-auto text-center">
             <p className="font-sanskrit text-saffron mb-3">संस्थापन की कहानी</p>
             <h2 className="font-heading text-3xl text-foreground mb-6">The Founding Story</h2>
@@ -112,20 +112,25 @@ export default function AboutPage() {
         </section>
 
         {/* CTA */}
-        <section className="section-padding bg-dark text-center">
-          <h2 className="font-heading text-4xl text-cream mb-4">Partner With Us</h2>
-          <p className="text-cream/60 mb-8 max-w-xl mx-auto">
-            Are you a temple trustee, pandit, or spiritual organization? Join ePoojapaath and bring your temple to thousands of devotees.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link href="/temple/register" className="btn-saffron px-10 py-4 text-base">
-              Register Your Temple
-            </Link>
-            <Link href="/contact" className="btn-outline-gold border-cream/30 text-cream hover:bg-cream hover:text-dark px-10 py-4 text-base">
-              Contact Us
-            </Link>
+        <section className="section-padding bg-gradient-to-br from-lotus-pink/15 via-lotus-purple/10 to-lotus-blue/15 text-center relative overflow-hidden">
+          <div className="absolute inset-0 opacity-10">
+            <div className="w-full h-full bg-[radial-gradient(circle_at_center,#94AAEE_0%,transparent_70%)]" />
           </div>
-          <p className="text-cream/30 text-sm mt-6">📞 +91 98765 43210 • 📧 support@epoojapaath.com</p>
+          <div className="relative z-10">
+            <h2 className="font-heading text-4xl text-foreground mb-4">Partner With Us</h2>
+            <p className="text-muted-foreground mb-8 max-w-xl mx-auto">
+              Are you a temple trustee, pandit, or spiritual organization? Join ePoojapaath and bring your temple to thousands of devotees.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Link href="/temple/register" className="btn-saffron px-10 py-4 text-base">
+                Register Your Temple
+              </Link>
+              <Link href="/contact" className="btn-outline-lotus px-10 py-4 text-base">
+                Contact Us
+              </Link>
+            </div>
+            <p className="text-muted-foreground/60 text-sm mt-6">📞 +91 98765 43210 • 📧 support@epoojapaath.com</p>
+          </div>
         </section>
       </div>
     </PublicPage>
