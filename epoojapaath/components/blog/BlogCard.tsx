@@ -32,7 +32,7 @@ export function BlogCard({ blog }: { blog: Partial<IBlog> & { _id: string } }) {
           <span className="text-muted-foreground text-xs">{calculateReadTime(blog.content || "")} min read</span>
         </div>
 
-        <h3 className="font-heading text-foreground text-xl mb-2 line-clamp-2 group-hover:text-saffron transition-colors">
+        <h3 className="font-heading text-foreground text-2xl mb-2 line-clamp-2 group-hover:text-saffron transition-colors">
           {blog.title}
         </h3>
         <p className="text-muted-foreground text-sm line-clamp-2 mb-4">{blog.excerpt}</p>

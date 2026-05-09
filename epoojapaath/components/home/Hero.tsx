@@ -708,7 +708,7 @@ const slides = [
 const stats = [
   { val: "500+", label: "Temples" },
   { val: "10K+", label: "Bookings" },
-  { val: "50+",  label: "Cities"  },
+  { val: "50+", label: "Cities" },
 ];
 
 // ─── Hero ────────────────────────────────────────────────────────────────────
@@ -760,24 +760,24 @@ export function Hero() {
         <OmSymbol x="82%" y="10%" size={90} opacity={0.05} delay={10} />
 
         {/* Temple bells */}
-        <TempleBell x="3%"  y="3%"  size={55} opacity={0.2}  delay={0}   />
-        <TempleBell x="88%" y="5%"  size={45} opacity={0.18} delay={0.8} />
+        <TempleBell x="3%" y="3%" size={55} opacity={0.2} delay={0} />
+        <TempleBell x="88%" y="5%" size={45} opacity={0.18} delay={0.8} />
         <TempleBell x="93%" y="45%" size={40} opacity={0.14} delay={1.5} />
-        <TempleBell x="1%"  y="70%" size={35} opacity={0.12} delay={2.2} />
+        <TempleBell x="1%" y="70%" size={35} opacity={0.12} delay={2.2} />
 
         {/* Lotus flowers */}
-        <FloatingLotus x="75%" y="72%" size={90} opacity={0.13} delay={0}   />
-        <FloatingLotus x="8%"  y="20%" size={70} opacity={0.11} delay={1.5} />
-        <FloatingLotus x="85%" y="28%" size={55} opacity={0.1}  delay={3}   />
+        <FloatingLotus x="75%" y="72%" size={90} opacity={0.13} delay={0} />
+        <FloatingLotus x="8%" y="20%" size={70} opacity={0.11} delay={1.5} />
+        <FloatingLotus x="85%" y="28%" size={55} opacity={0.1} delay={3} />
 
         {/* Diyas */}
         <FloatingDiya x="18%" y="78%" size={50} opacity={0.18} delay={0.5} />
-        <FloatingDiya x="72%" y="15%" size={40} opacity={0.15} delay={2}   />
+        <FloatingDiya x="72%" y="15%" size={40} opacity={0.15} delay={2} />
         <FloatingDiya x="55%" y="80%" size={38} opacity={0.13} delay={3.5} />
 
         {/* Marigold garlands */}
-        <MarigoldGarland x="0%"  y="0%"  opacity={0.12} />
-        <MarigoldGarland x="35%" y="95%" opacity={0.1}  />
+        <MarigoldGarland x="0%" y="0%" opacity={0.12} />
+        <MarigoldGarland x="35%" y="95%" opacity={0.1} />
 
         {/* Soft color blobs */}
         <div className="absolute -top-24 -left-24 w-[450px] h-[450px] rounded-full opacity-[0.06] dark:opacity-[0.04]"
@@ -854,38 +854,34 @@ export function Hero() {
             transition={{ duration: 0.7, delay: 0.2 }}
             className="relative flex flex-col items-center">
 
-            <div className="relative w-full max-w-md mx-auto" style={{ height: 400 }}>
+            <div className="relative w-full max-w-2xl mx-auto" style={{ height: 520 }}>
               <AnimatePresence mode="wait">
                 <motion.div
                   key={current}
                   initial={{ opacity: 0, x: 60, scale: 0.96 }}
-                  animate={{ opacity: 1, x: 0,  scale: 1    }}
-                  exit ={{ opacity: 0, x: -60, scale: 0.96 }}
+                  animate={{ opacity: 1, x: 0, scale: 1 }}
+                  exit={{ opacity: 0, x: -60, scale: 0.96 }}
                   transition={{ duration: 0.45, ease: "easeInOut" }}
-                  className={`absolute inset-0 rounded-3xl overflow-hidden bg-gradient-to-br ${slide.gradient} ${slide.darkGradient}`}
-                  style={{ boxShadow: `0 24px 64px ${slide.glow}, 0 0 0 1px ${slide.ring}18` }}
+                  className={`absolute inset-0 rounded-3xl overflow-hidden`}
                 >
                   {/* SVG Illustration fills top 70% */}
                   <div className="absolute inset-0 flex flex-col">
-                    <div className="flex-1 px-4 pt-4">
+                    <div className="flex-1 px-2 pt-2">
                       <Illustration />
                     </div>
 
                     {/* Text overlay at bottom */}
                     <div className="px-6 pb-6 pt-2"
                       style={{ background: `linear-gradient(to top, ${slide.glow.replace("0.15", "0.35").replace("0.18", "0.35")}, transparent)` }}>
-                      <h3 className="font-heading text-xl mb-1.5" style={{ color: slide.ring }}>
+                      <h3 className="font-heading text-2xl mb-2" style={{ color: slide.ring }}>
                         {slide.title}
                       </h3>
-                      <p className="text-muted-foreground text-sm leading-relaxed">
+                      <p className="text-muted-foreground text-base leading-relaxed">
                         {slide.description}
                       </p>
                     </div>
                   </div>
 
-                  {/* Corner ring decoration */}
-                  <div className="absolute inset-3 rounded-2xl pointer-events-none"
-                    style={{ border: `1px solid ${slide.ring}18` }} />
                 </motion.div>
               </AnimatePresence>
             </div>

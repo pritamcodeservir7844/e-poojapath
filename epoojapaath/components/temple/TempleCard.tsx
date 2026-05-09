@@ -28,7 +28,7 @@ export function TempleCard({ temple }: { temple: Partial<ITemple> & { _id: strin
             </span>
           )}
           <div className="absolute bottom-3 left-3 text-white">
-            <p className="font-heading text-lg leading-tight">{temple.name}</p>
+            <p className="font-heading text-xl leading-tight">{temple.name}</p>
           </div>
         </div>
 

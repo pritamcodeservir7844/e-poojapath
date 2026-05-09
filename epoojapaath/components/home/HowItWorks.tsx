@@ -81,15 +81,15 @@ export function HowItWorks() {
                   (e.currentTarget as HTMLDivElement).style.borderColor = "rgba(196,170,238,0.25)";
                 }}
               >
-                <div className="text-4xl mb-4 group-hover:scale-110 transition-transform duration-300">
+                <div className="text-5xl mb-5 group-hover:scale-110 transition-transform duration-300">
                   {icon}
                 </div>
                 <div className="font-heading text-5xl absolute top-4 right-4 leading-none opacity-10"
                   style={{ background: "linear-gradient(135deg, #EC9DD4, #94AAEE)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
                   {step}
                 </div>
-                <h3 className="font-heading text-foreground text-lg mb-3">{title}</h3>
-                <p className="text-muted-foreground text-sm leading-relaxed">{desc}</p>
+                <h3 className="font-heading text-foreground text-xl mb-3">{title}</h3>
+                <p className="text-muted-foreground text-base leading-relaxed">{desc}</p>
               </div>
               {i < 3 && (
                 <div className="hidden lg:block absolute top-1/2 -right-3 text-2xl z-10 opacity-40"

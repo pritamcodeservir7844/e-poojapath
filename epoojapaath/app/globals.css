@@ -131,23 +131,17 @@
 
   /* ── Cards ── */
   .card-devotional {
-    @apply bg-card-bg rounded-2xl p-6 transition-all duration-300;
-    border-left: 4px solid var(--lotus-pink);
-    box-shadow: 0 4px 20px rgba(196, 170, 238, 0.12);
+    @apply rounded-2xl p-6 transition-all duration-300;
   }
   .card-devotional:hover {
-    box-shadow: 0 8px 30px rgba(148, 170, 238, 0.22);
-    border-left-color: var(--lotus-blue);
+    @apply scale-[1.02];
   }
 
   .card-lotus {
-    @apply bg-card-bg rounded-2xl p-6 transition-all duration-300;
-    border: 1px solid rgba(196, 170, 238, 0.35);
-    box-shadow: 0 4px 20px rgba(236, 157, 212, 0.08);
+    @apply rounded-2xl p-6 transition-all duration-300;
   }
   .card-lotus:hover {
-    border-color: rgba(148, 170, 238, 0.5);
-    box-shadow: 0 8px 30px rgba(196, 170, 238, 0.18);
+    @apply scale-[1.02];
   }
 
   /* ── Form inputs ── */

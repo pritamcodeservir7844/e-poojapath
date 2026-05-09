@@ -29,7 +29,7 @@ export function PujaCard({ puja }: { puja: PujaWithTemple }) {
         </div>
       </div>
 
-      <h3 className="font-heading text-foreground text-xl mb-0.5">{puja.name}</h3>
+      <h3 className="font-heading text-foreground text-2xl mb-0.5">{puja.name}</h3>
       <p className="font-sanskrit text-saffron text-sm mb-2">{puja.nameHi}</p>
       <p className="text-muted-foreground text-sm line-clamp-2 mb-3">{puja.description}</p>
 
