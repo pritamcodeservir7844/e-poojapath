@@ -38,3 +38,7 @@ export function calculateReadTime(content: string): number {
 export function truncate(str: string, length: number): string {
   return str.length > length ? str.substring(0, length) + "..." : str;
 }
+
+export function serialize<T>(obj: T): T {
+  return JSON.parse(JSON.stringify(obj));
+}

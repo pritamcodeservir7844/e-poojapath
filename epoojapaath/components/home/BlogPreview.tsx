@@ -1,9 +1,10 @@
 import { getFeaturedBlogs } from "@/services/blog.service";
 import { BlogCard } from "@/components/blog/BlogCard";
 import Link from "next/link";
+import { serialize } from "@/lib/utils";
 
 export async function BlogPreview() {
-  const blogs = await getFeaturedBlogs().catch(() => []);
+  const blogs = serialize(await getFeaturedBlogs().catch(() => []));
 
   return (
     <section className="section-padding max-w-7xl mx-auto">

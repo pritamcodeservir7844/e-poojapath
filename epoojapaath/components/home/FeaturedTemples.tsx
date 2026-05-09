@@ -1,8 +1,9 @@
 import { getFeaturedTemples } from "@/services/temple.service";
 import { TempleCard } from "@/components/temple/TempleCard";
+import { serialize } from "@/lib/utils";
 
 export async function FeaturedTemples() {
-  const temples = await getFeaturedTemples().catch(() => []);
+  const temples = serialize(await getFeaturedTemples().catch(() => []));
 
   return (
     <section className="section-padding max-w-7xl mx-auto">

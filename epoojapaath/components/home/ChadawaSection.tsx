@@ -2,7 +2,7 @@ import { connectDB } from "@/lib/db";
 import Chadawa from "@/models/Chadawa";
 import Link from "next/link";
 import Image from "next/image";
-import { formatCurrency } from "@/lib/utils";
+import { formatCurrency, serialize } from "@/lib/utils";
 
 async function getChadawaItems() {
   await connectDB();
@@ -13,7 +13,7 @@ async function getChadawaItems() {
 }
 
 export async function ChadawaSection() {
-  const items = await getChadawaItems().catch(() => []);
+  const items = serialize(await getChadawaItems().catch(() => []));
 
   return (
     <section className="section-padding max-w-7xl mx-auto">

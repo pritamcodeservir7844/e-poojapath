@@ -1,6 +1,7 @@
 import { connectDB } from "@/lib/db";
 import Puja from "@/models/Puja";
 import { PujaCard } from "@/components/temple/PujaCard";
+import { serialize } from "@/lib/utils";
 
 async function getPopularPujas() {
   await connectDB();
@@ -12,7 +13,7 @@ async function getPopularPujas() {
 }
 
 export async function PopularPujas() {
-  const pujas = await getPopularPujas().catch(() => []);
+  const pujas = serialize(await getPopularPujas().catch(() => []));
 
   return (
     <section className="section-padding bg-gradient-to-b from-cream to-card-bg">
