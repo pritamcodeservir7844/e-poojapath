@@ -45,6 +45,18 @@ export interface ITemple {
   createdAt: string;
 }
 
+export interface IPujaPackage {
+  label: string;
+  persons: string;
+  price: number;
+  maxPersons: number;
+}
+
+export interface IPujaFaq {
+  question: string;
+  answer: string;
+}
+
 export interface IPuja {
   _id: string;
   name: string;
@@ -57,10 +69,23 @@ export interface IPuja {
   benefits: string[];
   benefitsHi: string[];
   includes: string[];
+  packages: IPujaPackage[];
+  scheduledAt?: string;
+  rating: number;
+  reviewCount: number;
+  faqs: IPujaFaq[];
   temple: string | ITemple;
   isActive: boolean;
   totalBooked: number;
   createdAt: string;
+}
+
+export interface IChadawaOfferingItem {
+  name: string;
+  nameHi: string;
+  price: number;
+  image: string;
+  description?: string;
 }
 
 export interface IChadawa {
@@ -72,6 +97,7 @@ export interface IChadawa {
   price: number;
   image: string;
   items: string[];
+  offeringItems: IChadawaOfferingItem[];
   deity: string;
   temple: string | ITemple;
   isActive: boolean;

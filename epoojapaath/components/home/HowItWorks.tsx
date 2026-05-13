@@ -1,35 +1,33 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { useLang } from "@/contexts/LanguageContext";
 
 const steps = [
   {
-    icon: "🛕",
-    title: "Choose Your Temple",
-    desc: "Browse 500+ verified temples across India. Filter by deity, city, or puja type.",
-    step: "01",
+    icon: "🛕", step: "01",
+    en: { title: "Choose Your Temple",       desc: "Browse 500+ verified temples across India. Filter by deity, city, or puja type." },
+    hi: { title: "मंदिर चुनें",               desc: "भारत के 500+ प्रमाणित मंदिर देखें। देवता, शहर या पूजा के प्रकार से फ़िल्टर करें।" },
   },
   {
-    icon: "📿",
-    title: "Select Puja or Chadawa",
-    desc: "Pick from curated rituals — Rudrabhishek, Satyanarayan, Navgrah, or custom offerings.",
-    step: "02",
+    icon: "📿", step: "02",
+    en: { title: "Select Puja or Chadawa",   desc: "Pick from curated rituals — Rudrabhishek, Satyanarayan, Navgrah, or custom offerings." },
+    hi: { title: "पूजा या चढ़ावा चुनें",       desc: "रुद्राभिषेक, सत्यनारायण, नवग्रह या कस्टम अर्पण — अपनी पसंद की पूजा चुनें।" },
   },
   {
-    icon: "🪔",
-    title: "Book & Pay Securely",
-    desc: "Fill your Sankalp, choose date, and pay via Razorpay. 100% secure, instant confirmation.",
-    step: "03",
+    icon: "🪔", step: "03",
+    en: { title: "Book & Pay Securely",      desc: "Fill your Sankalp, choose date, and pay via Razorpay. 100% secure, instant confirmation." },
+    hi: { title: "बुक करें और सुरक्षित भुगतान करें", desc: "संकल्प भरें, तारीख चुनें और Razorpay से भुगतान करें। 100% सुरक्षित, तुरंत पुष्टि।" },
   },
   {
-    icon: "🌸",
-    title: "Receive Blessings",
-    desc: "Puja performed by temple pandits. Get live stream link, prasad delivery & photo/video proof.",
-    step: "04",
+    icon: "🌸", step: "04",
+    en: { title: "Receive Blessings",        desc: "Puja performed by temple pandits. Get live stream link, prasad delivery & photo/video proof." },
+    hi: { title: "आशीर्वाद प्राप्त करें",     desc: "मंदिर के पंडितों द्वारा पूजा। लाइव स्ट्रीम, प्रसाद डिलीवरी और वीडियो प्रमाण पाएं।" },
   },
 ];
 
 export function HowItWorks() {
+  const { t, lang } = useLang();
   return (
     <section className="section-padding bg-background relative overflow-hidden">
       {/* Lotus-tinted bg blobs */}
@@ -48,55 +46,58 @@ export function HowItWorks() {
           >
             यह कैसे काम करता है
           </p>
-          <h2 className="font-heading text-4xl md:text-5xl text-foreground mb-3">How It Works</h2>
+          <h2 className="font-heading text-4xl md:text-5xl text-foreground mb-3">
+            {t("How It Works", "यह कैसे काम करता है")}
+          </h2>
           <div className="h-0.5 w-16 rounded-full mx-auto mb-4"
             style={{ background: "linear-gradient(90deg, #EC9DD4, #C4AAEE, #94AAEE)" }} />
           <p className="text-muted-foreground max-w-xl mx-auto">
-            From selection to blessings — our seamless process ensures your devotion reaches the divine.
+            {t(
+              "From selection to blessings — our seamless process ensures your devotion reaches the divine.",
+              "चयन से आशीर्वाद तक — हमारी सरल प्रक्रिया सुनिश्चित करती है कि आपकी भक्ति दिव्यता तक पहुँचे।"
+            )}
           </p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {steps.map(({ icon, title, desc, step }, i) => (
-            <motion.div
-              key={step}
-              initial={{ opacity: 0, y: 40 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: i * 0.15 }}
-              className="relative group"
-            >
-              <div
-                className="rounded-2xl p-6 h-full transition-all duration-300 bg-card-bg"
-                style={{
-                  border: "1px solid rgba(196,170,238,0.25)",
-                  boxShadow: "0 4px 20px rgba(196,170,238,0.08)",
-                }}
-                onMouseEnter={(e) => {
-                  (e.currentTarget as HTMLDivElement).style.boxShadow = "0 8px 30px rgba(148,170,238,0.18)";
-                  (e.currentTarget as HTMLDivElement).style.borderColor = "rgba(148,170,238,0.45)";
-                }}
-                onMouseLeave={(e) => {
-                  (e.currentTarget as HTMLDivElement).style.boxShadow = "0 4px 20px rgba(196,170,238,0.08)";
-                  (e.currentTarget as HTMLDivElement).style.borderColor = "rgba(196,170,238,0.25)";
-                }}
+          {steps.map(({ icon, en, hi, step }, i) => {
+            const text = lang === "hi" ? hi : en;
+            return (
+              <motion.div
+                key={step}
+                initial={{ opacity: 0, y: 40 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: i * 0.15 }}
+                className="relative group"
               >
-                <div className="text-5xl mb-5 group-hover:scale-110 transition-transform duration-300">
-                  {icon}
+                <div
+                  className="rounded-2xl p-6 h-full transition-all duration-300 bg-card-bg"
+                  style={{ border: "1px solid rgba(196,170,238,0.25)", boxShadow: "0 4px 20px rgba(196,170,238,0.08)" }}
+                  onMouseEnter={(e) => {
+                    (e.currentTarget as HTMLDivElement).style.boxShadow = "0 8px 30px rgba(148,170,238,0.18)";
+                    (e.currentTarget as HTMLDivElement).style.borderColor = "rgba(148,170,238,0.45)";
+                  }}
+                  onMouseLeave={(e) => {
+                    (e.currentTarget as HTMLDivElement).style.boxShadow = "0 4px 20px rgba(196,170,238,0.08)";
+                    (e.currentTarget as HTMLDivElement).style.borderColor = "rgba(196,170,238,0.25)";
+                  }}
+                >
+                  <div className="text-6xl mb-5 group-hover:scale-110 transition-transform duration-300">{icon}</div>
+                  <div className="font-heading text-5xl absolute top-4 right-4 leading-none opacity-10"
+                    style={{ background: "linear-gradient(135deg, #EC9DD4, #94AAEE)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
+                    {step}
+                  </div>
+                  <h3 className="font-heading text-foreground text-xl mb-3">{text.title}</h3>
+                  <p className="text-muted-foreground text-base leading-relaxed">{text.desc}</p>
                 </div>
-                <div className="font-heading text-5xl absolute top-4 right-4 leading-none opacity-10"
-                  style={{ background: "linear-gradient(135deg, #EC9DD4, #94AAEE)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
-                  {step}
-                </div>
-                <h3 className="font-heading text-foreground text-xl mb-3">{title}</h3>
-                <p className="text-muted-foreground text-base leading-relaxed">{desc}</p>
-              </div>
-              {i < 3 && (
-                <div className="hidden lg:block absolute top-1/2 -right-3 text-2xl z-10 opacity-40"
-                  style={{ color: "#C4AAEE" }}>→</div>
-              )}
-            </motion.div>
-          ))}
+                {i < 3 && (
+                  <div className="hidden lg:block absolute top-1/2 -right-3 text-2xl z-10 opacity-40"
+                    style={{ color: "#C4AAEE" }}>→</div>
+                )}
+              </motion.div>
+            );
+          })}
         </div>
       </div>
     </section>

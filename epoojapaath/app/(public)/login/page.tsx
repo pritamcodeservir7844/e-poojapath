@@ -8,6 +8,7 @@ import Image from "next/image";
 import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
 import { devToast } from "@/lib/toast";
+import { Home } from "lucide-react";
 
 export default function LoginPage() {
   const [email,    setEmail]    = useState("");
@@ -48,6 +49,12 @@ export default function LoginPage() {
       </div>
 
       <div className="relative z-10 w-full max-w-md">
+        <div className="flex justify-start mb-4">
+          <Link href="/" className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-saffron transition-colors">
+            <Home size={15} />
+            Back to Home
+          </Link>
+        </div>
         <div className="card-devotional shadow-xl">
           <div className="text-center mb-8">
             <div className="inline-block bg-white rounded-2xl px-3 py-2 shadow-sm mb-4">

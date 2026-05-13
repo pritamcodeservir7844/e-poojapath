@@ -5,7 +5,9 @@ import Temple from "@/models/Temple";
 import User from "@/models/User";
 import Booking from "@/models/Booking";
 import Blog from "@/models/Blog";
+import Link from "next/link";
 import { formatCurrency } from "@/lib/utils";
+import { Landmark, Users, BookOpen, IndianRupee, Megaphone, FileText, HandCoins } from "lucide-react";
 
 async function getStats() {
   await connectDB();
@@ -35,13 +37,13 @@ export default async function AdminDashboard() {
 
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-5 mb-10">
         {[
-          { label: "Total Temples",    value: stats.temples,              icon: "🛕", color: "bg-saffron/10   border-l-saffron"   },
-          { label: "Total Users",      value: stats.users,                icon: "👤", color: "bg-lotus-blue/10 border-l-lotus-blue" },
-          { label: "Total Bookings",   value: stats.bookings,             icon: "📿", color: "bg-lotus-purple/10 border-l-lotus-purple" },
-          { label: "Total Revenue",    value: formatCurrency(stats.revenue), icon: "₹", color: "bg-green-50 border-l-green-500" },
+          { label: "Total Temples",  value: stats.temples,                icon: <Landmark     size={22} />, color: "border-l-saffron"       },
+          { label: "Total Users",    value: stats.users,                  icon: <Users        size={22} />, color: "border-l-lotus-blue"    },
+          { label: "Total Bookings", value: stats.bookings,               icon: <BookOpen     size={22} />, color: "border-l-lotus-purple"  },
+          { label: "Total Revenue",  value: formatCurrency(stats.revenue),icon: <IndianRupee  size={22} />, color: "border-l-green-500"     },
         ].map(({ label, value, icon, color }) => (
           <div key={label} className={`card-devotional border-l-4 ${color}`}>
-            <div className="text-3xl mb-2">{icon}</div>
+            <div className="mb-3 text-saffron">{icon}</div>
             <div className="font-heading text-2xl text-foreground">{value}</div>
             <div className="text-muted-foreground text-sm">{label}</div>
           </div>
@@ -53,16 +55,18 @@ export default async function AdminDashboard() {
           <h2 className="font-heading text-xl text-foreground mb-4">Quick Actions</h2>
           <div className="grid grid-cols-2 gap-3">
             {[
-              { label: "Manage Temples", href: "/admin/temples",  icon: "🛕" },
-              { label: "Manage Users",   href: "/admin/users",    icon: "👥" },
-              { label: "View Bookings",  href: "/admin/bookings", icon: "📋" },
-              { label: "Manage Ads",     href: "/admin/ads",      icon: "📢" },
+              { label: "Manage Temples", href: "/admin/temples",  icon: <Landmark  size={18} /> },
+              { label: "Manage Users",   href: "/admin/users",    icon: <Users     size={18} /> },
+              { label: "View Bookings",  href: "/admin/bookings", icon: <BookOpen  size={18} /> },
+              { label: "Manage Ads",     href: "/admin/ads",      icon: <Megaphone size={18} /> },
+              { label: "Blog Manager",   href: "/admin/blog",     icon: <FileText  size={18} /> },
+              { label: "Revenue",        href: "/admin/bookings", icon: <HandCoins size={18} /> },
             ].map(({ label, href, icon }) => (
-              <a key={href} href={href}
+              <Link key={href} href={href}
                 className="flex items-center gap-3 p-3 bg-background hover:bg-saffron/5 rounded-xl border border-deep-gold/20 hover:border-saffron/30 transition-all">
-                <span className="text-2xl">{icon}</span>
+                <span className="text-saffron">{icon}</span>
                 <span className="text-sm font-medium text-foreground">{label}</span>
-              </a>
+              </Link>
             ))}
           </div>
         </div>

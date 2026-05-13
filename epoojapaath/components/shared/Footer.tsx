@@ -4,24 +4,24 @@ import { Phone, Mail, MapPin, Clock } from "lucide-react";
 
 const SocialIcons = {
   Instagram: () => (
-    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
       <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
       <circle cx="12" cy="12" r="4" />
       <circle cx="17.5" cy="6.5" r="0.5" fill="currentColor" stroke="none" />
     </svg>
   ),
   X: () => (
-    <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+    <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
       <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.73-8.835L1.254 2.25H8.08l4.253 5.622zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
     </svg>
   ),
   YouTube: () => (
-    <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+    <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
       <path d="M23.5 6.19a3.02 3.02 0 0 0-2.12-2.14C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.02 3.02 0 0 0 .5 6.19C0 8.07 0 12 0 12s0 3.93.5 5.81a3.02 3.02 0 0 0 2.122 2.14c1.872.506 9.378.506 9.378.506s7.505 0 9.377-.505a3.02 3.02 0 0 0 2.122-2.14C24 15.93 24 12 24 12s0-3.93-.5-5.81zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" />
     </svg>
   ),
   Facebook: () => (
-    <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+    <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
       <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
     </svg>
   ),
@@ -36,13 +36,13 @@ export function Footer() {
           {/* Brand */}
           <div className="lg:col-span-1">
             <div className="flex items-center gap-3 mb-4">
-              <div className="bg-white/10 rounded-xl px-2 py-1">
+              <div className="flex items-center transition-transform hover:scale-105 duration-300">
                 <Image
                   src="/epoojalogo.png"
                   alt="ePoojapaath"
-                  width={120}
-                  height={40}
-                  className="object-contain h-9 w-auto"
+                  width={140}
+                  height={46}
+                  className="object-contain h-10 w-auto"
                 />
               </div>
             </div>
@@ -111,23 +111,23 @@ export function Footer() {
             <h4 className="font-heading text-saffron text-lg mb-4">Contact Us</h4>
             <ul className="space-y-3">
               <li className="flex items-start gap-3 text-sm">
-                <MapPin size={16} className="text-saffron mt-0.5 shrink-0" />
+                <MapPin size={20} className="text-saffron mt-0.5 shrink-0" />
                 <span>12, Assi Ghat Road, Varanasi, Uttar Pradesh – 221005</span>
               </li>
               <li className="flex items-center gap-3 text-sm">
-                <Phone size={16} className="text-saffron shrink-0" />
+                <Phone size={20} className="text-saffron shrink-0" />
                 <a href="tel:+919876543210" className="hover:text-saffron transition-colors">
                   +91 98765 43210
                 </a>
               </li>
               <li className="flex items-center gap-3 text-sm">
-                <Mail size={16} className="text-saffron shrink-0" />
+                <Mail size={20} className="text-saffron shrink-0" />
                 <a href="mailto:support@epoojapaath.com" className="hover:text-saffron transition-colors">
                   support@epoojapaath.com
                 </a>
               </li>
               <li className="flex items-center gap-3 text-sm">
-                <Clock size={16} className="text-saffron shrink-0" />
+                <Clock size={20} className="text-saffron shrink-0" />
                 <span>Mon–Sat, 9 AM – 6 PM IST</span>
               </li>
             </ul>

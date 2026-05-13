@@ -131,14 +131,18 @@
 
   /* ── Cards ── */
   .card-devotional {
-    @apply rounded-2xl p-6 transition-all duration-300;
+    @apply rounded-2xl p-6 transition-all duration-300
+           bg-card border border-deep-gold/20 shadow-sm
+           hover:border-deep-gold/50 hover:shadow-md;
   }
   .card-devotional:hover {
     @apply scale-[1.02];
   }
 
   .card-lotus {
-    @apply rounded-2xl p-6 transition-all duration-300;
+    @apply rounded-2xl p-6 transition-all duration-300
+           bg-card border border-lotus-lavender/30 shadow-sm
+           hover:border-lotus-lavender/60 hover:shadow-md;
   }
   .card-lotus:hover {
     @apply scale-[1.02];

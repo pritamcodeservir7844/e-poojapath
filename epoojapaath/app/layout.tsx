@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { ThemeProvider } from "@/components/shared/ThemeProvider";
+import { LanguageProvider } from "@/contexts/LanguageContext";
 import { Toaster } from "sonner";
 
 export const metadata: Metadata = {
@@ -40,13 +41,15 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body className="font-body antialiased">
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem>
-          {children}
-          <Toaster
-            position="top-right"
-            toastOptions={{
-              style: { fontFamily: "Hind, sans-serif" },
-            }}
-          />
+          <LanguageProvider>
+            {children}
+            <Toaster
+              position="top-right"
+              toastOptions={{
+                style: { fontFamily: "Hind, sans-serif" },
+              }}
+            />
+          </LanguageProvider>
         </ThemeProvider>
       </body>
     </html>

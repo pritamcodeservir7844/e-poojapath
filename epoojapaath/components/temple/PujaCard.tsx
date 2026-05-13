@@ -5,11 +5,16 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import { Clock, Bookmark } from "lucide-react";
 import { formatCurrency } from "@/lib/utils";
+import { useLang } from "@/contexts/LanguageContext";
 import type { IPuja, ITemple } from "@/types";
 
 type PujaWithTemple = Omit<IPuja, "temple"> & { _id: string; temple: Partial<ITemple> & { _id: string } };
 
 export function PujaCard({ puja }: { puja: PujaWithTemple }) {
+  const { lang } = useLang();
+  const name = lang === "hi" && puja.nameHi ? puja.nameHi : puja.name;
+  const desc = lang === "hi" && puja.descriptionHi ? puja.descriptionHi : puja.description;
+
   return (
     <motion.div
       whileHover={{ y: -4 }}
@@ -29,9 +34,9 @@ export function PujaCard({ puja }: { puja: PujaWithTemple }) {
         </div>
       </div>
 
-      <h3 className="font-heading text-foreground text-2xl mb-0.5">{puja.name}</h3>
+      <h3 className="font-heading text-foreground text-2xl mb-0.5">{name}</h3>
       <p className="font-sanskrit text-saffron text-sm mb-2">{puja.nameHi}</p>
-      <p className="text-muted-foreground text-sm line-clamp-2 mb-3">{puja.description}</p>
+      <p className="text-muted-foreground text-sm line-clamp-2 mb-3">{desc}</p>
 
       <div className="flex items-center gap-4 text-xs text-muted-foreground mb-4">
         <span className="flex items-center gap-1"><Clock size={12} /> {puja.duration}</span>
@@ -41,7 +46,7 @@ export function PujaCard({ puja }: { puja: PujaWithTemple }) {
       <div className="flex items-center justify-between">
         <span className="font-heading text-2xl text-saffron">{formatCurrency(puja.price)}</span>
         <Link
-          href={`/temples/${typeof puja.temple === "object" ? puja.temple.slug : ""}/puja/${puja._id}`}
+          href={`/puja/${puja._id}`}
           className="btn-saffron text-sm py-2 px-5"
         >
           Book Now 🪔

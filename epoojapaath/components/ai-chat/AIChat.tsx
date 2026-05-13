@@ -49,10 +49,10 @@ export function AIChat() {
         onClick={() => setOpen(true)}
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.95 }}
-        className="fixed bottom-6 right-6 z-50 w-14 h-14 rounded-full bg-saffron shadow-lg flex items-center justify-center text-white animate-glow-pulse"
+        className="fixed bottom-6 right-6 z-50 w-16 h-16 rounded-full bg-saffron shadow-lg flex items-center justify-center text-white animate-glow-pulse"
         aria-label="Open AI Chat"
       >
-        <Flame size={24} />
+        <Flame size={28} />
       </motion.button>
 
       {/* Chat panel */}

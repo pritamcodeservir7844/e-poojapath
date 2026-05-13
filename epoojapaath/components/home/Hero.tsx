@@ -3,10 +3,11 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
+import { useLang } from "@/contexts/LanguageContext";
 
 // ─── Background SVG Decorations ──────────────────────────────────────────────
 
-function TempleBell({ x, y, size = 60, opacity = 0.18, delay = 0 }: { x: string; y: string; size?: number; opacity?: number; delay?: number }) {
+function TempleBell({ x, y, size = 80, opacity = 0.7, delay = 0 }: { x: string; y: string; size?: number; opacity?: number; delay?: number }) {
   return (
     <motion.div
       className="absolute pointer-events-none select-none"
@@ -42,7 +43,7 @@ function TempleBell({ x, y, size = 60, opacity = 0.18, delay = 0 }: { x: string;
   );
 }
 
-function FloatingLotus({ x, y, size = 70, opacity = 0.15, delay = 0 }: { x: string; y: string; size?: number; opacity?: number; delay?: number }) {
+function FloatingLotus({ x, y, size = 95, opacity = 0.6, delay = 0 }: { x: string; y: string; size?: number; opacity?: number; delay?: number }) {
   return (
     <motion.div
       className="absolute pointer-events-none select-none"
@@ -74,7 +75,7 @@ function FloatingLotus({ x, y, size = 70, opacity = 0.15, delay = 0 }: { x: stri
   );
 }
 
-function FloatingDiya({ x, y, size = 50, opacity = 0.2, delay = 0 }: { x: string; y: string; size?: number; opacity?: number; delay?: number }) {
+function FloatingDiya({ x, y, size = 70, opacity = 0.75, delay = 0 }: { x: string; y: string; size?: number; opacity?: number; delay?: number }) {
   return (
     <motion.div
       className="absolute pointer-events-none select-none"
@@ -124,7 +125,7 @@ function FloatingDiya({ x, y, size = 50, opacity = 0.2, delay = 0 }: { x: string
   );
 }
 
-function OmSymbol({ x, y, size = 80, opacity = 0.08, delay = 0 }: { x: string; y: string; size?: number; opacity?: number; delay?: number }) {
+function OmSymbol({ x, y, size = 110, opacity = 0.45, delay = 0 }: { x: string; y: string; size?: number; opacity?: number; delay?: number }) {
   return (
     <motion.div
       className="absolute pointer-events-none select-none"
@@ -146,7 +147,7 @@ function OmSymbol({ x, y, size = 80, opacity = 0.08, delay = 0 }: { x: string; y
   );
 }
 
-function MarigoldGarland({ x, y, opacity = 0.12 }: { x: string; y: string; opacity?: number }) {
+function MarigoldGarland({ x, y, opacity = 0.6 }: { x: string; y: string; opacity?: number }) {
   return (
     <div className="absolute pointer-events-none select-none" style={{ left: x, top: y, opacity }}>
       <svg width="220" height="60" viewBox="0 0 220 60" fill="none">
@@ -650,71 +651,54 @@ function PrasadIllustration() {
 
 const slides = [
   {
-    title: "Book Sacred Pujas",
-    description: "Schedule rituals with verified pandits at India's most sacred temples — from home.",
-    gradient: "from-[#FFF5E8] to-[#FFF0F8]",
-    darkGradient: "dark:from-[#2A1A08] dark:to-[#2A1220]",
-    ring: "#D4820A",
-    glow: "rgba(212,130,10,0.15)",
-    Illustration: PujaIllustration,
+    en: { title: "Book Sacred Pujas", description: "Schedule rituals with verified pandits at India's most sacred temples — from home." },
+    hi: { title: "पवित्र पूजा बुक करें", description: "घर बैठे भारत के पवित्र मंदिरों में प्रमाणित पंडितों से अनुष्ठान करवाएं।" },
+    gradient: "from-[#FFF5E8] to-[#FFF0F8]", darkGradient: "dark:from-[#2A1A08] dark:to-[#2A1220]",
+    ring: "#D4820A", glow: "rgba(212,130,10,0.15)", Illustration: PujaIllustration,
   },
   {
-    title: "Chadawa Offerings",
-    description: "Send sacred flowers, bilva patra and prasad to any temple across India.",
-    gradient: "from-[#FDF0F9] to-[#F0F0FF]",
-    darkGradient: "dark:from-[#2A0E20] dark:to-[#1A1230]",
-    ring: "#EC9DD4",
-    glow: "rgba(236,157,212,0.18)",
-    Illustration: ChadawaIllustration,
+    en: { title: "Chadawa Offerings", description: "Send sacred flowers, bilva patra and prasad to any temple across India." },
+    hi: { title: "चढ़ावा अर्पण", description: "भारत के किसी भी मंदिर में पवित्र फूल, बेलपत्र और प्रसाद भेजें।" },
+    gradient: "from-[#FDF0F9] to-[#F0F0FF]", darkGradient: "dark:from-[#2A0E20] dark:to-[#1A1230]",
+    ring: "#EC9DD4", glow: "rgba(236,157,212,0.18)", Illustration: ChadawaIllustration,
   },
   {
-    title: "Discover Temples",
-    description: "Explore 500+ verified temples with timings, history, pujas and devotee reviews.",
-    gradient: "from-[#EFF2FF] to-[#F5F0FF]",
-    darkGradient: "dark:from-[#0E1430] dark:to-[#1A1230]",
-    ring: "#94AAEE",
-    glow: "rgba(148,170,238,0.18)",
-    Illustration: TempleIllustration,
+    en: { title: "Discover Temples", description: "Explore 500+ verified temples with timings, history, pujas and devotee reviews." },
+    hi: { title: "मंदिर खोजें", description: "समय, इतिहास, पूजा और भक्त समीक्षाओं के साथ 500+ प्रमाणित मंदिर देखें।" },
+    gradient: "from-[#EFF2FF] to-[#F5F0FF]", darkGradient: "dark:from-[#0E1430] dark:to-[#1A1230]",
+    ring: "#94AAEE", glow: "rgba(148,170,238,0.18)", Illustration: TempleIllustration,
   },
   {
-    title: "Vedic Astrology",
-    description: "Get personalised Kundli, daily Rashifal, Panchang and auspicious Muhurat.",
-    gradient: "from-[#F5F0FF] to-[#FDF0F9]",
-    darkGradient: "dark:from-[#1A1230] dark:to-[#2A0E20]",
-    ring: "#C4AAEE",
-    glow: "rgba(196,170,238,0.18)",
-    Illustration: AstrologyIllustration,
+    en: { title: "Vedic Astrology", description: "Get personalised Kundli, daily Rashifal, Panchang and auspicious Muhurat." },
+    hi: { title: "वैदिक ज्योतिष", description: "व्यक्तिगत कुंडली, दैनिक राशिफल, पंचांग और शुभ मुहूर्त प्राप्त करें।" },
+    gradient: "from-[#F5F0FF] to-[#FDF0F9]", darkGradient: "dark:from-[#1A1230] dark:to-[#2A0E20]",
+    ring: "#C4AAEE", glow: "rgba(196,170,238,0.18)", Illustration: AstrologyIllustration,
   },
   {
-    title: "Live Puja Streaming",
-    description: "Watch your puja performed live and receive divine blessings in real time.",
-    gradient: "from-[#FFF8EC] to-[#FFF0F8]",
-    darkGradient: "dark:from-[#251808] dark:to-[#2A0E20]",
-    ring: "#D4820A",
-    glow: "rgba(212,130,10,0.15)",
-    Illustration: LiveStreamIllustration,
+    en: { title: "Live Puja Streaming", description: "Watch your puja performed live and receive divine blessings in real time." },
+    hi: { title: "लाइव पूजा स्ट्रीमिंग", description: "अपनी पूजा को लाइव देखें और वास्तविक समय में दिव्य आशीर्वाद प्राप्त करें।" },
+    gradient: "from-[#FFF8EC] to-[#FFF0F8]", darkGradient: "dark:from-[#251808] dark:to-[#2A0E20]",
+    ring: "#D4820A", glow: "rgba(212,130,10,0.15)", Illustration: LiveStreamIllustration,
   },
   {
-    title: "Prasad Delivery",
-    description: "Receive temple-blessed prasad delivered straight to your doorstep.",
-    gradient: "from-[#FFFAEC] to-[#FFF5F0]",
-    darkGradient: "dark:from-[#251A04] dark:to-[#2A1208]",
-    ring: "#B8860B",
-    glow: "rgba(184,134,11,0.15)",
-    Illustration: PrasadIllustration,
+    en: { title: "Prasad Delivery", description: "Receive temple-blessed prasad delivered straight to your doorstep." },
+    hi: { title: "प्रसाद डिलीवरी", description: "मंदिर से आशीर्वादित प्रसाद सीधे आपके दरवाजे पर पाएं।" },
+    gradient: "from-[#FFFAEC] to-[#FFF5F0]", darkGradient: "dark:from-[#251A04] dark:to-[#2A1208]",
+    ring: "#B8860B", glow: "rgba(184,134,11,0.15)", Illustration: PrasadIllustration,
   },
 ];
 
 const stats = [
-  { val: "500+", label: "Temples" },
-  { val: "10K+", label: "Bookings" },
-  { val: "50+", label: "Cities" },
+  { val: "500+", en: "Temples",  hi: "मंदिर"  },
+  { val: "10K+", en: "Bookings", hi: "बुकिंग" },
+  { val: "50+",  en: "Cities",   hi: "शहर"    },
 ];
 
 // ─── Hero ────────────────────────────────────────────────────────────────────
 
 export function Hero() {
   const [current, setCurrent] = useState(0);
+  const { t, lang } = useLang();
 
   useEffect(() => {
     const timer = setInterval(() => setCurrent((c) => (c + 1) % slides.length), 3400);
@@ -723,6 +707,7 @@ export function Hero() {
 
   const slide = slides[current];
   const { Illustration } = slide;
+  const slideText = lang === "hi" ? slide.hi : slide.en;
 
   return (
     <section className="relative min-h-screen bg-background overflow-hidden flex items-center">
@@ -734,7 +719,7 @@ export function Hero() {
         <motion.div
           animate={{ rotate: 360 }}
           transition={{ duration: 120, repeat: Infinity, ease: "linear" }}
-          className="absolute -top-32 -right-32 w-[650px] h-[650px] opacity-[0.04] dark:opacity-[0.06]"
+          className="absolute -top-32 -right-32 w-[650px] h-[650px] opacity-[0.25] dark:opacity-[0.18]"
         >
           <svg viewBox="0 0 200 200" fill="none">
             <defs>
@@ -780,11 +765,11 @@ export function Hero() {
         <MarigoldGarland x="35%" y="95%" opacity={0.1} />
 
         {/* Soft color blobs */}
-        <div className="absolute -top-24 -left-24 w-[450px] h-[450px] rounded-full opacity-[0.06] dark:opacity-[0.04]"
+        <div className="absolute -top-24 -left-24 w-[450px] h-[450px] rounded-full opacity-[0.25] dark:opacity-[0.12]"
           style={{ background: "radial-gradient(circle, #EC9DD4, transparent 70%)" }} />
-        <div className="absolute -bottom-24 -right-16 w-[400px] h-[400px] rounded-full opacity-[0.06] dark:opacity-[0.04]"
+        <div className="absolute -bottom-24 -right-16 w-[400px] h-[400px] rounded-full opacity-[0.25] dark:opacity-[0.12]"
           style={{ background: "radial-gradient(circle, #94AAEE, transparent 70%)" }} />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full opacity-[0.03]"
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full opacity-[0.15]"
           style={{ background: "radial-gradient(circle, #C4AAEE, transparent 70%)" }} />
       </div>
 
@@ -794,27 +779,16 @@ export function Hero() {
 
           {/* Left: Text */}
           <motion.div initial={{ opacity: 0, x: -40 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.7 }}>
-            <motion.div
-              initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }}
-              className="inline-flex items-center gap-2 rounded-full px-4 py-1.5 mb-6 text-sm font-medium border"
-              style={{
-                background: "linear-gradient(135deg, rgba(236,157,212,0.12), rgba(148,170,238,0.12))",
-                borderColor: "rgba(196,170,238,0.4)",
-                color: "#C4AAEE",
-              }}
-            >
-              <span>🪷</span> India&apos;s Devotional Platform
-            </motion.div>
 
             <motion.h1
               initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.25 }}
               className="font-heading text-5xl md:text-6xl lg:text-7xl text-foreground leading-tight mb-4"
             >
-              Connect with
+              {t("Connect with", "जुड़िए")}
               <br />
               <span className="bg-clip-text text-transparent"
                 style={{ backgroundImage: "linear-gradient(135deg, #EC9DD4, #C4AAEE, #94AAEE)" }}>
-                the Divine
+                {t("the Divine", "दिव्यता से")}
               </span>
             </motion.h1>
 
@@ -825,25 +799,27 @@ export function Hero() {
 
             <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.45 }}
               className="text-muted-foreground text-base md:text-lg mb-10 max-w-lg leading-relaxed">
-              Book sacred pujas, offer Chadawa, and discover temples across India.
-              Divine blessings — wherever you are.
+              {t(
+                "Book sacred pujas, offer Chadawa, and discover temples across India. Divine blessings — wherever you are.",
+                "पवित्र पूजा बुक करें, चढ़ावा अर्पण करें और भारत के मंदिर खोजें। दिव्य आशीर्वाद — जहाँ भी हों।"
+              )}
             </motion.p>
 
             <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.55 }}
               className="flex flex-wrap gap-4 mb-12">
-              <Link href="/puja" className="btn-saffron text-base px-8 py-3">Book Puja 🪔</Link>
-              <Link href="/temples" className="btn-outline-lotus text-base px-8 py-3">Explore Temples</Link>
+              <Link href="/puja" className="btn-saffron text-base px-8 py-3">{t("Book Puja 🪔", "पूजा बुक करें 🪔")}</Link>
+              <Link href="/temples" className="btn-outline-lotus text-base px-8 py-3">{t("Explore Temples", "मंदिर देखें")}</Link>
             </motion.div>
 
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.7 }}
               className="flex flex-wrap gap-8">
-              {stats.map(({ val, label }) => (
-                <div key={label}>
+              {stats.map(({ val, en, hi }) => (
+                <div key={en}>
                   <div className="font-heading text-3xl font-bold bg-clip-text text-transparent"
                     style={{ backgroundImage: "linear-gradient(135deg, #D4820A, #EC9DD4)" }}>
                     {val}
                   </div>
-                  <div className="text-muted-foreground text-sm mt-0.5">{label}</div>
+                  <div className="text-muted-foreground text-sm mt-0.5">{t(en, hi)}</div>
                 </div>
               ))}
             </motion.div>
@@ -874,10 +850,10 @@ export function Hero() {
                     <div className="px-6 pb-6 pt-2"
                       style={{ background: `linear-gradient(to top, ${slide.glow.replace("0.15", "0.35").replace("0.18", "0.35")}, transparent)` }}>
                       <h3 className="font-heading text-2xl mb-2" style={{ color: slide.ring }}>
-                        {slide.title}
+                        {slideText.title}
                       </h3>
                       <p className="text-muted-foreground text-base leading-relaxed">
-                        {slide.description}
+                        {slideText.description}
                       </p>
                     </div>
                   </div>

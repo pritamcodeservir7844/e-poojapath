@@ -1,16 +1,20 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
+import Link from "next/link";
 import dynamic from "next/dynamic";
+import {
+  Star, MapPin, CheckCircle2, ChevronDown, Flower2,
+  BookOpen, Sparkles, Plus, Minus, ShoppingBasket,
+} from "lucide-react";
 import { PublicPage } from "@/components/shared/PublicPage";
 import { Input, Textarea } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
 import { devToast } from "@/lib/toast";
 import { formatCurrency } from "@/lib/utils";
-import { Flower2, CheckCircle2 } from "lucide-react";
 
 const ReactConfetti = dynamic(() => import("react-confetti"), { ssr: false });
 
@@ -20,16 +24,66 @@ declare global {
   }
 }
 
+type OfferingItem = {
+  name: string;
+  nameHi: string;
+  price: number;
+  image: string;
+  description?: string;
+};
+
+type Temple = {
+  _id: string;
+  name: string;
+  slug: string;
+  coverImage: string;
+  description: string;
+  location?: { city: string; state: string };
+  rating: number;
+  reviewCount: number;
+};
+
+type ChadawaData = {
+  _id: string;
+  name: string;
+  nameHi: string;
+  description: string;
+  descriptionHi: string;
+  price: number;
+  image: string;
+  items: string[];
+  offeringItems: OfferingItem[];
+  deity: string;
+  temple: Temple | string;
+};
+
+const HOW_IT_WORKS = [
+  { icon: "🌸", title: "Select Your Items", description: "Pick individual offerings or choose the full chadawa package for your deity." },
+  { icon: "🙏", title: "Enter Sankalp Details", description: "Provide your name and gotra — the offering is dedicated in your name." },
+  { icon: "📺", title: "Receive Blessed Prasad", description: "Watch your offering video and receive sacred prasad at your doorstep." },
+];
+
+const DEFAULT_FAQS = [
+  { question: "What is Chadawa?", answer: "Chadawa (चढ़ावा) refers to sacred offerings made to deities at temples — flowers, fruits, bilva patra and other items that please the deity." },
+  { question: "Can I select individual items?", answer: "Yes! You can add individual items à la carte using the quantity buttons, or select the full package offering." },
+  { question: "Will I receive a video of the offering?", answer: "Yes, after the chadawa is performed, a recorded video is provided with devotional intent." },
+  { question: "Can I dedicate chadawa for someone else?", answer: "Absolutely! Mention the person's name in the Sankalp field and the pandit will dedicate it to them." },
+];
+
 export default function ChadawaDetailPage({ params }: { params: { id: string } }) {
   const { data: session } = useSession();
   const router = useRouter();
-  const [item, setItem] = useState<Record<string, unknown> | null>(null);
+  const [chadawa, setChadawa] = useState<ChadawaData | null>(null);
+  const [qty, setQty] = useState<Record<number, number>>({});
   const [form, setForm] = useState({ devoteeName: "", gotra: "", sankalp: "", date: "" });
   const [loading, setLoading] = useState(false);
   const [offered, setOffered] = useState(false);
+  const [showForm, setShowForm] = useState(false);
 
   useEffect(() => {
-    fetch(`/api/chadawa/${params.id}`).then((r) => r.json()).then((d) => setItem(d.data));
+    fetch(`/api/chadawa/${params.id}`)
+      .then((r) => r.json())
+      .then((d) => setChadawa(d.data));
   }, [params.id]);
 
   useEffect(() => {
@@ -37,6 +91,21 @@ export default function ChadawaDetailPage({ params }: { params: { id: string } }
     script.src = "https://checkout.razorpay.com/v1/checkout.js";
     document.body.appendChild(script);
   }, []);
+
+  const changeQty = useCallback((idx: number, delta: number) => {
+    setQty((prev) => {
+      const next = Math.max(0, (prev[idx] ?? 0) + delta);
+      return { ...prev, [idx]: next };
+    });
+  }, []);
+
+  const selectedItems = (chadawa?.offeringItems ?? [])
+    .map((item, idx) => ({ ...item, qty: qty[idx] ?? 0, idx }))
+    .filter((i) => i.qty > 0);
+
+  const itemsTotal = selectedItems.reduce((sum, i) => sum + i.price * i.qty, 0);
+  const basePrice  = chadawa?.price ?? 0;
+  const grandTotal = selectedItems.length > 0 ? itemsTotal : basePrice;
 
   async function handleOffer(e: React.FormEvent) {
     e.preventDefault();
@@ -46,31 +115,51 @@ export default function ChadawaDetailPage({ params }: { params: { id: string } }
       const orderRes = await fetch("/api/payment/create-order", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ amount: item?.price, notes: { chadawaName: item?.name } }),
+        body: JSON.stringify({ amount: grandTotal, notes: { chadawaName: chadawa?.name } }),
       });
       const orderData = await orderRes.json();
 
       new window.Razorpay({
         key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
-        amount: (item?.price as number) * 100,
+        amount: grandTotal * 100,
         currency: "INR",
         name: "ePoojapaath",
-        description: item?.name as string,
+        description: chadawa?.name,
         order_id: orderData.data.id,
         theme: { color: "#D4820A" },
         prefill: { name: session.user?.name, email: session.user?.email },
-        handler: async (response: { razorpay_order_id: string; razorpay_payment_id: string; razorpay_signature: string }) => {
+        handler: async (response: {
+          razorpay_order_id: string;
+          razorpay_payment_id: string;
+          razorpay_signature: string;
+        }) => {
           const verifyRes = await fetch("/api/payment/verify", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ orderId: response.razorpay_order_id, paymentId: response.razorpay_payment_id, signature: response.razorpay_signature }),
+            body: JSON.stringify({
+              orderId: response.razorpay_order_id,
+              paymentId: response.razorpay_payment_id,
+              signature: response.razorpay_signature,
+            }),
           });
           const verifyData = await verifyRes.json();
           if (verifyData.success) {
+            const templeId = typeof chadawa?.temple === "object" ? chadawa.temple._id : chadawa?.temple;
             await fetch("/api/bookings", {
               method: "POST",
               headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ ...form, temple: item?.temple, service: params.id, serviceType: "chadawa", serviceName: item?.name, serviceNameHi: item?.nameHi, amount: item?.price, orderId: response.razorpay_order_id, paymentId: response.razorpay_payment_id }),
+              body: JSON.stringify({
+                ...form,
+                temple: templeId,
+                service: params.id,
+                serviceType: "chadawa",
+                serviceName: chadawa?.name,
+                serviceNameHi: chadawa?.nameHi,
+                amount: grandTotal,
+                selectedItems: selectedItems.map((i) => ({ name: i.name, qty: i.qty, price: i.price })),
+                orderId: response.razorpay_order_id,
+                paymentId: response.razorpay_payment_id,
+              }),
             });
             setOffered(true);
             devToast.blessing("🌸 Chadawa Offered! May the divine bless you...");
@@ -78,95 +167,422 @@ export default function ChadawaDetailPage({ params }: { params: { id: string } }
           }
         },
       }).open();
-    } catch { devToast.error("Offering failed. Please try again."); }
-    finally { setLoading(false); }
+    } catch {
+      devToast.error("Offering failed. Please try again.");
+    } finally {
+      setLoading(false);
+    }
   }
 
-  if (!item) {
+  if (!chadawa) {
     return (
       <PublicPage>
         <div className="min-h-[60vh] flex items-center justify-center">
-          <div className="text-4xl animate-float">🌸</div>
+          <div className="text-4xl animate-bounce">🌸</div>
         </div>
       </PublicPage>
     );
   }
 
+  const temple = typeof chadawa.temple === "object" ? chadawa.temple : null;
+  const displayRating  = temple?.rating ?? 4.5;
+  const displayReviews = temple?.reviewCount ?? 80;
+  const hasOfferingItems = chadawa.offeringItems && chadawa.offeringItems.length > 0;
+
   return (
     <PublicPage>
-      {offered && <ReactConfetti recycle={false} numberOfPieces={400} colors={["#D4820A", "#B8860B", "#8B6DB5", "#C2567A"]} />}
-      <div className="max-w-5xl mx-auto px-4 py-16">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
-          {/* Chadawa Details */}
-          <div>
-            <div className="relative h-56 rounded-2xl overflow-hidden mb-6 ring-2 ring-deep-gold/30">
-              <Image src={item.image as string || "/placeholder-chadawa.jpg"} alt={item.name as string} fill className="object-cover" />
-            </div>
-            <h1 className="font-heading text-3xl text-foreground mb-1">{item.name as string}</h1>
-            <p className="font-sanskrit text-saffron mb-4">{item.nameHi as string}</p>
-            <p className="text-muted-foreground mb-6">{item.description as string}</p>
+      {offered && (
+        <ReactConfetti recycle={false} numberOfPieces={400} colors={["#D4820A", "#B8860B", "#8B6DB5", "#C2567A"]} />
+      )}
 
-            {Array.isArray(item.items) && item.items.length > 0 && (
-              <div className="card-devotional">
-                <h3 className="font-heading text-lg text-foreground mb-3">Offering Includes</h3>
-                <ul className="space-y-2">
-                  {(item.items as string[]).map((inc) => (
-                    <li key={inc} className="flex items-center gap-2 text-sm text-muted-foreground">
-                      <CheckCircle2 size={14} className="text-saffron shrink-0" />{inc}
-                    </li>
-                  ))}
-                </ul>
-              </div>
+      {/* ── Hero ── */}
+      <div className="relative h-64 md:h-80 w-full">
+        <Image src={chadawa.image || "/placeholder-chadawa.jpg"} alt={chadawa.name} fill className="object-cover" priority />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-black/20 to-black/70" />
+        <div className="absolute bottom-0 left-0 right-0 p-6 max-w-7xl mx-auto">
+          <p className="text-white/80 text-sm font-medium mb-1 flex items-center gap-1">
+            <Flower2 size={14} /> Chadawa Offering
+          </p>
+          <h1 className="text-white font-heading text-2xl md:text-3xl leading-tight max-w-3xl">{chadawa.name}</h1>
+          <p className="text-white/70 font-sanskrit text-base mt-1">{chadawa.nameHi}</p>
+        </div>
+      </div>
+
+      {/* ── Meta Bar ── */}
+      <div className="bg-card border-b border-border">
+        <div className="max-w-7xl mx-auto px-4 md:px-8 py-3 flex flex-wrap items-center gap-4">
+          {temple && (
+            <Link href={`/temples/${temple.slug}`} className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-saffron transition-colors">
+              <MapPin size={14} />
+              <span>{temple.name}{temple.location ? `, ${temple.location.city}` : ""}</span>
+            </Link>
+          )}
+          <span className="text-border">|</span>
+          <div className="flex items-center gap-1 text-sm">
+            {Array.from({ length: 5 }).map((_, i) => (
+              <Star key={i} size={13} className={i < Math.round(displayRating) ? "fill-saffron text-saffron" : "text-muted"} />
+            ))}
+            <span className="text-saffron font-semibold ml-1">{displayRating.toFixed(1)}</span>
+            <span className="text-muted-foreground ml-1">• {displayReviews}+ Reviews</span>
+          </div>
+          <span className="text-border">|</span>
+          <div className="flex items-center gap-1 text-sm text-muted-foreground">
+            <Flower2 size={14} className="text-lotus-pink" />
+            <span>Deity: <span className="font-medium text-foreground">{chadawa.deity}</span></span>
+          </div>
+        </div>
+      </div>
+
+      {/* ── Main ── */}
+      <div className="max-w-7xl mx-auto px-4 md:px-8 py-8 pb-32 md:pb-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+
+          {/* ── Left ── */}
+          <div className="lg:col-span-2 space-y-10">
+
+            {/* ── Offer One-Time Chadawa ── */}
+            {hasOfferingItems && (
+              <section>
+                <div className="flex items-center justify-between mb-4">
+                  <div>
+                    <h2 className="font-heading text-xl text-foreground">Offer One-Time Chadawa</h2>
+                    <p className="text-xs text-muted-foreground mt-0.5">Add individual items — total updates live</p>
+                  </div>
+                  {selectedItems.length > 0 && (
+                    <span className="text-xs bg-saffron/10 text-saffron font-semibold px-3 py-1 rounded-full border border-saffron/20">
+                      {selectedItems.length} item{selectedItems.length > 1 ? "s" : ""} added
+                    </span>
+                  )}
+                </div>
+
+                {/* Clean horizontal item list */}
+                <div className="rounded-2xl border border-border overflow-hidden divide-y divide-border">
+                  {chadawa.offeringItems.map((item, idx) => {
+                    const count = qty[idx] ?? 0;
+                    return (
+                      <div
+                        key={idx}
+                        className={`flex items-center gap-4 px-4 py-3.5 transition-colors ${
+                          count > 0 ? "bg-saffron/5" : "bg-card hover:bg-muted/30"
+                        }`}
+                      >
+                        {/* Thumbnail */}
+                        <div className="relative w-14 h-14 rounded-xl overflow-hidden shrink-0 border border-border">
+                          <Image src={item.image} alt={item.name} fill className="object-cover" />
+                        </div>
+
+                        {/* Name + desc */}
+                        <div className="flex-1 min-w-0">
+                          <p className="font-medium text-foreground text-sm leading-snug">{item.name}</p>
+                          <p className="text-xs text-muted-foreground font-sanskrit">{item.nameHi}</p>
+                          {item.description && (
+                            <p className="text-xs text-muted-foreground/70 mt-0.5 line-clamp-1">{item.description}</p>
+                          )}
+                          <p className="text-saffron font-bold text-sm mt-1">{formatCurrency(item.price)}</p>
+                        </div>
+
+                        {/* Qty controls */}
+                        <div className="shrink-0">
+                          {count === 0 ? (
+                            <button
+                              onClick={() => changeQty(idx, 1)}
+                              className="flex items-center gap-1 border-2 border-saffron text-saffron text-xs font-bold px-3 py-1.5 rounded-lg hover:bg-saffron hover:text-white active:scale-95 transition-all"
+                            >
+                              <Plus size={12} /> Add
+                            </button>
+                          ) : (
+                            <div className="flex items-center gap-2">
+                              <button
+                                onClick={() => changeQty(idx, -1)}
+                                className="w-7 h-7 rounded-lg border-2 border-saffron/40 flex items-center justify-center text-saffron hover:bg-saffron/10 active:scale-95 transition"
+                              >
+                                <Minus size={13} />
+                              </button>
+                              <span className="font-bold text-foreground text-sm w-5 text-center tabular-nums">{count}</span>
+                              <button
+                                onClick={() => changeQty(idx, 1)}
+                                className="w-7 h-7 rounded-lg bg-saffron flex items-center justify-center text-white hover:bg-deep-gold active:scale-95 transition"
+                              >
+                                <Plus size={13} />
+                              </button>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+
+                {/* Selected items summary */}
+                {selectedItems.length > 0 && (
+                  <div className="mt-4 rounded-2xl border border-saffron/25 bg-gradient-to-br from-saffron/5 to-transparent p-4">
+                    <h3 className="text-sm font-semibold text-foreground mb-3 flex items-center gap-2">
+                      <ShoppingBasket size={15} className="text-saffron" /> Your Cart
+                    </h3>
+                    <div className="space-y-2 mb-3">
+                      {selectedItems.map((item) => (
+                        <div key={item.idx} className="flex items-center justify-between">
+                          <span className="text-sm text-muted-foreground">
+                            {item.name}
+                            <span className="ml-1.5 bg-saffron/10 text-saffron text-xs font-bold px-1.5 py-0.5 rounded">×{item.qty}</span>
+                          </span>
+                          <span className="text-sm font-semibold text-foreground">{formatCurrency(item.price * item.qty)}</span>
+                        </div>
+                      ))}
+                    </div>
+                    <div className="border-t border-saffron/20 pt-3 flex items-center justify-between">
+                      <span className="text-sm font-semibold text-foreground">Total</span>
+                      <span className="font-heading text-lg text-saffron">{formatCurrency(itemsTotal)}</span>
+                    </div>
+                  </div>
+                )}
+              </section>
             )}
 
-            <div className="mt-4 flex items-center gap-2 text-muted-foreground text-sm">
-              <Flower2 size={16} className="text-lotus-pink" />
-              <span>Deity: <span className="font-medium text-foreground">{item.deity as string}</span></span>
-            </div>
+            {/* ── Included Items ── */}
+            {chadawa.items.length > 0 && (
+              <section>
+                <h2 className="font-heading text-2xl text-foreground mb-4">This Chadawa Includes</h2>
+                <div className="card-devotional grid grid-cols-1 md:grid-cols-2 gap-3">
+                  {chadawa.items.map((inc) => (
+                    <div key={inc} className="flex items-start gap-2 text-sm text-muted-foreground">
+                      <CheckCircle2 size={15} className="text-lotus-pink shrink-0 mt-0.5" />
+                      <span>{inc}</span>
+                    </div>
+                  ))}
+                </div>
+              </section>
+            )}
+
+            {/* ── How It Works ── */}
+            <section>
+              <h2 className="font-heading text-2xl text-foreground mb-6">How Chadawa Booking Works?</h2>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                {HOW_IT_WORKS.map((step, i) => (
+                  <div key={i} className="card-devotional text-center">
+                    <div className="text-3xl mb-3">{step.icon}</div>
+                    <div className="flex items-center justify-center gap-2 mb-2">
+                      <span className="w-5 h-5 rounded-full bg-lotus-pink/20 text-lotus-pink text-xs font-bold flex items-center justify-center">{i + 1}</span>
+                      <h3 className="font-heading text-base text-foreground">{step.title}</h3>
+                    </div>
+                    <p className="text-sm text-muted-foreground">{step.description}</p>
+                  </div>
+                ))}
+              </div>
+            </section>
+
+            {/* ── About Temple ── */}
+            {temple && (
+              <section>
+                <h2 className="font-heading text-2xl text-foreground mb-4">About {temple.name}</h2>
+                <div className="card-devotional overflow-hidden p-0">
+                  {temple.coverImage && (
+                    <div className="relative h-48 w-full">
+                      <Image src={temple.coverImage} alt={temple.name} fill className="object-cover" />
+                    </div>
+                  )}
+                  <div className="p-5">
+                    <h3 className="font-heading text-xl text-foreground mb-1">{temple.name}</h3>
+                    {temple.location && (
+                      <p className="text-sm text-muted-foreground flex items-center gap-1 mb-3">
+                        <MapPin size={13} /> {temple.location.city}, {temple.location.state}
+                      </p>
+                    )}
+                    <p className="text-sm text-muted-foreground leading-relaxed line-clamp-4">{temple.description}</p>
+                    <Link href={`/temples/${temple.slug}`} className="inline-block mt-3 text-sm text-saffron hover:underline font-medium">
+                      View Temple →
+                    </Link>
+                  </div>
+                </div>
+              </section>
+            )}
+
+            {/* ── About Chadawa ── */}
+            <section>
+              <h2 className="font-heading text-2xl text-foreground mb-3">About {chadawa.name}</h2>
+              <div className="card-devotional">
+                <p className="text-muted-foreground leading-relaxed">{chadawa.description}</p>
+                {chadawa.descriptionHi && (
+                  <p className="font-sanskrit text-saffron/80 text-sm mt-4 leading-relaxed">{chadawa.descriptionHi}</p>
+                )}
+              </div>
+            </section>
+
+            {/* ── Reviews ── */}
+            <section>
+              <div className="flex items-center gap-3 mb-5">
+                <div className="flex items-center gap-1">
+                  {Array.from({ length: 5 }).map((_, i) => (
+                    <Star key={i} size={18} className={i < Math.round(displayRating) ? "fill-saffron text-saffron" : "fill-muted text-muted"} />
+                  ))}
+                </div>
+                <h2 className="font-heading text-2xl text-foreground">{displayRating} Stories of Blessed Experiences</h2>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {[
+                  { name: "Kavita R.", comment: "Offering the chadawa at this temple felt truly divine. The prasad delivery was prompt and beautifully packed.", stars: 5 },
+                  { name: "Mohan D.", comment: "The pandit chanted with full devotion. Received a detailed video of the entire offering. Very satisfied!", stars: 5 },
+                  { name: "Sunita P.", comment: "I could select individual items — loved the flexibility! My mother was moved watching the ritual video.", stars: 4 },
+                  { name: "Arjun K.", comment: "Simple to book, authentic ritual. The deity felt genuinely pleased with the offering.", stars: 5 },
+                ].map((review, i) => (
+                  <div key={i} className="card-devotional">
+                    <div className="flex items-center gap-1 mb-2">
+                      {Array.from({ length: 5 }).map((_, j) => (
+                        <Star key={j} size={12} className={j < review.stars ? "fill-saffron text-saffron" : "fill-muted text-muted"} />
+                      ))}
+                    </div>
+                    <p className="text-sm text-muted-foreground leading-relaxed mb-3">&ldquo;{review.comment}&rdquo;</p>
+                    <p className="text-xs font-semibold text-foreground">— {review.name}</p>
+                  </div>
+                ))}
+              </div>
+            </section>
+
+            {/* ── FAQ ── */}
+            <section>
+              <h2 className="font-heading text-2xl text-foreground mb-6 text-center">Know More About This Chadawa</h2>
+              <div className="space-y-3">
+                {DEFAULT_FAQS.map((faq, i) => (
+                  <details key={i} className="card-devotional cursor-pointer group" open={i === 0}>
+                    <summary className="flex items-center justify-between font-medium text-foreground text-sm list-none">
+                      <span className="flex items-center gap-2">
+                        <BookOpen size={14} className="text-lotus-pink shrink-0" />
+                        {faq.question}
+                      </span>
+                      <ChevronDown size={16} className="text-muted-foreground shrink-0 group-open:rotate-180 transition-transform" />
+                    </summary>
+                    <p className="mt-3 text-sm text-muted-foreground leading-relaxed pl-5">{faq.answer}</p>
+                  </details>
+                ))}
+              </div>
+            </section>
+
+            {/* ── Trust ── */}
+            <section className="text-center py-8 border-t border-border">
+              <div className="inline-flex items-center gap-2 bg-lotus-pink/10 border border-lotus-pink/30 rounded-full px-6 py-3 mb-4">
+                <Sparkles size={16} className="text-lotus-pink" />
+                <span className="text-sm font-medium text-foreground">Authenticity You Can Trust</span>
+                <Sparkles size={16} className="text-lotus-pink" />
+              </div>
+              <p className="text-sm text-muted-foreground max-w-lg mx-auto">
+                Every chadawa is offered by official temple Pandits following sacred Vedic traditions.
+              </p>
+            </section>
           </div>
 
-          {/* Offering Form */}
-          <form onSubmit={handleOffer} className="card-devotional h-fit space-y-4">
-            <h2 className="font-heading text-2xl text-foreground">Make an Offering</h2>
-            <Input
-              label="Devotee Name"
-              required
-              placeholder="Name for Sankalp"
-              value={form.devoteeName}
-              onChange={(e) => setForm({ ...form, devoteeName: e.target.value })}
-            />
-            <Input
-              label="Gotra (Optional)"
-              placeholder="e.g. Kashyap, Bharadwaj"
-              value={form.gotra}
-              onChange={(e) => setForm({ ...form, gotra: e.target.value })}
-            />
-            <Textarea
-              label="Sankalp / Wish"
-              rows={3}
-              placeholder="Your prayer or intention..."
-              value={form.sankalp}
-              onChange={(e) => setForm({ ...form, sankalp: e.target.value })}
-            />
-            <Input
-              label="Offering Date"
-              type="date"
-              required
-              min={new Date().toISOString().split("T")[0]}
-              value={form.date}
-              onChange={(e) => setForm({ ...form, date: e.target.value })}
-            />
-            <div className="border-t border-deep-gold/20 pt-4">
-              <div className="flex justify-between font-heading text-xl">
-                <span className="text-foreground">Total</span>
-                <span className="text-saffron">{formatCurrency(item.price as number)}</span>
+          {/* ── Right Sidebar ── */}
+          <div className="lg:col-span-1 hidden lg:block">
+            {!showForm ? (
+              <div className="card-devotional sticky top-24">
+                <div className="relative h-44 -mx-6 -mt-6 mb-5 rounded-t-2xl overflow-hidden">
+                  <Image src={chadawa.image} alt={chadawa.name} fill className="object-cover" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
+                </div>
+
+                <div className="text-center mb-4">
+                  <p className="font-sanskrit text-saffron mb-1">{chadawa.nameHi}</p>
+                  <p className="text-xs text-muted-foreground mb-2">Offering at {temple?.name}</p>
+                </div>
+
+                {/* Live total */}
+                <div className="bg-muted/40 rounded-xl p-3 mb-4">
+                  {selectedItems.length > 0 ? (
+                    <>
+                      <p className="text-xs text-muted-foreground mb-2 font-medium">Selected Items</p>
+                      <div className="space-y-1.5 mb-3">
+                        {selectedItems.map((item) => (
+                          <div key={item.idx} className="flex justify-between text-xs">
+                            <span className="text-muted-foreground truncate mr-2">{item.name} ×{item.qty}</span>
+                            <span className="text-foreground font-medium shrink-0">{formatCurrency(item.price * item.qty)}</span>
+                          </div>
+                        ))}
+                      </div>
+                      <div className="border-t border-border pt-2 flex justify-between">
+                        <span className="text-sm font-heading text-foreground">Total</span>
+                        <span className="font-heading text-lg text-saffron">{formatCurrency(itemsTotal)}</span>
+                      </div>
+                    </>
+                  ) : (
+                    <div className="text-center py-1">
+                      <p className="text-xs text-muted-foreground mb-1">Base offering price</p>
+                      <p className="font-heading text-2xl text-saffron">{formatCurrency(basePrice)}</p>
+                      <p className="text-xs text-muted-foreground mt-1">or select items above to customise</p>
+                    </div>
+                  )}
+                </div>
+
+                <button
+                  onClick={() => setShowForm(true)}
+                  className="w-full py-3 rounded-xl font-semibold text-white text-base bg-gradient-to-r from-purple-600 via-saffron to-orange-500 hover:opacity-90 transition shadow-md"
+                >
+                  Offer Chadawa 🌸
+                </button>
               </div>
-            </div>
-            <Button type="submit" loading={loading} fullWidth size="lg">
-              {loading ? "Processing... 🌸" : `Offer Now ${formatCurrency(item.price as number)}`}
-            </Button>
-          </form>
+            ) : (
+              <form onSubmit={handleOffer} className="card-devotional sticky top-24 space-y-4">
+                <h3 className="font-heading text-xl text-foreground mb-1">Make an Offering</h3>
+                <p className="text-xs text-muted-foreground">
+                  Total: <span className="text-saffron font-bold text-sm">{formatCurrency(grandTotal)}</span>
+                  {selectedItems.length > 0 && <span className="ml-1">({selectedItems.length} items)</span>}
+                </p>
+                <Input label="Devotee Name" required placeholder="Name for Sankalp" value={form.devoteeName} onChange={(e) => setForm({ ...form, devoteeName: e.target.value })} />
+                <Input label="Gotra (Optional)" placeholder="e.g. Kashyap, Bharadwaj" value={form.gotra} onChange={(e) => setForm({ ...form, gotra: e.target.value })} />
+                <Textarea label="Sankalp / Wish" rows={2} placeholder="Your prayer or intention..." value={form.sankalp} onChange={(e) => setForm({ ...form, sankalp: e.target.value })} />
+                <Input label="Offering Date" type="date" required min={new Date().toISOString().split("T")[0]} value={form.date} onChange={(e) => setForm({ ...form, date: e.target.value })} />
+                <div className="border-t border-deep-gold/20 pt-3">
+                  <div className="flex justify-between font-heading text-lg">
+                    <span className="text-foreground">Total</span>
+                    <span className="text-saffron">{formatCurrency(grandTotal)}</span>
+                  </div>
+                </div>
+                <Button type="submit" loading={loading} fullWidth size="lg">
+                  {loading ? "Processing... 🌸" : `Pay ${formatCurrency(grandTotal)}`}
+                </Button>
+                <button type="button" onClick={() => setShowForm(false)} className="w-full text-xs text-muted-foreground hover:text-foreground text-center">
+                  ← Change selection
+                </button>
+              </form>
+            )}
+          </div>
         </div>
+      </div>
+
+      {/* ── Mobile Sticky Bottom Bar ── */}
+      <div className="fixed bottom-0 left-0 right-0 z-40 bg-background/97 backdrop-blur border-t border-border lg:hidden">
+        {showForm ? (
+          <form onSubmit={handleOffer} className="px-4 py-3 space-y-3">
+            <div className="grid grid-cols-2 gap-2">
+              <Input label="Your Name" required placeholder="Devotee name" value={form.devoteeName} onChange={(e) => setForm({ ...form, devoteeName: e.target.value })} />
+              <Input label="Date" type="date" required min={new Date().toISOString().split("T")[0]} value={form.date} onChange={(e) => setForm({ ...form, date: e.target.value })} />
+            </div>
+            <Textarea label="Sankalp" rows={1} placeholder="Your prayer..." value={form.sankalp} onChange={(e) => setForm({ ...form, sankalp: e.target.value })} />
+            <div className="flex gap-3 items-center">
+              <div>
+                <p className="text-xs text-muted-foreground">Total</p>
+                <p className="font-heading text-lg text-saffron">{formatCurrency(grandTotal)}</p>
+              </div>
+              <Button type="submit" loading={loading} fullWidth size="lg">
+                {loading ? "Processing..." : `Pay ${formatCurrency(grandTotal)}`}
+              </Button>
+            </div>
+            <button type="button" onClick={() => setShowForm(false)} className="text-xs text-muted-foreground w-full text-center">← Back</button>
+          </form>
+        ) : (
+          <div className="flex items-center gap-4 px-4 py-3">
+            <div className="flex-1 min-w-0">
+              <p className="text-xs text-muted-foreground">
+                {selectedItems.length > 0 ? `${selectedItems.length} items selected` : "Total Offering"}
+              </p>
+              <p className="font-heading text-xl text-saffron">{formatCurrency(grandTotal)}</p>
+            </div>
+            <button
+              onClick={() => setShowForm(true)}
+              className="flex-1 py-3 rounded-xl font-semibold text-white text-sm bg-gradient-to-r from-purple-600 via-saffron to-orange-500 hover:opacity-90 transition"
+            >
+              Offer Chadawa 🌸
+            </button>
+          </div>
+        )}
       </div>
     </PublicPage>
   );

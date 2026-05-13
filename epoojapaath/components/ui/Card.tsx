@@ -23,7 +23,7 @@ export function Card({ children, className, hover, onClick }: CardProps) {
 }
 
 interface StatCardProps {
-  icon: string;
+  icon: React.ReactNode;
   label: string;
   value: string | number;
   accent?: string;
@@ -32,7 +32,7 @@ interface StatCardProps {
 export function StatCard({ icon, label, value, accent = "border-l-saffron" }: StatCardProps) {
   return (
     <div className={cn("bg-card-bg border-l-4 rounded-2xl p-6 shadow-[0_4px_20px_rgba(212,130,10,0.10)]", accent)}>
-      <div className="text-3xl mb-2">{icon}</div>
+      <div className="mb-3 text-saffron [&>svg]:w-6 [&>svg]:h-6">{icon}</div>
       <div className="font-heading text-2xl text-foreground">{value}</div>
       <div className="text-muted-foreground text-sm mt-0.5">{label}</div>
     </div>

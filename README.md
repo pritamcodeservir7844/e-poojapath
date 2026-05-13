@@ -1,2 +1,0 @@
-# e-poojapath
-# e-poojapath

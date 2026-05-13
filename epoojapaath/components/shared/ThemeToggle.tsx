@@ -21,16 +21,16 @@ export function ThemeToggle() {
 
   return (
     <motion.button
-      whileHover={{ scale: 1.05 }}
-      whileTap={{ scale: 0.95 }}
+      whileHover={{ scale: 1.1 }}
+      whileTap={{ scale: 0.9 }}
       onClick={() => setTheme(isDark ? "light" : "dark")}
-      className="p-2 w-10 h-10 rounded-xl bg-saffron/10 dark:bg-saffron/20 text-saffron border border-saffron/20 flex items-center justify-center transition-colors"
+      className="p-1 text-saffron transition-colors"
       aria-label="Toggle theme"
     >
       {isDark ? (
-        <Sun size={20} className="text-amber-400" />
+        <Sun size={24} className="text-amber-400" />
       ) : (
-        <Moon size={20} className="text-saffron" />
+        <Moon size={24} className="text-saffron" />
       )}
     </motion.button>
   );

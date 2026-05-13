@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { Button } from "@/components/ui/Button";
 import { devToast } from "@/lib/toast";
 import { useRouter } from "next/navigation";
@@ -24,12 +25,20 @@ export function TempleActions({ id, status }: TempleActionsProps) {
     } finally { setLoading(false); }
   }
 
-  if (status === "approved")  return <Button size="sm" variant="danger"  onClick={() => updateStatus("rejected")} loading={loading}>Reject</Button>;
-  if (status === "rejected")  return <Button size="sm" variant="saffron" onClick={() => updateStatus("approved")} loading={loading}>Approve</Button>;
   return (
-    <div className="flex gap-2">
-      <Button size="sm" variant="saffron" onClick={() => updateStatus("approved")} loading={loading}>Approve</Button>
-      <Button size="sm" variant="danger"  onClick={() => updateStatus("rejected")} loading={loading}>Reject</Button>
+    <div className="flex items-center gap-2">
+      <Link href={`/admin/temples/${id}`} className="text-xs text-saffron hover:underline font-medium">
+        Details →
+      </Link>
+      {status === "approved"
+        ? <Button size="sm" variant="danger"  onClick={() => updateStatus("rejected")} loading={loading}>Reject</Button>
+        : status === "rejected"
+        ? <Button size="sm" variant="saffron" onClick={() => updateStatus("approved")} loading={loading}>Approve</Button>
+        : <>
+            <Button size="sm" variant="saffron" onClick={() => updateStatus("approved")} loading={loading}>Approve</Button>
+            <Button size="sm" variant="danger"  onClick={() => updateStatus("rejected")} loading={loading}>Reject</Button>
+          </>
+      }
     </div>
   );
 }
