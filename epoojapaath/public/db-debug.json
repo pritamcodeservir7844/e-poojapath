@@ -1,0 +1,196 @@
+[
+  {
+    "name": "Panchamrit Abhishek",
+    "offeringItems": [
+      {
+        "name": "Milk Abhishek",
+        "image": "https://images.unsplash.com/photo-1561361513-2d000a50f0dc?w=400"
+      },
+      {
+        "name": "Curd Abhishek",
+        "image": "https://images.unsplash.com/photo-1561361513-2d000a50f0dc?w=400"
+      },
+      {
+        "name": "Honey Abhishek",
+        "image": "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400"
+      },
+      {
+        "name": "Ghee Abhishek",
+        "image": "https://images.unsplash.com/photo-1561361513-2d000a50f0dc?w=400"
+      },
+      {
+        "name": "Sugar Water",
+        "image": "https://images.unsplash.com/photo-1561361513-2d000a50f0dc?w=400"
+      },
+      {
+        "name": "Rose Petals",
+        "image": "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400"
+      }
+    ]
+  },
+  {
+    "name": "Tulsi Mala Offering",
+    "offeringItems": [
+      {
+        "name": "Tulsi Mala",
+        "image": "/red-hibiscus-mala.jpg"
+      },
+      {
+        "name": "Yellow Flowers",
+        "image": "/red-hibiscus-mala.jpg"
+      },
+      {
+        "name": "Mishri (Rock Sugar)",
+        "image": "https://images.unsplash.com/photo-1582515073490-39981397c445?w=400"
+      },
+      {
+        "name": "Panchamrit Bhog",
+        "image": "https://images.unsplash.com/photo-1623059982558-f0ee0c3c1a40?w=400"
+      },
+      {
+        "name": "Makhan Bhog",
+        "image": "https://images.unsplash.com/photo-1582515073490-39981397c445?w=400"
+      },
+      {
+        "name": "Panjiri Prasad",
+        "image": "/coconut-thali.jpg"
+      }
+    ]
+  },
+  {
+    "name": "Bilva Patra Offering",
+    "offeringItems": [
+      {
+        "name": "Bilva Patra (108 leaves)",
+        "image": "https://images.unsplash.com/photo-1588880331179-bc9b93a8cb5e?w=400"
+      },
+      {
+        "name": "Gangajal",
+        "image": "https://images.unsplash.com/photo-1561361513-2d000a50f0dc?w=400"
+      },
+      {
+        "name": "Sindoor",
+        "image": "/sindoor-bowl.jpg"
+      },
+      {
+        "name": "Dhatura Flowers",
+        "image": "/red-hibiscus-mala.jpg"
+      },
+      {
+        "name": "Bhasma",
+        "image": "https://images.unsplash.com/photo-1588880331179-bc9b93a8cb5e?w=400"
+      },
+      {
+        "name": "White Flowers Garland",
+        "image": "/red-hibiscus-mala.jpg"
+      }
+    ]
+  },
+  {
+    "name": "Makhan Mishri Bhog",
+    "offeringItems": [
+      {
+        "name": "Makhan (Butter)",
+        "image": "https://images.unsplash.com/photo-1582515073490-39981397c445?w=400"
+      },
+      {
+        "name": "Mishri",
+        "image": "https://images.unsplash.com/photo-1582515073490-39981397c445?w=400"
+      },
+      {
+        "name": "Seasonal Fruits",
+        "image": "https://images.unsplash.com/photo-1582515073490-39981397c445?w=400"
+      },
+      {
+        "name": "Panjiri",
+        "image": "https://images.unsplash.com/photo-1582515073490-39981397c445?w=400"
+      },
+      {
+        "name": "Chappan Bhog",
+        "image": "https://images.unsplash.com/photo-1623059982558-f0ee0c3c1a40?w=400"
+      },
+      {
+        "name": "Tulsi Dal",
+        "image": "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400"
+      }
+    ]
+  },
+  {
+    "name": "Maa Tripurasundari Shringar & Bhog Offering",
+    "offeringItems": [
+      {
+        "name": "Flower Basket Small",
+        "image": "/red-hibiscus-mala.jpg"
+      },
+      {
+        "name": "Red Hibiscus Flower Mala",
+        "image": "/red-hibiscus-mala.jpg"
+      },
+      {
+        "name": "Deep Daan",
+        "image": "/tripura-sundari.jpg"
+      },
+      {
+        "name": "Peda Prasad",
+        "image": "/peda-prasad.jpg"
+      },
+      {
+        "name": "Coconut",
+        "image": "/coconut.jpg"
+      },
+      {
+        "name": "Chunari",
+        "image": "/chunari.jpg"
+      },
+      {
+        "name": "Saree",
+        "image": "/red-saree.jpg"
+      },
+      {
+        "name": "Sindoor",
+        "image": "/sindoor-bowl.jpg"
+      },
+      {
+        "name": "Divine Aashirbad Box",
+        "image": "/tripura-sundari.jpg"
+      },
+      {
+        "name": "Dakshina to Pandit Ji",
+        "image": "/tripura-sundari.jpg"
+      }
+    ]
+  },
+  {
+    "name": "Special Chadawa",
+    "offeringItems": [
+      {
+        "name": "Red Flowers & Lotus Basket",
+        "image": "/red-hibiscus-mala.jpg"
+      },
+      {
+        "name": "Red Hibiscus Flower Mala",
+        "image": "/red-hibiscus-mala.jpg"
+      },
+      {
+        "name": "Peda Prasad & Coconut Offering",
+        "image": "/peda-prasad.jpg"
+      },
+      {
+        "name": "Saree",
+        "image": "/red-saree.jpg"
+      },
+      {
+        "name": "Offer Nine Suhaag Shringar Items",
+        "image": "/poojan-bhet.jpg"
+      },
+      {
+        "name": "Tripura Sundari Maa Mangalmay Poojan Bhet",
+        "image": "/poojan-bhet.jpg"
+      },
+      {
+        "name": "Sacred Khichudi Prasad Seva",
+        "image": "/coconut-thali.jpg"
+      }
+    ]
+  }
+]

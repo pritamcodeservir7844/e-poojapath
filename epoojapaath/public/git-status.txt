@@ -1,0 +1,192 @@
+=== GIT STATUS ===
+On branch main
+Your branch is up to date with 'origin/main'.
+
+Changes to be committed:
+  (use "git restore --staged <file>..." to unstage)
+	deleted:    "../.claude/referenceimages/Screenshot 2026-05-13 at 4.23.59\342\200\257PM copy.png"
+	deleted:    "../.claude/referenceimages/Screenshot 2026-05-13 at 4.23.59\342\200\257PM.png"
+	deleted:    "../.claude/referenceimages/Screenshot 2026-05-13 at 4.25.06\342\200\257PM.png"
+	deleted:    "../.claude/referenceimages/Screenshot 2026-05-13 at 4.25.12\342\200\257PM.png"
+	deleted:    "../.claude/referenceimages/Screenshot 2026-05-13 at 4.25.22\342\200\257PM.png"
+	deleted:    "../.claude/referenceimages/Screenshot 2026-05-13 at 4.25.30\342\200\257PM.png"
+	deleted:    ../.claude/referenceimages/image.png
+	deleted:    ../.claude/rules/frontend-rules.md
+	deleted:    ../.claude/settings.local.json
+	deleted:    .eslintrc.json
+	deleted:    .gitignore
+	deleted:    app/(admin)/admin/ads/page.tsx
+	deleted:    app/(admin)/admin/blog/page.tsx
+	deleted:    app/(admin)/admin/bookings/page.tsx
+	deleted:    app/(admin)/admin/dashboard/page.tsx
+	deleted:    app/(admin)/admin/settings/page.tsx
+	deleted:    app/(admin)/admin/temples/[id]/page.tsx
+	deleted:    app/(admin)/admin/temples/page.tsx
+	deleted:    app/(admin)/admin/users/page.tsx
+	deleted:    app/(admin)/layout.tsx
+	deleted:    app/(public)/about/page.tsx
+	deleted:    app/(public)/astro/page.tsx
+	deleted:    app/(public)/blog/[slug]/page.tsx
+	deleted:    app/(public)/blog/page.tsx
+	deleted:    app/(public)/chadawa/[id]/page.tsx
+	deleted:    app/(public)/chadawa/page.tsx
+	deleted:    app/(public)/contact/page.tsx
+	deleted:    app/(public)/layout.tsx
+	deleted:    app/(public)/login/page.tsx
+	deleted:    app/(public)/page.tsx
+	deleted:    app/(public)/puja/[id]/page.tsx
+	deleted:    app/(public)/puja/page.tsx
+	deleted:    app/(public)/register/page.tsx
+	deleted:    app/(public)/temples/[slug]/page.tsx
+	deleted:    app/(public)/temples/[slug]/puja/[id]/page.tsx
+	deleted:    app/(public)/temples/page.tsx
+	deleted:    app/(temple)/layout.tsx
+	deleted:    app/(temple)/temple/blog/page.tsx
+	deleted:    app/(temple)/temple/bookings/page.tsx
+	deleted:    app/(temple)/temple/chadawa/page.tsx
+	deleted:    app/(temple)/temple/dashboard/page.tsx
+	deleted:    app/(temple)/temple/members/page.tsx
+	deleted:    app/(temple)/temple/pujas/page.tsx
+	deleted:    app/(temple)/temple/register/page.tsx
+	deleted:    app/(temple)/temple/settings/page.tsx
+	deleted:    app/(user)/layout.tsx
+	deleted:    app/(user)/user/bookings/[id]/page.tsx
+	deleted:    app/(user)/user/bookings/page.tsx
+	deleted:    app/(user)/user/dashboard/page.tsx
+	deleted:    app/(user)/user/profile/page.tsx
+	deleted:    app/api/admin/ads/[id]/route.ts
+	deleted:    app/api/admin/ads/route.ts
+	deleted:    app/api/admin/blog/[id]/route.ts
+	deleted:    app/api/admin/blog/route.ts
+	deleted:    app/api/admin/members/route.ts
+	deleted:    app/api/admin/stats/route.ts
+	deleted:    app/api/admin/temples/[id]/route.ts
+	deleted:    app/api/admin/temples/[id]/status/route.ts
+	deleted:    app/api/admin/users/[id]/block/route.ts
+	deleted:    app/api/admin/users/[id]/role/route.ts
+	deleted:    app/api/ai-chat/route.ts
+	deleted:    app/api/auth/[...nextauth]/route.ts
+	deleted:    app/api/auth/register/route.ts
+	deleted:    app/api/blog/[slug]/route.ts
+	deleted:    app/api/blog/route.ts
+	deleted:    app/api/bookings/[id]/route.ts
+	deleted:    app/api/bookings/route.ts
+	deleted:    app/api/chadawa/[id]/route.ts
+	deleted:    app/api/contact/route.ts
+	deleted:    app/api/payment/create-order/route.ts
+	deleted:    app/api/payment/verify/route.ts
+	deleted:    app/api/pujas/[id]/route.ts
+	deleted:    app/api/pujas/route.ts
+	deleted:    app/api/temples/[id]/chadawa/route.ts
+	deleted:    app/api/temples/[id]/members/route.ts
+	deleted:    app/api/temples/[id]/pujas/route.ts
+	deleted:    app/api/temples/[id]/route.ts
+	deleted:    app/api/temples/route.ts
+	deleted:    app/api/users/[id]/route.ts
+	deleted:    app/globals.css
+	deleted:    app/layout.tsx
+	deleted:    app/not-found.tsx
+	deleted:    assets /image.png
+	deleted:    components/admin/AdminLogoutButton.tsx
+	deleted:    components/admin/BlogAdminActions.tsx
+	deleted:    components/admin/TempleActions.tsx
+	deleted:    components/admin/UserActions.tsx
+	deleted:    components/ads/AdBanner.tsx
+	deleted:    components/ai-chat/AIChat.tsx
+	deleted:    components/astro/MuhuratTool.tsx
+	deleted:    components/astro/NumerologyTool.tsx
+	deleted:    components/astro/PanchangTool.tsx
+	deleted:    components/astro/RashifalTool.tsx
+	deleted:    components/blog/BlogCard.tsx
+	deleted:    components/blog/CategoryTabs.tsx
+	deleted:    components/home/BlogPreview.tsx
+	deleted:    components/home/ChadawaSection.tsx
+	deleted:    components/home/ChadawaSectionClient.tsx
+	deleted:    components/home/FeaturedTemples.tsx
+	deleted:    components/home/Hero.tsx
+	deleted:    components/home/HowItWorks.tsx
+	deleted:    components/home/MarqueeStrip.tsx
+	deleted:    components/home/PopularPujas.tsx
+	deleted:    components/home/Stats.tsx
+	deleted:    components/home/TempleRegisterCTA.tsx
+	deleted:    components/home/Testimonials.tsx
+	deleted:    components/puja/PujaBookingClient.tsx
+	deleted:    components/puja/PujaCountdownTimer.tsx
+	deleted:    components/puja/PujaPackageModal.tsx
+	deleted:    components/shared/DashboardShell.tsx
+	deleted:    components/shared/Footer.tsx
+	deleted:    components/shared/LoadingSkeleton.tsx
+	deleted:    components/shared/MandalaDivider.tsx
+	deleted:    components/shared/Navbar.tsx
+	deleted:    components/shared/PublicPage.tsx
+	deleted:    components/shared/ThemeProvider.tsx
+	deleted:    components/shared/ThemeToggle.tsx
+	deleted:    components/temple/ChadawaCard.tsx
+	deleted:    components/temple/PujaCard.tsx
+	deleted:    components/temple/TempleCard.tsx
+	deleted:    components/temple/TempleFilters.tsx
+	deleted:    components/temple/TempleLogoutButton.tsx
+	deleted:    components/ui/Badge.tsx
+	deleted:    components/ui/Button.tsx
+	deleted:    components/ui/Card.tsx
+	deleted:    components/ui/DataTable.tsx
+	deleted:    components/ui/EmptyState.tsx
+	deleted:    components/ui/Input.tsx
+	deleted:    components/ui/PageHero.tsx
+	deleted:    components/ui/SectionHeader.tsx
+	deleted:    contexts/LanguageContext.tsx
+	deleted:    important.txt
+	deleted:    lib/astro.ts
+	deleted:    lib/auth.config.ts
+	deleted:    lib/auth.ts
+	deleted:    lib/db.ts
+	deleted:    lib/i18n.ts
+	deleted:    lib/toast.ts
+	deleted:    lib/utils.ts
+	deleted:    messages/en.json
+	deleted:    messages/hi.json
+	deleted:    middleware.ts
+	deleted:    models/Ad.ts
+	deleted:    models/Blog.ts
+	deleted:    models/Booking.ts
+	deleted:    models/Chadawa.ts
+	deleted:    models/Puja.ts
+	deleted:    models/Review.ts
+	deleted:    models/Temple.ts
+	deleted:    models/TempleMember.ts
+	deleted:    models/User.ts
+	deleted:    next-env.d.ts
+	deleted:    next.config.mjs
+	deleted:    package-lock.json
+	deleted:    package.json
+	deleted:    postcss.config.js
+	deleted:    public/epoojalogo.png
+	deleted:    public/hero-bg.png
+	deleted:    public/logo.png
+	deleted:    public/manifest.json
+	deleted:    scripts/seed.ts
+	deleted:    services/ad.service.ts
+	deleted:    services/blog.service.ts
+	deleted:    services/booking.service.ts
+	deleted:    services/payment.service.ts
+	deleted:    services/temple.service.ts
+	deleted:    services/user.service.ts
+	deleted:    tailwind.config.ts
+	deleted:    tsconfig.json
+	deleted:    tsconfig.tsbuildinfo
+	deleted:    types/index.ts
+	deleted:    types/next-auth.d.ts
+	deleted:    ../prompt
+
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+	../.claude/
+	./
+	../prompt
+
+
+
+=== GIT BRANCHES ===
+* main
+  remotes/origin/HEAD -> origin/main
+  remotes/origin/main
