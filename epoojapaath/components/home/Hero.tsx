@@ -782,33 +782,70 @@ export function Hero() {
 
             <motion.h1
               initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.25 }}
-              className="font-heading text-5xl md:text-6xl lg:text-7xl text-foreground leading-tight mb-4"
+              className="font-heading text-4xl md:text-5xl lg:text-6xl text-foreground leading-tight mb-4"
             >
-              {t("Connect with", "जुड़िए")}
+              {t("Book Online Puja, Temple Rituals", "ऑनलाइन पूजा, मंदिर अनुष्ठान")}
               <br />
               <span className="bg-clip-text text-transparent"
                 style={{ backgroundImage: "linear-gradient(135deg, #EC9DD4, #C4AAEE, #94AAEE)" }}>
-                {t("the Divine", "दिव्यता से")}
+                {t("& Spiritual Services Across India", "और आध्यात्मिक सेवाएं")}
               </span>
             </motion.h1>
 
             <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.35 }}
-              className="font-sanskrit text-lg text-muted-foreground mb-6">
-              ॐ सर्वे भवन्तु सुखिनः • सर्वे सन्तु निरामयाः
+              className="font-sanskrit text-lg text-saffron mb-6 leading-relaxed">
+              सर्वे भवन्तु सुखिनः, सर्वे सन्तु निरामयाः।
+              <br />
+              सर्वे भद्राणि पश्यन्तु, मा कश्चिद् दु:खभाग् भवेत् ॥
             </motion.p>
 
             <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.45 }}
-              className="text-muted-foreground text-base md:text-lg mb-10 max-w-lg leading-relaxed">
+              className="text-muted-foreground text-base md:text-lg mb-8 max-w-lg leading-relaxed font-medium">
               {t(
-                "Book sacred pujas, offer Chadawa, and discover temples across India. Divine blessings — wherever you are.",
-                "पवित्र पूजा बुक करें, चढ़ावा अर्पण करें और भारत के मंदिर खोजें। दिव्य आशीर्वाद — जहाँ भी हों।"
+                "Get Divine Blessings from the Comfort of Your Home",
+                "अपने घर बैठे प्राप्त करें दिव्य आशीर्वाद"
               )}
             </motion.p>
 
             <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.55 }}
-              className="flex flex-wrap gap-4 mb-12">
-              <Link href="/puja" className="btn-saffron text-base px-8 py-3">{t("Book Puja 🪔", "पूजा बुक करें 🪔")}</Link>
-              <Link href="/temples" className="btn-outline-lotus text-base px-8 py-3">{t("Explore Temples", "मंदिर देखें")}</Link>
+              className="flex flex-wrap gap-4 mb-8">
+              <Link href="/puja" className="btn-saffron text-base px-8 py-3 font-semibold tracking-wide shadow-lg shadow-saffron/20">{t("BOOK PUJA 🪔", "पूजा बुक करें 🪔")}</Link>
+              <Link href="/chadawa" className="btn-outline-lotus text-base px-8 py-3 font-semibold tracking-wide">{t("BOOK CHADAVA 🌸", "चढ़ावा अर्पण करें 🌸")}</Link>
+            </motion.div>
+
+            {/* Infinite Horizontal Auto-Scrolling Ticker */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.65 }}
+              className="relative w-full max-w-lg overflow-hidden py-3 px-4 rounded-2xl bg-saffron/5 border border-saffron/10 mb-10 shadow-[0_0_15px_rgba(212,130,10,0.02)]"
+            >
+              <div className="flex whitespace-nowrap animate-marquee gap-8 text-sm font-medium text-muted-foreground">
+                {[
+                  { en: "Personalized Sankalp in Your Name", hi: "आपके नाम से व्यक्तिगत संकल्प" },
+                  { en: "Live Photos & Video Updates", hi: "लाइव तस्वीरें और वीडियो अपडेट" },
+                  { en: "Prasad Delivery Available", hi: "प्रसाद डिलीवरी की सुविधा" },
+                  { en: "Affordable Puja Packages", hi: "किफायती पूजा पैकेज" },
+                  { en: "Secure Online Payments", hi: "सुरक्षित ऑनलाइन भुगतान" },
+                  { en: "Quick Booking Process", hi: "त्वरित बुकिंग प्रक्रिया" },
+                  { en: "Dedicated Devotee Support", hi: "समर्पित भक्त सहायता" },
+                  { en: "Trusted Spiritual Experience", hi: "विश्वसनीय आध्यात्मिक अनुभव" }
+                ].concat([
+                  { en: "Personalized Sankalp in Your Name", hi: "आपके नाम से व्यक्तिगत संकल्प" },
+                  { en: "Live Photos & Video Updates", hi: "लाइव तस्वीरें और वीडियो अपडेट" },
+                  { en: "Prasad Delivery Available", hi: "प्रसाद डिलीवरी की सुविधा" },
+                  { en: "Affordable Puja Packages", hi: "किफायती पूजा पैकेज" },
+                  { en: "Secure Online Payments", hi: "सुरक्षित ऑनलाइन भुगतान" },
+                  { en: "Quick Booking Process", hi: "त्वरित बुकिंग प्रक्रिया" },
+                  { en: "Dedicated Devotee Support", hi: "समर्पित भक्त सहायता" },
+                  { en: "Trusted Spiritual Experience", hi: "विश्वसनीय आध्यात्मिक अनुभव" }
+                ]).map((f, i) => (
+                  <span key={i} className="inline-flex items-center gap-2">
+                    <span className="text-emerald-500 font-bold shrink-0">✔</span>
+                    {t(f.en, f.hi)}
+                  </span>
+                ))}
+              </div>
             </motion.div>
 
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.7 }}
