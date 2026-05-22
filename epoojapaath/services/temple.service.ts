@@ -1,5 +1,6 @@
 import { connectDB } from "@/lib/db";
 import Temple from "@/models/Temple";
+import User from "@/models/User";
 import { slugify } from "@/lib/utils";
 
 export async function getApprovedTemples(query: { city?: string; deity?: string; featured?: boolean } = {}) {

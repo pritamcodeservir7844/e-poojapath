@@ -8,6 +8,7 @@ import { connectDB } from "@/lib/db";
 import Puja from "@/models/Puja";
 import Chadawa from "@/models/Chadawa";
 import Review from "@/models/Review";
+import User from "@/models/User";
 import { formatCurrency } from "@/lib/utils";
 import { MapPin, Phone, Mail, Globe, Clock, Star } from "lucide-react";
 
