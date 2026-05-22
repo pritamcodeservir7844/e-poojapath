@@ -7,6 +7,7 @@ import { EmptyState } from "@/components/ui/EmptyState";
 import { TempleCard } from "@/components/temple/TempleCard";
 import { TempleFilters } from "@/components/temple/TempleFilters";
 import { getApprovedTemples } from "@/services/temple.service";
+import { serialize } from "@/lib/utils";
 import type { ITemple } from "@/types";
 
 interface PageProps {
@@ -14,10 +15,12 @@ interface PageProps {
 }
 
 export default async function TemplesPage({ searchParams }: PageProps) {
-  const temples = await getApprovedTemples({
-    city:  searchParams.city  || undefined,
-    deity: searchParams.deity || undefined,
-  }).catch(() => []) as (ITemple & { _id: string })[];
+  const temples = serialize(
+    await getApprovedTemples({
+      city:  searchParams.city  || undefined,
+      deity: searchParams.deity || undefined,
+    }).catch(() => [])
+  ) as (ITemple & { _id: string })[];
 
   return (
     <PublicPage>

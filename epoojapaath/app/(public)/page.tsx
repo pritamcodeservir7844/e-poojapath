@@ -16,10 +16,11 @@ import { MandalaDivider } from "@/components/shared/MandalaDivider";
 import { AdBanner } from "@/components/ads/AdBanner";
 import { AIChat } from "@/components/ai-chat/AIChat";
 import { getActiveAd } from "@/services/ad.service";
+import { serialize } from "@/lib/utils";
 
 export default async function HomePage() {
-  const heroAd    = await getActiveAd("hero").catch(() => null) as any;
-  const sectionAd = await getActiveAd("between-sections").catch(() => null) as any;
+  const heroAd    = serialize(await getActiveAd("hero").catch(() => null)) as any;
+  const sectionAd = serialize(await getActiveAd("between-sections").catch(() => null)) as any;
 
   return (
     <>

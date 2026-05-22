@@ -9,6 +9,7 @@ import { AdBanner } from "@/components/ads/AdBanner";
 import { CategoryTabs } from "@/components/blog/CategoryTabs";
 import { getPublishedBlogs, getFeaturedBlogs } from "@/services/blog.service";
 import { getActiveAd } from "@/services/ad.service";
+import { serialize } from "@/lib/utils";
 import type { IBlog, IAd } from "@/types";
 
 interface PageProps {
@@ -16,11 +17,15 @@ interface PageProps {
 }
 
 export default async function BlogPage({ searchParams }: PageProps) {
-  const [blogs, featured, sidebarAd] = await Promise.all([
+  const [blogsRaw, featuredRaw, sidebarAdRaw] = await Promise.all([
     getPublishedBlogs({ category: searchParams.category, search: searchParams.q }).catch(() => []),
     getFeaturedBlogs().catch(() => []),
     getActiveAd("sidebar").catch(() => null),
-  ]) as [(IBlog & { _id: string })[], (IBlog & { _id: string })[], (IAd & { _id: string }) | null];
+  ]);
+
+  const blogs = serialize(blogsRaw) as (IBlog & { _id: string })[];
+  const featured = serialize(featuredRaw) as (IBlog & { _id: string })[];
+  const sidebarAd = serialize(sidebarAdRaw) as (IAd & { _id: string }) | null;
 
   return (
     <PublicPage>

@@ -11,25 +11,30 @@ import Puja from "@/models/Puja";
 import Chadawa from "@/models/Chadawa";
 import Review from "@/models/Review";
 import User from "@/models/User";
-import { formatCurrency } from "@/lib/utils";
+import { formatCurrency, serialize } from "@/lib/utils";
 import { MapPin, Phone, Mail, Globe, Clock, Star } from "lucide-react";
 
 export async function generateMetadata({ params }: { params: { slug: string } }) {
-  const temple = await getTempleBySlug(params.slug).catch(() => null) as any;
+  const temple = serialize(await getTempleBySlug(params.slug).catch(() => null)) as any;
   if (!temple) return { title: "Temple Not Found" };
   return { title: `${temple.name} | ePoojapaath`, description: temple.shortDescription };
 }
 
 export default async function TempleDetailPage({ params }: { params: { slug: string } }) {
-  const temple = await getTempleBySlug(params.slug).catch(() => null) as any;
-  if (!temple) notFound();
+  const templeRaw = await getTempleBySlug(params.slug).catch(() => null);
+  if (!templeRaw) notFound();
+  const temple = serialize(templeRaw) as any;
 
   await connectDB();
-  const [pujas, chadawaItems, reviews] = await Promise.all([
+  const [pujasRaw, chadawaItemsRaw, reviewsRaw] = await Promise.all([
     Puja.find({ temple: temple._id, isActive: true }).lean(),
     Chadawa.find({ temple: temple._id, isActive: true }).lean(),
     Review.find({ temple: temple._id }).populate("user", "name").sort({ createdAt: -1 }).limit(6).lean(),
   ]);
+
+  const pujas = serialize(pujasRaw);
+  const chadawaItems = serialize(chadawaItemsRaw);
+  const reviews = serialize(reviewsRaw);
 
   return (
     <PublicPage showAIChat>

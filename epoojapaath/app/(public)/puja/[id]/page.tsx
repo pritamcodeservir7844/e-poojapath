@@ -75,12 +75,15 @@ const DEFAULT_FAQS = [
   },
 ];
 
+import { serialize } from "@/lib/utils";
+
 export default async function PujaDetailPage({ params }: { params: { id: string } }) {
-  const puja = await getPujaDetail(params.id).catch(() => null);
-  if (!puja) notFound();
+  const pujaRaw = await getPujaDetail(params.id).catch(() => null);
+  if (!pujaRaw) notFound();
+  const puja = serialize(pujaRaw);
 
   const temple = puja.temple;
-  const chadawaItems = await getTempleChadawa(temple._id).catch(() => []);
+  const chadawaItems = serialize(await getTempleChadawa(temple._id).catch(() => []));
   const faqs = puja.faqs && puja.faqs.length > 0 ? puja.faqs : DEFAULT_FAQS;
 
   const displayRating = puja.rating > 0 ? puja.rating : temple.rating > 0 ? temple.rating : 4.5;

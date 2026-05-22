@@ -7,23 +7,26 @@ import { getBlogBySlug, getPublishedBlogs } from "@/services/blog.service";
 import { getActiveAd } from "@/services/ad.service";
 import { AdBanner } from "@/components/ads/AdBanner";
 import { BlogCard } from "@/components/blog/BlogCard";
-import { formatDate, calculateReadTime } from "@/lib/utils";
+import { formatDate, calculateReadTime, serialize } from "@/lib/utils";
 import type { IUser } from "@/types";
 
 export async function generateMetadata({ params }: { params: { slug: string } }) {
-  const blog = await getBlogBySlug(params.slug).catch(() => null);
+  const blog = serialize(await getBlogBySlug(params.slug).catch(() => null));
   if (!blog) return { title: "Blog Not Found" };
   return { title: `${blog.title} | ePoojapaath`, description: blog.excerpt };
 }
 
 export default async function BlogDetailPage({ params }: { params: { slug: string } }) {
-  const [blog, sidebarAd] = await Promise.all([
+  const [blogRaw, sidebarAdRaw] = await Promise.all([
     getBlogBySlug(params.slug).catch(() => null),
     getActiveAd("sidebar").catch(() => null),
   ]);
-  if (!blog) notFound();
+  if (!blogRaw) notFound();
 
-  const related = await getPublishedBlogs({ category: blog.category }).catch(() => []);
+  const blog = serialize(blogRaw);
+  const sidebarAd = serialize(sidebarAdRaw);
+
+  const related = serialize(await getPublishedBlogs({ category: blog.category }).catch(() => []));
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const relatedFiltered = (related as any[]).filter((b) => b._id.toString() !== blog._id.toString()).slice(0, 3);
 

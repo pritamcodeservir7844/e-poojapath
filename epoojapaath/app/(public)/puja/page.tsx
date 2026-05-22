@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
 import { connectDB } from "@/lib/db";
 import Puja from "@/models/Puja";
+import { serialize } from "@/lib/utils";
 
 async function getPujas(search?: string) {
   await connectDB();
@@ -23,7 +24,7 @@ interface PageProps {
 
 export default async function PujaPage({ searchParams }: PageProps) {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const pujas = await getPujas(searchParams.q).catch(() => []) as any[];
+  const pujas = serialize(await getPujas(searchParams.q).catch(() => [])) as any[];
 
   return (
     <PublicPage>

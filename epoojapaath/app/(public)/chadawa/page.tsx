@@ -7,6 +7,7 @@ import { EmptyState } from "@/components/ui/EmptyState";
 import { ChadawaCard } from "@/components/temple/ChadawaCard";
 import { connectDB } from "@/lib/db";
 import Chadawa from "@/models/Chadawa";
+import { serialize } from "@/lib/utils";
 
 async function getChadawaItems() {
   await connectDB();
@@ -15,7 +16,7 @@ async function getChadawaItems() {
 
 export default async function ChadawaPage() {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const items = await getChadawaItems().catch(() => []) as any[];
+  const items = serialize(await getChadawaItems().catch(() => [])) as any[];
 
   return (
     <PublicPage>
