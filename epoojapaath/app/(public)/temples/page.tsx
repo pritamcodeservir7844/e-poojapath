@@ -15,12 +15,19 @@ interface PageProps {
 }
 
 export default async function TemplesPage({ searchParams }: PageProps) {
-  const temples = serialize(
-    await getApprovedTemples({
-      city:  searchParams.city  || undefined,
-      deity: searchParams.deity || undefined,
-    }).catch(() => [])
-  ) as (ITemple & { _id: string })[];
+  let temples: (ITemple & { _id: string })[] = [];
+  let dbError: string | null = null;
+
+  try {
+    temples = serialize(
+      await getApprovedTemples({
+        city:  searchParams?.city  || undefined,
+        deity: searchParams?.deity || undefined,
+      })
+    ) as any as (ITemple & { _id: string })[];
+  } catch (err: any) {
+    dbError = err instanceof Error ? `${err.message}\n${err.stack}` : String(err);
+  }
 
   return (
     <PublicPage>
@@ -29,9 +36,14 @@ export default async function TemplesPage({ searchParams }: PageProps) {
         title="Explore Temples"
         subtitle="Discover 500+ verified temples across India. Book pujas, offer chadawa, seek divine blessings."
       />
-      <TempleFilters city={searchParams.city} deity={searchParams.deity} />
+      <TempleFilters city={searchParams?.city} deity={searchParams?.deity} />
       <MandalaDivider />
       <section className="section-padding max-w-7xl mx-auto">
+        {dbError && (
+          <div className="bg-red-50 border border-red-200 text-red-700 p-4 rounded-xl mb-6 font-mono text-sm whitespace-pre-wrap">
+            <strong>Database Error:</strong> {dbError}
+          </div>
+        )}
         {temples.length === 0 ? (
           <EmptyState icon="🛕" title="No temples found" description="Try a different city or deity." />
         ) : (

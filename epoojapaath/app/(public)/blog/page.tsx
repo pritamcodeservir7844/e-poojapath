@@ -23,9 +23,9 @@ export default async function BlogPage({ searchParams }: PageProps) {
     getActiveAd("sidebar").catch(() => null),
   ]);
 
-  const blogs = serialize(blogsRaw) as (IBlog & { _id: string })[];
-  const featured = serialize(featuredRaw) as (IBlog & { _id: string })[];
-  const sidebarAd = serialize(sidebarAdRaw) as (IAd & { _id: string }) | null;
+  const blogs = serialize(blogsRaw) as any as (IBlog & { _id: string })[];
+  const featured = serialize(featuredRaw) as any as (IBlog & { _id: string })[];
+  const sidebarAd = serialize(sidebarAdRaw) as any as (IAd & { _id: string }) | null;
 
   return (
     <PublicPage>
