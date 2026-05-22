@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import { PublicPage } from "@/components/shared/PublicPage";
 import { PageHero } from "@/components/ui/PageHero";
 import { MandalaDivider } from "@/components/shared/MandalaDivider";
