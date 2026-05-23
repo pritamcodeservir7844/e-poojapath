@@ -9,6 +9,7 @@ import { PopularPujas } from "@/components/home/PopularPujas";
 import { ChadawaSection } from "@/components/home/ChadawaSection";
 import { HowItWorks } from "@/components/home/HowItWorks";
 import { Stats } from "@/components/home/Stats";
+import { DPIITRecognition } from "@/components/home/DPIITRecognition";
 import { BlogPreview } from "@/components/home/BlogPreview";
 import { Testimonials } from "@/components/home/Testimonials";
 import { TempleRegisterCTA } from "@/components/home/TempleRegisterCTA";
@@ -19,7 +20,7 @@ import { getActiveAd } from "@/services/ad.service";
 import { serialize } from "@/lib/utils";
 
 export default async function HomePage() {
-  const heroAd    = serialize(await getActiveAd("hero").catch(() => null)) as any;
+  const heroAd = serialize(await getActiveAd("hero").catch(() => null)) as any;
   const sectionAd = serialize(await getActiveAd("between-sections").catch(() => null)) as any;
 
   return (
@@ -40,6 +41,8 @@ export default async function HomePage() {
         <HowItWorks />
         <Stats />
         <MandalaDivider />
+        <DPIITRecognition />
+        <MandalaDivider />
         <BlogPreview />
         <MandalaDivider />
         <Testimonials />
@@ -50,3 +53,4 @@ export default async function HomePage() {
     </>
   );
 }
+

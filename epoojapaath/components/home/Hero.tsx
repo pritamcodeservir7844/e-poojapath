@@ -813,38 +813,17 @@ export function Hero() {
               <Link href="/chadawa" className="btn-outline-lotus text-base px-8 py-3 font-semibold tracking-wide">{t("BOOK CHADAVA 🌸", "चढ़ावा अर्पण करें 🌸")}</Link>
             </motion.div>
 
-            {/* Infinite Horizontal Auto-Scrolling Ticker */}
+            {/* Infinite Horizontal Auto-Scrolling Ticker (Religious chants) */}
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.65 }}
               className="relative w-full max-w-lg overflow-hidden py-3 px-4 rounded-2xl bg-saffron/5 border border-saffron/10 mb-10 shadow-[0_0_15px_rgba(212,130,10,0.02)]"
             >
-              <div className="flex whitespace-nowrap animate-marquee gap-8 text-sm font-medium text-muted-foreground">
-                {[
-                  { en: "Personalized Sankalp in Your Name", hi: "आपके नाम से व्यक्तिगत संकल्प" },
-                  { en: "Live Photos & Video Updates", hi: "लाइव तस्वीरें और वीडियो अपडेट" },
-                  { en: "Prasad Delivery Available", hi: "प्रसाद डिलीवरी की सुविधा" },
-                  { en: "Affordable Puja Packages", hi: "किफायती पूजा पैकेज" },
-                  { en: "Secure Online Payments", hi: "सुरक्षित ऑनलाइन भुगतान" },
-                  { en: "Quick Booking Process", hi: "त्वरित बुकिंग प्रक्रिया" },
-                  { en: "Dedicated Devotee Support", hi: "समर्पित भक्त सहायता" },
-                  { en: "Trusted Spiritual Experience", hi: "विश्वसनीय आध्यात्मिक अनुभव" }
-                ].concat([
-                  { en: "Personalized Sankalp in Your Name", hi: "आपके नाम से व्यक्तिगत संकल्प" },
-                  { en: "Live Photos & Video Updates", hi: "लाइव तस्वीरें और वीडियो अपडेट" },
-                  { en: "Prasad Delivery Available", hi: "प्रसाद डिलीवरी की सुविधा" },
-                  { en: "Affordable Puja Packages", hi: "किफायती पूजा पैकेज" },
-                  { en: "Secure Online Payments", hi: "सुरक्षित ऑनलाइन भुगतान" },
-                  { en: "Quick Booking Process", hi: "त्वरित बुकिंग प्रक्रिया" },
-                  { en: "Dedicated Devotee Support", hi: "समर्पित भक्त सहायता" },
-                  { en: "Trusted Spiritual Experience", hi: "विश्वसनीय आध्यात्मिक अनुभव" }
-                ]).map((f, i) => (
-                  <span key={i} className="inline-flex items-center gap-2">
-                    <span className="text-emerald-500 font-bold shrink-0">✔</span>
-                    {t(f.en, f.hi)}
-                  </span>
-                ))}
+              <div className="flex whitespace-nowrap animate-marquee gap-8 text-sm font-semibold text-saffron font-sanskrit tracking-wider">
+                <span>ॐ नमः शिवाय • जय माता दी • हर हर महादेव • जय श्री राम • राधे राधे • जय जिनेन्द्र • वाहेगुरु • </span>
+                <span>ॐ नमः शिवाय • जय माता दी • हर हर महादेव • जय श्री राम • राधे राधे • जय जिनेन्द्र • वाहेगुरु • </span>
+                <span>ॐ नमः शिवाय • जय माता दी • हर हर महादेव • जय श्री राम • राधे राधे • जय जिनेन्द्र • वाहेगुरु • </span>
               </div>
             </motion.div>
 

@@ -311,7 +311,7 @@ async function seed() {
   await Ad.insertMany([
     {
       title: "Book Navratri Special Puja",
-      imageUrl: "https://images.unsplash.com/photo-1588880331179-bc9b93a8cb5e?w=1200",
+      imageUrl: "/ad_poojapath_banner.png",
       linkUrl: "/puja?filter=navratri",
       placement: "hero",
       isActive: true,
