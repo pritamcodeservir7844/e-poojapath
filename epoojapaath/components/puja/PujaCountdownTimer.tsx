@@ -39,6 +39,7 @@ export function PujaCountdownTimer({ scheduledAt }: { scheduledAt?: string }) {
       setTimeLeft(getTimeLeft(target));
     }, 1000);
     return () => clearInterval(interval);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [scheduledAt]);
 
   const isExpired = timeLeft.hours === 0 && timeLeft.minutes === 0 && timeLeft.seconds === 0;

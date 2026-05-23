@@ -199,12 +199,14 @@ export default function AdminTempleDetailPage() {
       .then(d => { if (d.success) setData(d.data); })
       .finally(() => setLoading(false));
   }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => { reload(); }, [id]);
 
   // ?edit=1 param se auto edit modal open karo jab data load ho
   const isEditParam = searchParams.get("edit") === "1";
   useEffect(() => {
     if (isEditParam && data) openEditTemple();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isEditParam, data]);
 
   // ── Temple Edit ──────────────────────────────────────────────────────────
@@ -585,7 +587,10 @@ export default function AdminTempleDetailPage() {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
                   {offeringItems.map((item, idx) => (
                     <div key={idx} className="flex items-center gap-3 border border-deep-gold/20 rounded-xl p-3 bg-background">
-                      {item.image && <img src={item.image} alt={item.name} className="w-12 h-12 rounded-lg object-cover shrink-0" />}
+                      {item.image && (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img src={item.image} alt={item.name} className="w-12 h-12 rounded-lg object-cover shrink-0" />
+                      )}
                       <div className="flex-1 min-w-0">
                         <p className="font-medium text-sm text-foreground truncate">{item.name}</p>
                         <p className="text-xs text-saffron">{item.nameHi}</p>

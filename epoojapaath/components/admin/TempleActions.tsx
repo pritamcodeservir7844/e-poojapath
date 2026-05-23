@@ -25,7 +25,7 @@ function ConfirmDialog({ name, onConfirm, onCancel, loading }: {
           <button onClick={onCancel} className="ml-auto text-muted-foreground hover:text-foreground"><X size={16} /></button>
         </div>
         <p className="text-sm text-muted-foreground mb-2">
-          <strong className="text-foreground">"{name}"</strong> ko permanently delete karna chahte hain?
+          <strong className="text-foreground">&ldquo;{name}&rdquo;</strong> ko permanently delete karna chahte hain?
         </p>
         <p className="text-xs text-red-500 mb-6">⚠️ Iske sare Puja aur Chadawa bhi delete ho jayenge!</p>
         <div className="flex gap-3">

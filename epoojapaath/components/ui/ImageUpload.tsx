@@ -102,6 +102,7 @@ export function ImageUpload({
 
       {value ? (
         <div className={`relative rounded-xl overflow-hidden border border-border ${previewHeight} w-full group`}>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={value}
             alt="Preview"
