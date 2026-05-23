@@ -18,7 +18,7 @@ export function BlogAdminActions({ id, isFeatured, status }: BlogAdminActionsPro
   async function toggleFeature() {
     setLoading(true);
     try {
-      const res  = await fetch(`/api/admin/blog/${id}`, { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ isAdminFeatured: !isFeatured }) });
+      const res = await fetch(`/api/admin/blog/${id}`, { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ isAdminFeatured: !isFeatured }) });
       const data = await res.json();
       if (data.success) { devToast.success(isFeatured ? "Removed from featured" : "Featured on homepage ⭐"); router.refresh(); }
       else devToast.error(data.error);
@@ -29,7 +29,7 @@ export function BlogAdminActions({ id, isFeatured, status }: BlogAdminActionsPro
     if (!confirm("Delete this blog post?")) return;
     setLoading(true);
     try {
-      const res  = await fetch(`/api/admin/blog/${id}`, { method: "DELETE" });
+      const res = await fetch(`/api/admin/blog/${id}`, { method: "DELETE" });
       const data = await res.json();
       if (data.success) { devToast.success("Blog deleted"); router.refresh(); }
       else devToast.error(data.error);
@@ -38,7 +38,7 @@ export function BlogAdminActions({ id, isFeatured, status }: BlogAdminActionsPro
 
   return (
     <div className="flex gap-1.5">
-      <Button size="sm" variant="ghost"  onClick={toggleFeature} loading={loading}>{isFeatured ? "Unfeature" : "⭐ Feature"}</Button>
+      <Button size="sm" variant="ghost" onClick={toggleFeature} loading={loading}>{isFeatured ? "Unfeature" : "⭐ Feature"}</Button>
       {status !== "archived" && (
         <Button size="sm" variant="danger" onClick={deleteBlog} loading={loading}>Delete</Button>
       )}

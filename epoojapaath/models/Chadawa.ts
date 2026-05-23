@@ -20,6 +20,7 @@ export interface IChadawaDoc extends Document {
   deity: string;
   temple: mongoose.Types.ObjectId;
   isActive: boolean;
+  status: "pending" | "approved" | "rejected";
   createdAt: Date;
 }
 
@@ -44,6 +45,7 @@ const ChadawaSchema = new Schema<IChadawaDoc>(
     deity:         { type: String, required: true },
     temple:        { type: Schema.Types.ObjectId, ref: "Temple", required: true },
     isActive:      { type: Boolean, default: true },
+    status:        { type: String, enum: ["pending", "approved", "rejected"], default: "pending" },
   },
   { timestamps: true }
 );

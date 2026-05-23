@@ -30,9 +30,11 @@ export interface IPujaDoc extends Document {
   faqs: IPujaFaq[];
   temple: mongoose.Types.ObjectId;
   isActive: boolean;
+  status: "pending" | "approved" | "rejected";
   totalBooked: number;
   createdAt: Date;
 }
+
 
 const PackageSchema = new Schema<IPujaPackage>({
   label:      { type: String, required: true },
@@ -65,9 +67,11 @@ const PujaSchema = new Schema<IPujaDoc>(
     faqs:          [FaqSchema],
     temple:        { type: Schema.Types.ObjectId, ref: "Temple", required: true },
     isActive:      { type: Boolean, default: true },
+    status:        { type: String, enum: ["pending", "approved", "rejected"], default: "pending" },
     totalBooked:   { type: Number, default: 0 },
   },
   { timestamps: true }
+
 );
 
 export default models.Puja || mongoose.model<IPujaDoc>("Puja", PujaSchema);

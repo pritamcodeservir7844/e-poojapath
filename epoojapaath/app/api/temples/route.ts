@@ -6,8 +6,8 @@ export async function GET(req: NextRequest) {
   try {
     const { searchParams } = new URL(req.url);
     const temples = await getApprovedTemples({
-      city:     searchParams.get("city")     || undefined,
-      deity:    searchParams.get("deity")    || undefined,
+      city: searchParams.get("city") || undefined,
+      deity: searchParams.get("deity") || undefined,
       featured: searchParams.get("featured") === "true",
     });
     return NextResponse.json({ success: true, data: temples });

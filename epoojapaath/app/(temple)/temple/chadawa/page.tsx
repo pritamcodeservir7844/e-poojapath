@@ -22,14 +22,14 @@ const EMPTY_ITEM: Omit<IChadawaOfferingItem, "price"> & { price: string } = {
 };
 
 export default function TempleChadawaPage() {
-  const [temples,       setTemples]       = useState<{ value: string; label: string }[]>([]);
-  const [rows,          setRows]          = useState<Row[]>([]);
-  const [form,          setForm]          = useState(EMPTY_FORM);
+  const [temples, setTemples] = useState<{ value: string; label: string }[]>([]);
+  const [rows, setRows] = useState<Row[]>([]);
+  const [form, setForm] = useState(EMPTY_FORM);
   const [offeringItems, setOfferingItems] = useState<typeof EMPTY_ITEM[]>([]);
-  const [newItem,       setNewItem]       = useState(EMPTY_ITEM);
-  const [adding,        setAdding]        = useState(false);
-  const [showForm,      setShowForm]      = useState(false);
-  const [showItemForm,  setShowItemForm]  = useState(false);
+  const [newItem, setNewItem] = useState(EMPTY_ITEM);
+  const [adding, setAdding] = useState(false);
+  const [showForm, setShowForm] = useState(false);
+  const [showItemForm, setShowItemForm] = useState(false);
 
   useEffect(() => {
     fetch("/api/temples?owner=me").then((r) => r.json()).then((d) => {
@@ -83,7 +83,7 @@ export default function TempleChadawaPage() {
           price: Number(item.price),
         })),
       };
-      const res  = await fetch(`/api/temples/${form.templeId}/chadawa`, {
+      const res = await fetch(`/api/temples/${form.templeId}/chadawa`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
@@ -149,14 +149,14 @@ export default function TempleChadawaPage() {
           <form onSubmit={handleAdd} className="space-y-6">
             {/* Basic Info */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <Input label="Name (English)"  required value={form.name}           onChange={set("name")}        placeholder="Bilva Patra Offering" />
-              <Input label="Name (Hindi)"    required value={form.nameHi}         onChange={set("nameHi")}      placeholder="बेलपत्र अर्पण" />
-              <Input label="Deity"           required value={form.deity}          onChange={set("deity")}       placeholder="Lord Shiva" />
-              <Input label="Base Price (₹)"  required value={form.price}          onChange={set("price")} type="number" placeholder="151" />
-              <Input label="Cover Image URL" required value={form.image}          onChange={set("image")}       placeholder="https://..." />
-              <Input label="Includes (comma separated)" value={form.items}        onChange={set("items")}       placeholder="Bilva leaves, Gangajal" />
-              <Textarea label="Description (English)" required value={form.description}    onChange={set("description")}   rows={2} className="md:col-span-2" />
-              <Textarea label="Description (Hindi)"   required value={form.descriptionHi} onChange={set("descriptionHi")} rows={2} className="md:col-span-2" />
+              <Input label="Name (English)" required value={form.name} onChange={set("name")} placeholder="Bilva Patra Offering" />
+              <Input label="Name (Hindi)" required value={form.nameHi} onChange={set("nameHi")} placeholder="बेलपत्र अर्पण" />
+              <Input label="Deity" required value={form.deity} onChange={set("deity")} placeholder="Lord Shiva" />
+              <Input label="Base Price (₹)" required value={form.price} onChange={set("price")} type="number" placeholder="151" />
+              <Input label="Cover Image URL" required value={form.image} onChange={set("image")} placeholder="https://..." />
+              <Input label="Includes (comma separated)" value={form.items} onChange={set("items")} placeholder="Bilva leaves, Gangajal" />
+              <Textarea label="Description (English)" required value={form.description} onChange={set("description")} rows={2} className="md:col-span-2" />
+              <Textarea label="Description (Hindi)" required value={form.descriptionHi} onChange={set("descriptionHi")} rows={2} className="md:col-span-2" />
             </div>
 
             {/* Offering Items Section */}
@@ -211,10 +211,10 @@ export default function TempleChadawaPage() {
                 <div className="border border-deep-gold/30 rounded-xl p-4 bg-saffron/5 space-y-3">
                   <p className="text-sm font-medium text-foreground">New Offering Item</p>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    <Input label="Item Name (English)" required value={newItem.name}    onChange={setItem("name")}    placeholder="Bilva Patra" />
-                    <Input label="Item Name (Hindi)"   required value={newItem.nameHi}  onChange={setItem("nameHi")}  placeholder="बेलपत्र" />
-                    <Input label="Price (₹)"           required value={newItem.price}   onChange={setItem("price")} type="number" placeholder="21" />
-                    <Input label="Image URL"           required value={newItem.image}   onChange={setItem("image")}   placeholder="https://..." />
+                    <Input label="Item Name (English)" required value={newItem.name} onChange={setItem("name")} placeholder="Bilva Patra" />
+                    <Input label="Item Name (Hindi)" required value={newItem.nameHi} onChange={setItem("nameHi")} placeholder="बेलपत्र" />
+                    <Input label="Price (₹)" required value={newItem.price} onChange={setItem("price")} type="number" placeholder="21" />
+                    <Input label="Image URL" required value={newItem.image} onChange={setItem("image")} placeholder="https://..." />
                     <Textarea label="Description (optional)" value={newItem.description} onChange={setItem("description")} rows={2} className="sm:col-span-2" />
                   </div>
                   <div className="flex gap-2 justify-end">

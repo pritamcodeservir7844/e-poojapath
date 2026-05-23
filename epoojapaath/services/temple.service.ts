@@ -1,13 +1,15 @@
 import { connectDB } from "@/lib/db";
 import Temple from "@/models/Temple";
+import Puja from "@/models/Puja";
+import Chadawa from "@/models/Chadawa";
 import User from "@/models/User";
 import { slugify } from "@/lib/utils";
 
 export async function getApprovedTemples(query: { city?: string; deity?: string; featured?: boolean } = {}) {
   await connectDB();
   const filter: Record<string, unknown> = { status: "approved" };
-  if (query.city)     filter["location.city"] = new RegExp(query.city, "i");
-  if (query.deity)    filter.deity = new RegExp(query.deity, "i");
+  if (query.city) filter["location.city"] = new RegExp(query.city, "i");
+  if (query.deity) filter.deity = new RegExp(query.deity, "i");
   if (query.featured) filter.featured = true;
   return Temple.find(filter).populate("owner", "name email").sort({ featured: -1, createdAt: -1 }).lean();
 }
@@ -50,7 +52,14 @@ export async function getAllTemplesAdmin() {
   return Temple.find().populate("owner", "name email").sort({ createdAt: -1 }).lean();
 }
 
-export async function updateTempleStatus(id: string, status: "approved" | "rejected") {
+export async function updateTempleStatus(id: string, status: "approved" | "rejected" | "pending") {
   await connectDB();
+  // Cascade: jab temple approved ho tabhi puja/chadawa active rahein,
+  // rejected ya pending hone par automatically inactive ho jaate hain
+  const isActive = status === "approved";
+  await Promise.all([
+    Puja.updateMany({ temple: id }, { isActive }),
+    Chadawa.updateMany({ temple: id }, { isActive }),
+  ]);
   return Temple.findByIdAndUpdate(id, { status }, { new: true });
 }

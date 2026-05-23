@@ -5,8 +5,15 @@ import Chadawa from "@/models/Chadawa";
 export async function GET(_: NextRequest, { params }: { params: { id: string } }) {
   try {
     await connectDB();
-    const item = await Chadawa.findById(params.id).populate("temple", "name slug coverImage description location rating reviewCount").lean();
+    const item = await Chadawa.findById(params.id).populate("temple", "name slug coverImage description location rating reviewCount status").lean();
     if (!item) return NextResponse.json({ success: false, error: "Not found" }, { status: 404 });
+
+    // Agar temple approved nahi hai to chadawa bhi nahi dikhayenge
+    const temple = (item as any).temple;
+    if (!temple || temple.status !== "approved") {
+      return NextResponse.json({ success: false, error: "Not found" }, { status: 404 });
+    }
+
     return NextResponse.json({ success: true, data: item });
   } catch {
     return NextResponse.json({ success: false, error: "Failed" }, { status: 500 });

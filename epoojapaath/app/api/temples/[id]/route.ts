@@ -16,7 +16,7 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
   const session = await auth();
   if (!session?.user) return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
   try {
-    const body   = await req.json();
+    const body = await req.json();
     const temple = await updateTemple(params.id, body);
     return NextResponse.json({ success: true, data: temple });
   } catch {

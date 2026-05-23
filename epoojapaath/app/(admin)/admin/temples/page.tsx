@@ -1,5 +1,7 @@
 import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
+import Link from "next/link";
+import { Plus } from "lucide-react";
 import { DashboardShell } from "@/components/shared/DashboardShell";
 import { DataTable } from "@/components/ui/DataTable";
 import { Badge } from "@/components/ui/Badge";
@@ -24,12 +26,22 @@ export default async function AdminTemplesPage() {
     { key: "status",   header: "Status",   render: (t: TempleRow) => <Badge variant={t.status as any}>{t.status}</Badge> },
     { key: "featured", header: "Featured", render: (t: TempleRow) => t.featured ? "⭐ Yes" : "—" },
     { key: "createdAt",header: "Created",  render: (t: TempleRow) => formatDateShort(t.createdAt) },
-    { key: "_id",      header: "Actions",  render: (t: TempleRow) => <TempleActions id={t._id.toString()} status={t.status} /> },
+    { key: "_id",      header: "Actions",  render: (t: TempleRow) => <TempleActions id={t._id.toString()} status={t.status} name={t.name} /> },
   ];
 
   return (
-    <DashboardShell title="Temple Manager" subtitle={`${temples.length} temples registered`}>
+    <DashboardShell
+      title="Temple Manager"
+      subtitle={`${temples.length} temples registered`}
+      action={
+        <Link href="/admin/temples/new"
+          className="flex items-center gap-2 px-4 py-2 rounded-xl bg-saffron text-white text-sm font-medium hover:bg-saffron/90 transition">
+          <Plus size={15} /> Naya Temple Add Karo
+        </Link>
+      }
+    >
       <DataTable columns={columns} data={temples as any} emptyMessage="No temples yet." />
     </DashboardShell>
   );
 }
+
