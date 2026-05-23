@@ -19,7 +19,7 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
 
   try {
     await connectDB();
-    const temple = await Temple.findById(params.id).lean();
+    const temple = await Temple.findById(params.id).lean() as { coverImage?: string; slug?: string } | null;
     if (!temple) return NextResponse.json({ success: false, error: "Temple not found" }, { status: 404 });
 
     const coverImage = temple.coverImage;

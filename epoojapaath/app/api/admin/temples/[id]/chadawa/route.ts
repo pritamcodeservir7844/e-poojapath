@@ -26,7 +26,7 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
       isActive: true,
     });
 
-    const temple = await Temple.findById(params.id).select("slug").lean();
+    const temple = await Temple.findById(params.id).select("slug").lean() as { slug?: string } | null;
     revalidatePath("/chadawa");
     if (temple?.slug) revalidatePath(`/temples/${temple.slug}`);
 

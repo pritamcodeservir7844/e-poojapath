@@ -27,7 +27,7 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
     });
 
     // Temple ka slug lo public page revalidate karne ke liye
-    const temple = await Temple.findById(params.id).select("slug").lean();
+    const temple = await Temple.findById(params.id).select("slug").lean() as { slug?: string } | null;
     revalidatePath("/puja");
     if (temple?.slug) revalidatePath(`/temples/${temple.slug}`);
 
