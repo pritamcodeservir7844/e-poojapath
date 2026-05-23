@@ -166,7 +166,7 @@ export function DPIITRecognition() {
                 <div className="relative overflow-hidden rounded-xl bg-white p-2 border-2 border-amber-900/30">
                   <div className="aspect-[4/3] relative w-full overflow-hidden rounded bg-slate-50 flex items-center justify-center">
                     <Image
-                      src="/startup_india_certificate.png"
+                      src="/certificate.jpg"
                       alt="DPIIT Startup India Certificate of Recognition"
                       fill
                       sizes="(max-w-md) 100vw, 400px"
