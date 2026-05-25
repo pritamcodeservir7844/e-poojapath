@@ -200,8 +200,8 @@ export default function ChadawaDetailPage({ params }: { params: { id: string } }
         <Image src={chadawa.image || "/placeholder-chadawa.jpg"} alt={chadawa.name} fill className="object-cover" priority />
         <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-black/20 to-black/70" />
         <div className="absolute bottom-0 left-0 right-0 p-6 max-w-7xl mx-auto">
-          <p className="text-white/80 text-sm font-medium mb-1 flex items-center gap-1">
-            <Flower2 size={14} /> Chadawa Offering
+          <p className="text-white/80 text-sm font-medium mb-1 flex items-center gap-1.5">
+            <Flower2 size={14} /> Chadawa Offering at <span className="text-saffron font-semibold">{temple ? temple.name : "Temple"}</span>
           </p>
           <h1 className="text-white font-heading text-2xl md:text-3xl leading-tight max-w-3xl">{chadawa.name}</h1>
           <p className="text-white/70 font-sanskrit text-base mt-1">{chadawa.nameHi}</p>

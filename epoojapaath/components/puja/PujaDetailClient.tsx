@@ -1,0 +1,725 @@
+"use client";
+
+import { useState, useEffect } from "react";
+import Image from "next/image";
+import Link from "next/link";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import dynamic from "next/dynamic";
+import {
+  CheckCircle2,
+  Sparkles,
+  MapPin,
+  Star,
+  Users,
+  Gift,
+  ShoppingBag,
+  Plus,
+  Minus,
+  BookOpen,
+  ChevronDown,
+  Check,
+  X,
+} from "lucide-react";
+import { PujaPackageModal } from "./PujaPackageModal";
+import { Input, Textarea } from "@/components/ui/Input";
+import { Button } from "@/components/ui/Button";
+import { devToast } from "@/lib/toast";
+import { formatCurrency } from "@/lib/utils";
+import type { IPuja, IPujaPackage, ITemple, IChadawa } from "@/types";
+
+const ReactConfetti = dynamic(() => import("react-confetti"), { ssr: false });
+
+declare global {
+  interface Window {
+    Razorpay: new (options: Record<string, unknown>) => { open(): void };
+  }
+}
+
+interface SelectedChadawa {
+  item: IChadawa & { _id: string };
+  qty: number;
+}
+
+interface Props {
+  puja: IPuja & { _id: string };
+  temple: ITemple & { _id: string };
+  chadawaItems: (IChadawa & { _id: string })[];
+  faqs: { question: string; answer: string }[];
+  displayRating: number;
+  displayReviews: number;
+}
+
+type BookingStep = "package" | "details";
+
+const HOW_IT_WORKS = [
+  { icon: "📿", title: "Choose Your Puja", description: "Select the package that suits your family size and devotion." },
+  { icon: "📅", title: "Select Date & Sankalp", description: "Enter your name, gotra and prayer intention for the ritual." },
+  { icon: "🛕", title: "Priest Performs at Temple", description: "Experienced pandits perform the ritual with full Vedic traditions." },
+  { icon: "📺", title: "Receive Photos & Videos + Prasad", description: "Watch the recording and receive prasad at your doorstep." },
+];
+
+export function PujaDetailClient({
+  puja,
+  temple,
+  chadawaItems,
+  faqs,
+  displayRating,
+  displayReviews,
+}: Props) {
+  const { data: session } = useSession();
+  const router = useRouter();
+
+  // ── Shared chadawa state ──────────────────────────────────────────────────
+  const [selectedChadawa, setSelectedChadawa] = useState<SelectedChadawa[]>([]);
+
+  // ── Booking sidebar state ─────────────────────────────────────────────────
+  const [showPackages, setShowPackages] = useState(false);
+  const [selectedPkg, setSelectedPkg] = useState<IPujaPackage | null>(puja.packages?.[0] ?? null);
+  const [bookingStep, setBookingStep] = useState<BookingStep>("package");
+  const [form, setForm] = useState({
+    devoteeName: "", gotra: "", sankalp: "", date: "",
+    prasadDelivery: false, prasadAddress: "",
+  });
+  const [loading, setLoading] = useState(false);
+  const [booked, setBooked] = useState(false);
+
+  useEffect(() => {
+    const script = document.createElement("script");
+    script.src = "https://checkout.razorpay.com/v1/checkout.js";
+    document.body.appendChild(script);
+  }, []);
+
+  // ── Price calculations ────────────────────────────────────────────────────
+  const pujaPrice = selectedPkg ? selectedPkg.price : puja.price;
+  const chadawaTotal = selectedChadawa.reduce((s, sc) => s + sc.item.price * sc.qty, 0);
+  const prasadPrice = form.prasadDelivery ? 151 : 0;
+  const grandTotal = pujaPrice + chadawaTotal + prasadPrice;
+
+  // ── Chadawa helpers ───────────────────────────────────────────────────────
+  function isSelected(id: string) {
+    return selectedChadawa.some((sc) => sc.item._id === id);
+  }
+
+  function toggleChadawa(item: IChadawa & { _id: string }) {
+    setSelectedChadawa((prev) => {
+      const exists = prev.find((sc) => sc.item._id === item._id);
+      if (exists) return prev.filter((sc) => sc.item._id !== item._id);
+      return [...prev, { item, qty: 1 }];
+    });
+  }
+
+  function updateQty(id: string, delta: number) {
+    setSelectedChadawa((prev) =>
+      prev.map((sc) =>
+        sc.item._id === id ? { ...sc, qty: Math.max(1, sc.qty + delta) } : sc
+      )
+    );
+  }
+
+  // ── Booking ───────────────────────────────────────────────────────────────
+  async function handleBook(e: React.FormEvent) {
+    e.preventDefault();
+    if (!session) { router.push("/login"); return; }
+    setLoading(true);
+    try {
+      const orderRes = await fetch("/api/payment/create-order", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ amount: grandTotal, notes: { pujaName: puja.name } }),
+      });
+      const orderData = await orderRes.json();
+
+      new window.Razorpay({
+        key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
+        amount: grandTotal * 100,
+        currency: "INR",
+        name: "ePoojapaath",
+        description: puja.name,
+        order_id: orderData.data.id,
+        theme: { color: "#D4820A" },
+        prefill: { name: session.user?.name, email: session.user?.email },
+        handler: async (response: {
+          razorpay_order_id: string;
+          razorpay_payment_id: string;
+          razorpay_signature: string;
+        }) => {
+          const verifyRes = await fetch("/api/payment/verify", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              orderId: response.razorpay_order_id,
+              paymentId: response.razorpay_payment_id,
+              signature: response.razorpay_signature,
+            }),
+          });
+          const verifyData = await verifyRes.json();
+          if (verifyData.success) {
+            await fetch("/api/bookings", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                ...form,
+                temple: temple._id,
+                service: puja._id,
+                serviceType: "puja",
+                serviceName: puja.name,
+                serviceNameHi: puja.nameHi,
+                amount: grandTotal,
+                selectedPackage: selectedPkg?.label,
+                selectedChadawa: selectedChadawa.map((sc) => ({
+                  name: sc.item.name,
+                  price: sc.item.price,
+                  qty: sc.qty,
+                  total: sc.item.price * sc.qty,
+                })),
+                orderId: response.razorpay_order_id,
+                paymentId: response.razorpay_payment_id,
+              }),
+            });
+            setBooked(true);
+            devToast.blessing("🙏 Puja Booked! Divine blessings incoming...");
+            setTimeout(() => router.push("/user/bookings"), 3000);
+          }
+        },
+      }).open();
+    } catch {
+      devToast.error("Booking failed. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  return (
+    <>
+      {booked && (
+        <ReactConfetti
+          recycle={false}
+          numberOfPieces={400}
+          colors={["#D4820A", "#B8860B", "#8B6DB5", "#C2567A"]}
+        />
+      )}
+
+      {showPackages && puja.packages && (
+        <PujaPackageModal
+          packages={puja.packages}
+          pujaName={puja.name}
+          onSelect={(pkg) => { setSelectedPkg(pkg); setShowPackages(false); }}
+          onClose={() => setShowPackages(false)}
+        />
+      )}
+
+      {/* Mobile sticky CTA */}
+      <div className="sticky bottom-0 z-30 bg-background/95 backdrop-blur border-t border-border px-4 py-3 md:hidden">
+        <div className="flex items-center justify-between gap-4">
+          <div>
+            <p className="text-xs text-muted-foreground">
+              {selectedPkg ? selectedPkg.persons : "Starting from"}
+              {chadawaTotal > 0 && ` + ${formatCurrency(chadawaTotal)} chadawa`}
+            </p>
+            <p className="font-heading text-xl text-saffron">{formatCurrency(grandTotal)}</p>
+          </div>
+          <button
+            onClick={() => setBookingStep("details")}
+            className="btn-saffron flex-1 py-3 text-sm font-semibold"
+          >
+            Book Now 🪔
+          </button>
+        </div>
+      </div>
+
+      {/* Main content grid */}
+      <div className="max-w-7xl mx-auto px-4 md:px-8 py-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+
+          {/* ────── LEFT COLUMN ────── */}
+          <div className="lg:col-span-2 space-y-10">
+
+            {/* How It Works */}
+            <section>
+              <h2 className="font-heading text-2xl text-foreground mb-6">How it works?</h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {HOW_IT_WORKS.map((step, i) => (
+                  <div key={i} className="card-devotional flex items-start gap-3">
+                    <div className="w-9 h-9 rounded-full bg-saffron/10 flex items-center justify-center text-lg flex-shrink-0">{step.icon}</div>
+                    <div>
+                      <div className="flex items-center gap-1.5 mb-1">
+                        <span className="w-4 h-4 rounded-full bg-saffron text-white text-[10px] font-bold flex items-center justify-center">{i + 1}</span>
+                        <h3 className="font-heading text-sm text-foreground">{step.title}</h3>
+                      </div>
+                      <p className="text-xs text-muted-foreground">{step.description}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </section>
+
+            {/* About Temple */}
+            <section>
+              <h2 className="font-heading text-2xl text-foreground mb-4">About Temple</h2>
+              <div className="card-devotional overflow-hidden p-0">
+                {temple.coverImage && (
+                  <div className="relative h-48 w-full">
+                    <Image src={temple.coverImage} alt={temple.name} fill className="object-cover" />
+                  </div>
+                )}
+                <div className="p-5">
+                  <h3 className="font-heading text-xl text-foreground mb-1">{temple.name}</h3>
+                  {temple.location && (
+                    <p className="text-sm text-muted-foreground flex items-center gap-1 mb-3">
+                      <MapPin size={13} /> {temple.location.city}, {temple.location.state}
+                    </p>
+                  )}
+                  <p className="text-sm text-muted-foreground leading-relaxed line-clamp-4">{temple.description}</p>
+                  <Link href={`/temples/${temple.slug}`} className="inline-block mt-3 text-sm text-saffron hover:underline font-medium">
+                    View Temple →
+                  </Link>
+                </div>
+              </div>
+            </section>
+
+            {/* About Puja */}
+            <section>
+              <h2 className="font-heading text-2xl text-foreground mb-3">About {puja.name}</h2>
+              <div className="card-devotional">
+                <p className="text-muted-foreground leading-relaxed whitespace-pre-line">{puja.description}</p>
+                {puja.descriptionHi && (
+                  <p className="font-sanskrit text-saffron/80 text-sm mt-4 leading-relaxed">{puja.descriptionHi}</p>
+                )}
+              </div>
+            </section>
+
+            {/* Benefits */}
+            {puja.benefits && puja.benefits.length > 0 && (
+              <section>
+                <h2 className="font-heading text-2xl text-foreground mb-4">Spiritual Benefits</h2>
+                <div className="card-devotional grid grid-cols-1 md:grid-cols-2 gap-3">
+                  {puja.benefits.map((b) => (
+                    <div key={b} className="flex items-start gap-2 text-sm text-muted-foreground">
+                      <CheckCircle2 size={15} className="text-saffron shrink-0 mt-0.5" />
+                      <span>{b}</span>
+                    </div>
+                  ))}
+                </div>
+              </section>
+            )}
+
+            {/* What's Included */}
+            {puja.includes && puja.includes.length > 0 && (
+              <section>
+                <h2 className="font-heading text-2xl text-foreground mb-4">What&apos;s Included</h2>
+                <div className="card-devotional grid grid-cols-1 md:grid-cols-2 gap-3">
+                  {puja.includes.map((inc) => (
+                    <div key={inc} className="flex items-start gap-2 text-sm text-muted-foreground">
+                      <Sparkles size={15} className="text-saffron shrink-0 mt-0.5" />
+                      <span>{inc}</span>
+                    </div>
+                  ))}
+                </div>
+              </section>
+            )}
+
+            {/* ── CHADAWA SECTION – direct add/remove ── */}
+            {chadawaItems.length > 0 && (
+              <section>
+                <div className="flex items-center justify-between mb-5">
+                  <div>
+                    <h2 className="font-heading text-2xl text-foreground">Add Chadawa to Puja</h2>
+                    <p className="text-sm text-muted-foreground mt-0.5">Select sacred offerings to add to your booking</p>
+                  </div>
+                  {selectedChadawa.length > 0 && (
+                    <div className="bg-saffron/10 border border-saffron/30 rounded-full px-3 py-1 flex items-center gap-1.5">
+                      <span className="text-saffron text-xs font-semibold">{selectedChadawa.length} selected</span>
+                      <span className="text-saffron text-xs">· {formatCurrency(chadawaTotal)}</span>
+                    </div>
+                  )}
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                  {chadawaItems.map((item) => {
+                    const selected = isSelected(item._id);
+                    const sc = selectedChadawa.find((s) => s.item._id === item._id);
+                    return (
+                      <div
+                        key={item._id}
+                        className={`card-devotional overflow-hidden p-0 group transition-all duration-200 ${
+                          selected ? "ring-2 ring-saffron shadow-lg shadow-saffron/10" : ""
+                        }`}
+                      >
+                        {/* Image */}
+                        <div className="relative h-36 overflow-hidden">
+                          <Image
+                            src={item.image || "/kasbeswari.jpg"}
+                            alt={item.name}
+                            fill
+                            className="object-cover group-hover:scale-105 transition-transform duration-500"
+                          />
+                          <div className="absolute inset-0 bg-gradient-to-t from-black/65 to-transparent" />
+                          {/* Selected badge */}
+                          {selected && (
+                            <div className="absolute top-2 right-2 w-6 h-6 bg-saffron rounded-full flex items-center justify-center shadow">
+                              <Check size={13} className="text-white" strokeWidth={3} />
+                            </div>
+                          )}
+                          <div className="absolute bottom-2 left-3 right-3">
+                            <p className="text-white font-heading text-sm leading-tight line-clamp-2">{item.name}</p>
+                          </div>
+                        </div>
+
+                        {/* Info + button */}
+                        <div className="p-3">
+                          <p className="font-sanskrit text-saffron/80 text-xs mb-0.5">{item.nameHi}</p>
+                          <p className="text-muted-foreground text-xs line-clamp-1 mb-3">{item.description}</p>
+
+                          <div className="flex items-center justify-between">
+                            <p className="font-heading text-foreground text-base">₹{item.price}</p>
+
+                            {selected && sc ? (
+                              // Qty + Remove controls
+                              <div className="flex items-center gap-1.5">
+                                <button
+                                  onClick={() => updateQty(item._id, -1)}
+                                  className="w-6 h-6 rounded-full bg-border flex items-center justify-center hover:bg-saffron/20 transition"
+                                >
+                                  <Minus size={10} />
+                                </button>
+                                <span className="font-heading text-sm text-foreground w-5 text-center">{sc.qty}</span>
+                                <button
+                                  onClick={() => updateQty(item._id, 1)}
+                                  className="w-6 h-6 rounded-full bg-border flex items-center justify-center hover:bg-saffron/20 transition"
+                                >
+                                  <Plus size={10} />
+                                </button>
+                                <button
+                                  onClick={() => toggleChadawa(item)}
+                                  className="ml-1 w-6 h-6 rounded-full bg-red-500/10 text-red-400 flex items-center justify-center hover:bg-red-500/20 transition"
+                                >
+                                  <X size={11} />
+                                </button>
+                              </div>
+                            ) : (
+                              // Add button
+                              <button
+                                onClick={() => toggleChadawa(item)}
+                                className="bg-gradient-to-r from-saffron to-deep-gold text-white text-xs font-semibold px-3 py-1.5 rounded-full hover:opacity-90 transition shadow-sm flex items-center gap-1"
+                              >
+                                <Plus size={11} />
+                                Add
+                              </button>
+                            )}
+                          </div>
+
+                          {/* Show subtotal when selected */}
+                          {selected && sc && sc.qty > 1 && (
+                            <p className="text-xs text-saffron font-medium mt-2 text-right">
+                              Subtotal: ₹{item.price * sc.qty}
+                            </p>
+                          )}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+
+                {/* Selected summary strip */}
+                {selectedChadawa.length > 0 && (
+                  <div className="mt-4 bg-gradient-to-r from-saffron/5 to-deep-gold/5 border border-saffron/20 rounded-xl p-4">
+                    <p className="text-xs font-semibold text-saffron mb-2 flex items-center gap-1.5">
+                      <Gift size={13} /> Selected Chadawa — {formatCurrency(chadawaTotal)} added to your booking
+                    </p>
+                    <div className="flex flex-wrap gap-2">
+                      {selectedChadawa.map((sc) => (
+                        <div key={sc.item._id} className="flex items-center gap-1.5 bg-background border border-saffron/30 rounded-full px-2.5 py-1 text-xs">
+                          <span className="text-foreground">{sc.item.name}</span>
+                          {sc.qty > 1 && <span className="text-muted-foreground">×{sc.qty}</span>}
+                          <span className="text-saffron font-medium">₹{sc.item.price * sc.qty}</span>
+                          <button onClick={() => toggleChadawa(sc.item)} className="text-muted-foreground hover:text-red-400 transition ml-0.5">
+                            <X size={10} />
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </section>
+            )}
+
+            {/* Reviews */}
+            <section>
+              <div className="flex items-center gap-3 mb-5">
+                <div className="flex items-center gap-1">
+                  {Array.from({ length: 5 }).map((_, i) => (
+                    <Star key={i} size={18} className={i < Math.round(displayRating) ? "fill-saffron text-saffron" : "fill-muted text-muted"} />
+                  ))}
+                </div>
+                <h2 className="font-heading text-2xl text-foreground">
+                  {displayRating} Stories of Blessed Experiences
+                </h2>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {[
+                  { name: "Priya S.", comment: "An incredibly spiritual experience. The pandit performed every ritual with deep devotion. I could feel the divine presence during the entire puja.", stars: 5 },
+                  { name: "Rajesh K.", comment: "Very authentic puja conducted at the actual temple. Received a beautiful video and prasad delivery was prompt. Highly recommend!", stars: 5 },
+                  { name: "Anita M.", comment: "Booked for my family of 4. The whole family felt blessed watching the live puja. Will definitely book again for next occasion.", stars: 4 },
+                  { name: "Suresh P.", comment: "The sankalp was taken with our full names and gotra. Everything felt genuine and sacred. Thank you for this divine service.", stars: 5 },
+                ].map((review, i) => (
+                  <div key={i} className="card-devotional">
+                    <div className="flex items-center gap-1 mb-2">
+                      {Array.from({ length: 5 }).map((_, j) => (
+                        <Star key={j} size={12} className={j < review.stars ? "fill-saffron text-saffron" : "fill-muted text-muted"} />
+                      ))}
+                    </div>
+                    <p className="text-sm text-muted-foreground leading-relaxed mb-3">&ldquo;{review.comment}&rdquo;</p>
+                    <p className="text-xs font-semibold text-foreground">— {review.name}</p>
+                  </div>
+                ))}
+              </div>
+            </section>
+
+            {/* FAQ */}
+            <section>
+              <h2 className="font-heading text-2xl text-foreground mb-6 text-center">Know More About Your Puja</h2>
+              <div className="space-y-3">
+                {faqs.map((faq, i) => (
+                  <details key={i} className="card-devotional cursor-pointer group" open={i === 0}>
+                    <summary className="flex items-center justify-between font-medium text-foreground text-sm list-none">
+                      <span className="flex items-center gap-2">
+                        <BookOpen size={14} className="text-saffron shrink-0" />
+                        {faq.question}
+                      </span>
+                      <ChevronDown size={16} className="text-muted-foreground shrink-0 group-open:rotate-180 transition-transform" />
+                    </summary>
+                    <p className="mt-3 text-sm text-muted-foreground leading-relaxed pl-5">{faq.answer}</p>
+                  </details>
+                ))}
+              </div>
+            </section>
+
+            {/* Trust footer */}
+            <section className="text-center py-8 border-t border-border">
+              <div className="inline-flex items-center gap-2 bg-saffron/5 border border-saffron/20 rounded-full px-6 py-3 mb-4">
+                <Sparkles size={16} className="text-saffron" />
+                <span className="text-sm font-medium text-foreground">Authenticity You Can Trust</span>
+                <Sparkles size={16} className="text-saffron" />
+              </div>
+              <p className="text-sm text-muted-foreground max-w-lg mx-auto">
+                We ensure every ritual is performed by official temple Pandits, following sacred Vedic traditions — so your faith is always in trusted hands.
+              </p>
+              <div className="flex items-center justify-center gap-8 mt-6">
+                <div className="text-center">
+                  <p className="font-heading text-2xl text-saffron">50 Lakh+</p>
+                  <p className="text-xs text-muted-foreground">Trusted Bhakts</p>
+                </div>
+                <div className="text-center">
+                  <p className="font-heading text-2xl text-saffron">500+</p>
+                  <p className="text-xs text-muted-foreground">Verified Temples</p>
+                </div>
+                <div className="text-center">
+                  <p className="font-heading text-2xl text-saffron">4.8★</p>
+                  <p className="text-xs text-muted-foreground">Avg Rating</p>
+                </div>
+              </div>
+            </section>
+          </div>
+
+          {/* ────── RIGHT: BOOKING SIDEBAR ────── */}
+          <div className="lg:col-span-1">
+            <div className="hidden md:block sticky top-24">
+
+              {/* ── Package Step ── */}
+              {bookingStep === "package" && (
+                <div className="card-devotional">
+                  <div className="text-center mb-4">
+                    <h3 className="font-heading text-lg text-foreground mb-1">Book This Puja</h3>
+                    <p className="text-xs text-saffron font-semibold mb-1 flex items-center justify-center gap-1">
+                      🛕 {temple.name}
+                    </p>
+                    <p className="text-xs text-muted-foreground mb-2">
+                      {selectedPkg ? selectedPkg.persons : "Select package"}
+                    </p>
+                    <p className="font-heading text-3xl text-saffron">{formatCurrency(pujaPrice)}</p>
+                  </div>
+
+                  {/* Package options */}
+                  {puja.packages && puja.packages.length > 0 && (
+                    <div className="space-y-2 mb-4">
+                      {puja.packages.map((pkg) => (
+                        <button
+                          key={pkg.label}
+                          onClick={() => setSelectedPkg(pkg)}
+                          className={`w-full flex items-center justify-between rounded-lg border px-3 py-2.5 text-sm transition-all ${
+                            selectedPkg?.label === pkg.label
+                              ? "border-saffron bg-saffron/5 text-foreground"
+                              : "border-border text-muted-foreground hover:border-saffron/40"
+                          }`}
+                        >
+                          <span className="font-medium flex items-center gap-1.5">
+                            <Users size={13} className="text-saffron" />
+                            {pkg.label}
+                          </span>
+                          <span className="text-xs text-muted-foreground">{pkg.persons}</span>
+                          <span className="font-heading text-saffron">{formatCurrency(pkg.price)}</span>
+                        </button>
+                      ))}
+                    </div>
+                  )}
+
+                  {/* Selected chadawa mini summary */}
+                  {selectedChadawa.length > 0 && (
+                    <div className="bg-saffron/5 border border-saffron/20 rounded-xl p-3 mb-4">
+                      <p className="text-xs font-semibold text-saffron mb-2 flex items-center gap-1">
+                        <Gift size={12} /> Chadawa Added ({selectedChadawa.length} items)
+                      </p>
+                      {selectedChadawa.map((sc) => (
+                        <div key={sc.item._id} className="flex items-center justify-between text-xs text-muted-foreground mb-1">
+                          <span className="line-clamp-1 max-w-[65%]">{sc.item.name} {sc.qty > 1 && `×${sc.qty}`}</span>
+                          <span className="text-saffron font-medium">₹{sc.item.price * sc.qty}</span>
+                        </div>
+                      ))}
+                      <div className="border-t border-saffron/20 pt-1.5 mt-1 flex justify-between font-heading text-sm">
+                        <span>Total</span>
+                        <span className="text-saffron">{formatCurrency(grandTotal)}</span>
+                      </div>
+                    </div>
+                  )}
+
+                  <button
+                    onClick={() => setBookingStep("details")}
+                    className="btn-saffron w-full py-3 text-base font-semibold"
+                  >
+                    Proceed to Book 🪔
+                  </button>
+
+                  {chadawaItems.length > 0 && selectedChadawa.length === 0 && (
+                    <p className="text-center text-xs text-muted-foreground mt-3">
+                      ↑ Scroll up to add Chadawa offerings
+                    </p>
+                  )}
+                </div>
+              )}
+
+              {/* ── Details / Payment Step ── */}
+              {bookingStep === "details" && (
+                <form onSubmit={handleBook} className="card-devotional space-y-4">
+                  <div className="flex items-center justify-between mb-1">
+                    <div>
+                      <h3 className="font-heading text-lg text-foreground">Book This Puja</h3>
+                      <p className="text-xs text-saffron font-semibold flex items-center gap-1">
+                        🛕 {temple.name}
+                      </p>
+                    </div>
+                    {selectedPkg && (
+                      <span className="text-xs bg-saffron/10 text-saffron px-2 py-1 rounded-full">
+                        {selectedPkg.label} — {formatCurrency(selectedPkg.price)}
+                      </span>
+                    )}
+                  </div>
+
+                  {/* Booking Summary */}
+                  <div className="bg-gradient-to-br from-saffron/5 to-purple-500/5 border border-saffron/20 rounded-xl p-3 space-y-2">
+                    {/* Puja */}
+                    <div className="flex items-center gap-2">
+                      <div className="w-7 h-7 rounded-full bg-saffron/10 flex items-center justify-center flex-shrink-0">
+                        <span className="text-xs">📿</span>
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-xs font-medium text-foreground line-clamp-1">{puja.name}</p>
+                        <p className="text-[10px] text-saffron font-semibold mb-0.5">🛕 {temple.name}</p>
+                        {selectedPkg && (
+                          <p className="text-[10px] text-muted-foreground flex items-center gap-1">
+                            <Users size={10} className="shrink-0" />
+                            {selectedPkg.persons} · {selectedPkg.label}
+                          </p>
+                        )}
+                      </div>
+                      <p className="text-xs font-heading text-saffron flex-shrink-0">{formatCurrency(pujaPrice)}</p>
+                    </div>
+
+                    {/* Chadawa rows */}
+                    {selectedChadawa.length > 0 && (
+                      <div className="border-t border-saffron/10 pt-2">
+                        <p className="text-xs text-muted-foreground mb-1.5 flex items-center gap-1">
+                          <Gift size={10} className="text-saffron" /> Chadawa Add-ons
+                        </p>
+                        {selectedChadawa.map((sc) => (
+                          <div key={sc.item._id} className="flex items-center gap-2 mb-1">
+                            <div className="relative w-5 h-5 rounded overflow-hidden flex-shrink-0">
+                              <Image src={sc.item.image || "/kasbeswari.jpg"} alt={sc.item.name} fill className="object-cover" />
+                            </div>
+                            <p className="text-xs text-foreground flex-1 line-clamp-1">{sc.item.name}</p>
+                            <p className="text-xs text-muted-foreground flex-shrink-0">×{sc.qty}</p>
+                            <p className="text-xs font-medium text-saffron flex-shrink-0">₹{sc.item.price * sc.qty}</p>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+
+                    {form.prasadDelivery && (
+                      <div className="flex items-center gap-2 border-t border-saffron/10 pt-2">
+                        <span className="text-xs">📦</span>
+                        <p className="text-xs text-foreground flex-1">Prasad Delivery</p>
+                        <p className="text-xs font-medium text-saffron">+₹151</p>
+                      </div>
+                    )}
+                  </div>
+
+                  <Input label="Devotee Name" required placeholder="Name for Sankalp"
+                    value={form.devoteeName} onChange={(e) => setForm({ ...form, devoteeName: e.target.value })} />
+                  <Input label="Gotra (Optional)" placeholder="e.g. Kashyap, Bharadwaj"
+                    value={form.gotra} onChange={(e) => setForm({ ...form, gotra: e.target.value })} />
+                  <Textarea label="Sankalp / Intention" rows={2} placeholder="Your wish or prayer..."
+                    value={form.sankalp} onChange={(e) => setForm({ ...form, sankalp: e.target.value })} />
+                  <Input label="Puja Date" type="date" required min={new Date().toISOString().split("T")[0]}
+                    value={form.date} onChange={(e) => setForm({ ...form, date: e.target.value })} />
+
+                  <div className="flex items-center gap-2">
+                    <input type="checkbox" id="prasad-d" className="w-4 h-4 accent-saffron"
+                      checked={form.prasadDelivery} onChange={(e) => setForm({ ...form, prasadDelivery: e.target.checked })} />
+                    <label htmlFor="prasad-d" className="text-sm text-foreground cursor-pointer">
+                      Prasad Delivery (+₹151)
+                    </label>
+                  </div>
+                  {form.prasadDelivery && (
+                    <Textarea rows={2} placeholder="Delivery address..."
+                      value={form.prasadAddress} onChange={(e) => setForm({ ...form, prasadAddress: e.target.value })} />
+                  )}
+
+                  {/* Grand Total */}
+                  <div className="border-t border-deep-gold/20 pt-3 space-y-1.5">
+                    <div className="flex justify-between text-sm text-muted-foreground">
+                      <span>Puja ({selectedPkg?.label ?? "Base"})</span>
+                      <span>{formatCurrency(pujaPrice)}</span>
+                    </div>
+                    {chadawaTotal > 0 && (
+                      <div className="flex justify-between text-sm text-muted-foreground">
+                        <span className="flex items-center gap-1"><ShoppingBag size={12} /> Chadawa ({selectedChadawa.length})</span>
+                        <span>{formatCurrency(chadawaTotal)}</span>
+                      </div>
+                    )}
+                    {form.prasadDelivery && (
+                      <div className="flex justify-between text-sm text-muted-foreground">
+                        <span>Prasad Delivery</span><span>+₹151</span>
+                      </div>
+                    )}
+                    <div className="flex justify-between font-heading text-lg border-t border-deep-gold/20 pt-2">
+                      <span className="text-foreground">Total</span>
+                      <span className="text-saffron">{formatCurrency(grandTotal)}</span>
+                    </div>
+                  </div>
+
+                  <Button type="submit" loading={loading} fullWidth size="lg">
+                    {loading ? "Processing... 🪔" : "Confirm & Pay"}
+                  </Button>
+                  <button type="button" onClick={() => setBookingStep("package")}
+                    className="w-full text-xs text-muted-foreground hover:text-foreground text-center mt-1">
+                    ← Change package / chadawa
+                  </button>
+                </form>
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
+    </>
+  );
+}

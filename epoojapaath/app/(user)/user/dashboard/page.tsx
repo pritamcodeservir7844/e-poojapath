@@ -47,6 +47,9 @@ export default async function UserDashboard() {
                 className="flex items-center justify-between p-3 bg-background hover:bg-saffron/5 rounded-xl border border-deep-gold/10 hover:border-saffron/20 transition-all">
                 <div>
                   <p className="font-medium text-foreground text-sm">{b.serviceName}</p>
+                  <p className="text-xs text-saffron font-semibold mb-0.5">
+                    🛕 {typeof (b as any).temple === "object" ? (b as any).temple.name : "Temple"}
+                  </p>
                   <p className="text-xs text-muted-foreground">{formatDateShort(b.date)}</p>
                 </div>
                 <div className="flex items-center gap-3">

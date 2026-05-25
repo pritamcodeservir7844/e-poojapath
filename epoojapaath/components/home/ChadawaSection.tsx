@@ -5,7 +5,10 @@ import { ChadawaSectionClient } from "./ChadawaSectionClient";
 
 async function getChadawaItems() {
   await connectDB();
-  return Chadawa.find({ isActive: true }).limit(4).lean();
+  return Chadawa.find({ isActive: true })
+    .populate("temple", "name slug")
+    .limit(4)
+    .lean();
 }
 
 export async function ChadawaSection() {

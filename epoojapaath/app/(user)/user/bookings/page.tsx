@@ -15,7 +15,18 @@ export default async function UserBookingsPage() {
   const bookings = await getUserBookings(session.user.id!).catch(() => []) as (IBooking & { _id: string })[];
 
   const columns: any[] = [
-    { key: "serviceName", header: "Puja / Offering" },
+    {
+      key: "serviceName",
+      header: "Puja / Offering",
+      render: (b: any) => (
+        <div>
+          <div className="font-medium text-foreground">{b.serviceName}</div>
+          <div className="text-xs text-saffron font-semibold mt-0.5">
+            🛕 {typeof b.temple === "object" ? b.temple.name : "Temple"}
+          </div>
+        </div>
+      ),
+    },
     { key: "date",        header: "Date",   render: (b: IBooking & { _id: string }) => formatDateShort(b.date) },
     { key: "amount",      header: "Amount", render: (b: IBooking & { _id: string }) => formatCurrency(b.amount) },
     {

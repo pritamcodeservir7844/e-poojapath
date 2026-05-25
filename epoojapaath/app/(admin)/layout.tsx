@@ -3,18 +3,20 @@ import Link from "next/link";
 import Image from "next/image";
 import {
   LayoutDashboard, Landmark, Users, BookOpen,
-  FileText, Megaphone, Settings,
+  FileText, Megaphone, Settings, Flower2, ScrollText,
 } from "lucide-react";
 import { AdminLogoutButton } from "@/components/admin/AdminLogoutButton";
 
 const adminNav = [
-  { href: "/admin/dashboard", label: "Dashboard",   icon: LayoutDashboard },
-  { href: "/admin/temples",   label: "Temples",      icon: Landmark        },
-  { href: "/admin/users",     label: "Users",        icon: Users           },
-  { href: "/admin/bookings",  label: "Bookings",     icon: BookOpen        },
-  { href: "/admin/blog",      label: "Blog Manager", icon: FileText        },
-  { href: "/admin/ads",       label: "Ads Manager",  icon: Megaphone       },
-  { href: "/admin/settings",  label: "Settings",     icon: Settings        },
+  { href: "/admin/dashboard", label: "Dashboard",       icon: LayoutDashboard },
+  { href: "/admin/temples",   label: "Temples",          icon: Landmark        },
+  { href: "/admin/pujas",     label: "Puja Manager",     icon: ScrollText      },
+  { href: "/admin/chadawa",   label: "Chadawa Manager",  icon: Flower2         },
+  { href: "/admin/users",     label: "Users",            icon: Users           },
+  { href: "/admin/bookings",  label: "Bookings",         icon: BookOpen        },
+  { href: "/admin/blog",      label: "Blog Manager",     icon: FileText        },
+  { href: "/admin/ads",       label: "Ads Manager",      icon: Megaphone       },
+  { href: "/admin/settings",  label: "Settings",         icon: Settings        },
 ];
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {

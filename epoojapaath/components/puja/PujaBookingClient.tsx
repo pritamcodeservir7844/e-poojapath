@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Image from "next/image";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import dynamic from "next/dynamic";
@@ -9,7 +10,8 @@ import { Input, Textarea } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
 import { devToast } from "@/lib/toast";
 import { formatCurrency } from "@/lib/utils";
-import type { IPuja, IPujaPackage } from "@/types";
+import type { IPuja, IPujaPackage, IChadawa } from "@/types";
+import { CheckCircle2, ShoppingBag, Users, Gift, ChevronRight, Minus, Plus } from "lucide-react";
 
 const ReactConfetti = dynamic(() => import("react-confetti"), { ssr: false });
 
@@ -19,18 +21,28 @@ declare global {
   }
 }
 
-interface Props {
-  puja: IPuja & { _id: string };
+interface SelectedChadawa {
+  item: IChadawa & { _id: string };
+  qty: number;
 }
 
-export function PujaBookingClient({ puja }: Props) {
+interface Props {
+  puja: IPuja & { _id: string };
+  chadawaItems?: (IChadawa & { _id: string })[];
+}
+
+// Step flow: "package" → "chadawa" → "details" → done
+type Step = "package" | "chadawa" | "details";
+
+export function PujaBookingClient({ puja, chadawaItems = [] }: Props) {
   const { data: session } = useSession();
   const router = useRouter();
   const [showPackages, setShowPackages] = useState(false);
   const [selectedPkg, setSelectedPkg] = useState<IPujaPackage | null>(
     puja.packages?.[0] ?? null
   );
-  const [showForm, setShowForm] = useState(false);
+  const [step, setStep] = useState<Step>("package");
+  const [selectedChadawa, setSelectedChadawa] = useState<SelectedChadawa[]>([]);
   const [form, setForm] = useState({
     devoteeName: "",
     gotra: "",
@@ -48,22 +60,47 @@ export function PujaBookingClient({ puja }: Props) {
     document.body.appendChild(script);
   }, []);
 
-  const effectivePrice = selectedPkg
-    ? selectedPkg.price
-    : puja.price;
+  const pujaPrice = selectedPkg ? selectedPkg.price : puja.price;
+  const chadawaTotal = selectedChadawa.reduce((sum, sc) => sum + sc.item.price * sc.qty, 0);
+  const prasadPrice = form.prasadDelivery ? 151 : 0;
+  const grandTotal = pujaPrice + chadawaTotal + prasadPrice;
+
+  function toggleChadawa(item: IChadawa & { _id: string }) {
+    setSelectedChadawa((prev) => {
+      const exists = prev.find((sc) => sc.item._id === item._id);
+      if (exists) return prev.filter((sc) => sc.item._id !== item._id);
+      return [...prev, { item, qty: 1 }];
+    });
+  }
+
+  function updateQty(id: string, delta: number) {
+    setSelectedChadawa((prev) =>
+      prev.map((sc) =>
+        sc.item._id === id
+          ? { ...sc, qty: Math.max(1, sc.qty + delta) }
+          : sc
+      )
+    );
+  }
+
+  function isSelected(id: string) {
+    return selectedChadawa.some((sc) => sc.item._id === id);
+  }
 
   function handleParticipate() {
     if (puja.packages && puja.packages.length > 0) {
       setShowPackages(true);
     } else {
-      setShowForm(true);
+      if (chadawaItems.length > 0) setStep("chadawa");
+      else setStep("details");
     }
   }
 
   function handlePackageSelect(pkg: IPujaPackage) {
     setSelectedPkg(pkg);
     setShowPackages(false);
-    setShowForm(true);
+    if (chadawaItems.length > 0) setStep("chadawa");
+    else setStep("details");
   }
 
   async function handleBook(e: React.FormEvent) {
@@ -75,7 +112,7 @@ export function PujaBookingClient({ puja }: Props) {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          amount: effectivePrice + (form.prasadDelivery ? 99 : 0),
+          amount: grandTotal,
           notes: { pujaName: puja.name },
         }),
       });
@@ -83,7 +120,7 @@ export function PujaBookingClient({ puja }: Props) {
 
       new window.Razorpay({
         key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
-        amount: (effectivePrice + (form.prasadDelivery ? 99 : 0)) * 100,
+        amount: grandTotal * 100,
         currency: "INR",
         name: "ePoojapaath",
         description: puja.name,
@@ -111,13 +148,19 @@ export function PujaBookingClient({ puja }: Props) {
               headers: { "Content-Type": "application/json" },
               body: JSON.stringify({
                 ...form,
-                temple: typeof puja.temple === "object" ? puja.temple._id : puja.temple,
+                temple: typeof puja.temple === "object" ? (puja.temple as { _id: string })._id : puja.temple,
                 service: puja._id,
                 serviceType: "puja",
                 serviceName: puja.name,
                 serviceNameHi: puja.nameHi,
-                amount: effectivePrice + (form.prasadDelivery ? 99 : 0),
+                amount: grandTotal,
                 selectedPackage: selectedPkg?.label,
+                selectedChadawa: selectedChadawa.map((sc) => ({
+                  name: sc.item.name,
+                  price: sc.item.price,
+                  qty: sc.qty,
+                  total: sc.item.price * sc.qty,
+                })),
                 orderId: response.razorpay_order_id,
                 paymentId: response.razorpay_payment_id,
               }),
@@ -134,6 +177,13 @@ export function PujaBookingClient({ puja }: Props) {
       setLoading(false);
     }
   }
+
+  // ── Step indicator ────────────────────────────────────────────────────────
+  const steps = [
+    { key: "package", label: "Package", icon: "📿" },
+    ...(chadawaItems.length > 0 ? [{ key: "chadawa", label: "Chadawa", icon: "🌸" }] : []),
+    { key: "details", label: "Details", icon: "📋" },
+  ];
 
   return (
     <>
@@ -154,7 +204,7 @@ export function PujaBookingClient({ puja }: Props) {
         />
       )}
 
-      {/* CTA sticky section */}
+      {/* CTA sticky section (mobile) */}
       <div className="sticky bottom-0 z-30 bg-background/95 backdrop-blur border-t border-border px-4 py-3 md:hidden">
         <div className="flex items-center justify-between gap-4">
           <div>
@@ -162,7 +212,7 @@ export function PujaBookingClient({ puja }: Props) {
               {selectedPkg ? selectedPkg.persons : "Starting from"}
             </p>
             <p className="font-heading text-xl text-saffron">
-              {formatCurrency(effectivePrice)}
+              {formatCurrency(grandTotal)}
             </p>
           </div>
           <button
@@ -174,126 +224,398 @@ export function PujaBookingClient({ puja }: Props) {
         </div>
       </div>
 
-      {/* Desktop sidebar booking card */}
-      {!showForm ? (
-        <div className="hidden md:block card-devotional sticky top-24">
-          <div className="text-center mb-4">
-            <p className="text-sm text-muted-foreground mb-1">
-              {selectedPkg ? selectedPkg.persons : "Starting from"}
-            </p>
-            <p className="font-heading text-3xl text-saffron">
-              {formatCurrency(effectivePrice)}
-            </p>
-          </div>
+      {/* Desktop sidebar */}
+      <div className="hidden md:block sticky top-24">
 
-          {puja.packages && puja.packages.length > 0 && (
-            <div className="space-y-2 mb-4">
-              {puja.packages.map((pkg) => (
-                <button
-                  key={pkg.label}
-                  onClick={() => setSelectedPkg(pkg)}
-                  className={`w-full flex items-center justify-between rounded-lg border px-3 py-2.5 text-sm transition-all ${
-                    selectedPkg?.label === pkg.label
-                      ? "border-saffron bg-saffron/5 text-foreground"
-                      : "border-border text-muted-foreground hover:border-saffron/40"
+        {/* ── Step Progress Bar ── */}
+        {step !== "package" && (
+          <div className="flex items-center justify-center gap-1 mb-4">
+            {steps.map((s, i) => (
+              <div key={s.key} className="flex items-center gap-1">
+                <div
+                  className={`flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium transition-all ${
+                    step === s.key
+                      ? "bg-saffron text-white"
+                      : steps.findIndex((x) => x.key === step) > i
+                      ? "bg-green-500/20 text-green-500"
+                      : "bg-muted text-muted-foreground"
                   }`}
                 >
-                  <span className="font-medium">{pkg.label}</span>
-                  <span className="text-xs text-muted-foreground">{pkg.persons}</span>
-                  <span className="font-heading text-saffron">{formatCurrency(pkg.price)}</span>
-                </button>
-              ))}
-            </div>
-          )}
+                  <span>{s.icon}</span>
+                  <span>{s.label}</span>
+                </div>
+                {i < steps.length - 1 && (
+                  <ChevronRight size={12} className="text-muted-foreground" />
+                )}
+              </div>
+            ))}
+          </div>
+        )}
 
-          <button
-            onClick={() => setShowForm(true)}
-            className="btn-saffron w-full py-3 text-base font-semibold"
-          >
-            Participate Now 🪔
-          </button>
-        </div>
-      ) : (
-        <form
-          onSubmit={handleBook}
-          className="hidden md:block card-devotional sticky top-24 space-y-4"
-        >
-          <div className="flex items-center justify-between mb-2">
-            <h3 className="font-heading text-lg text-foreground">Book This Puja</h3>
-            {selectedPkg && (
-              <span className="text-xs bg-saffron/10 text-saffron px-2 py-1 rounded-full">
-                {selectedPkg.label} — {formatCurrency(selectedPkg.price)}
-              </span>
+        {/* ── STEP 1: Package Selection ── */}
+        {step === "package" && (
+          <div className="card-devotional">
+            <div className="text-center mb-4">
+              <h3 className="font-heading text-lg text-foreground mb-1">Book This Puja</h3>
+              <p className="text-sm text-muted-foreground mb-2">
+                {selectedPkg ? selectedPkg.persons : "Select package"}
+              </p>
+              <p className="font-heading text-3xl text-saffron">
+                {formatCurrency(pujaPrice)}
+              </p>
+            </div>
+
+            {puja.packages && puja.packages.length > 0 && (
+              <div className="space-y-2 mb-4">
+                {puja.packages.map((pkg) => (
+                  <button
+                    key={pkg.label}
+                    onClick={() => setSelectedPkg(pkg)}
+                    className={`w-full flex items-center justify-between rounded-lg border px-3 py-2.5 text-sm transition-all ${
+                      selectedPkg?.label === pkg.label
+                        ? "border-saffron bg-saffron/5 text-foreground"
+                        : "border-border text-muted-foreground hover:border-saffron/40"
+                    }`}
+                  >
+                    <span className="font-medium flex items-center gap-2">
+                      <Users size={13} className="text-saffron" />
+                      {pkg.label}
+                    </span>
+                    <span className="text-xs text-muted-foreground">{pkg.persons}</span>
+                    <span className="font-heading text-saffron">{formatCurrency(pkg.price)}</span>
+                  </button>
+                ))}
+              </div>
             )}
+
+            <button
+              onClick={() => {
+                if (chadawaItems.length > 0) setStep("chadawa");
+                else setStep("details");
+              }}
+              className="btn-saffron w-full py-3 text-base font-semibold flex items-center justify-center gap-2"
+            >
+              {chadawaItems.length > 0 ? "Next: Add Chadawa 🌸" : "Proceed to Book 🪔"}
+            </button>
           </div>
-          <Input
-            label="Devotee Name"
-            required
-            placeholder="Name for Sankalp"
-            value={form.devoteeName}
-            onChange={(e) => setForm({ ...form, devoteeName: e.target.value })}
-          />
-          <Input
-            label="Gotra (Optional)"
-            placeholder="e.g. Kashyap, Bharadwaj"
-            value={form.gotra}
-            onChange={(e) => setForm({ ...form, gotra: e.target.value })}
-          />
-          <Textarea
-            label="Sankalp / Intention"
-            rows={2}
-            placeholder="Your wish or prayer..."
-            value={form.sankalp}
-            onChange={(e) => setForm({ ...form, sankalp: e.target.value })}
-          />
-          <Input
-            label="Puja Date"
-            type="date"
-            required
-            min={new Date().toISOString().split("T")[0]}
-            value={form.date}
-            onChange={(e) => setForm({ ...form, date: e.target.value })}
-          />
-          <div className="flex items-center gap-2">
-            <input
-              type="checkbox"
-              id="prasad-d"
-              className="w-4 h-4 accent-saffron"
-              checked={form.prasadDelivery}
-              onChange={(e) => setForm({ ...form, prasadDelivery: e.target.checked })}
-            />
-            <label htmlFor="prasad-d" className="text-sm text-foreground cursor-pointer">
-              Prasad Delivery (+₹99)
-            </label>
-          </div>
-          {form.prasadDelivery && (
-            <Textarea
-              rows={2}
-              placeholder="Delivery address..."
-              value={form.prasadAddress}
-              onChange={(e) => setForm({ ...form, prasadAddress: e.target.value })}
-            />
-          )}
-          <div className="border-t border-deep-gold/20 pt-3">
-            <div className="flex justify-between font-heading text-lg">
-              <span className="text-foreground">Total</span>
-              <span className="text-saffron">
-                {formatCurrency(effectivePrice + (form.prasadDelivery ? 99 : 0))}
-              </span>
+        )}
+
+        {/* ── STEP 2: Chadawa Selection ── */}
+        {step === "chadawa" && (
+          <div className="card-devotional">
+            {/* Header */}
+            <div className="flex items-center justify-between mb-1">
+              <div>
+                <h3 className="font-heading text-lg text-foreground">Add Chadawa</h3>
+                <p className="text-xs text-muted-foreground">Optional sacred offerings to the deity</p>
+              </div>
+              <div className="text-right">
+                <p className="font-sanskrit text-saffron text-xs">चढ़ावा</p>
+                {selectedChadawa.length > 0 && (
+                  <p className="text-xs font-semibold text-saffron">
+                    {selectedChadawa.length} selected
+                  </p>
+                )}
+              </div>
+            </div>
+
+            {/* Package reminder */}
+            {selectedPkg && (
+              <div className="bg-saffron/5 border border-saffron/20 rounded-lg px-3 py-2 mb-3 flex items-center gap-2">
+                <Users size={14} className="text-saffron shrink-0" />
+                <span className="text-xs text-foreground font-medium">
+                  {selectedPkg.label} — {selectedPkg.persons}
+                </span>
+                <span className="ml-auto font-heading text-saffron text-sm">{formatCurrency(pujaPrice)}</span>
+              </div>
+            )}
+
+            {/* Chadawa Items */}
+            <div className="space-y-2 max-h-72 overflow-y-auto pr-1 scrollbar-thin mb-3">
+              {chadawaItems.map((item) => {
+                const selected = isSelected(item._id);
+                const sc = selectedChadawa.find((s) => s.item._id === item._id);
+                return (
+                  <div
+                    key={item._id}
+                    className={`rounded-xl border transition-all overflow-hidden ${
+                      selected
+                        ? "border-saffron bg-saffron/5"
+                        : "border-border bg-background hover:border-saffron/40"
+                    }`}
+                  >
+                    <div
+                      className="flex items-center gap-3 p-2.5 cursor-pointer"
+                      onClick={() => toggleChadawa(item)}
+                    >
+                      {/* Item Image */}
+                      <div className="relative w-12 h-12 rounded-lg overflow-hidden flex-shrink-0">
+                        <Image
+                          src={item.image || "/kasbeswari.jpg"}
+                          alt={item.name}
+                          fill
+                          className="object-cover"
+                        />
+                      </div>
+
+                      {/* Info */}
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-medium text-foreground leading-tight line-clamp-1">
+                          {item.name}
+                        </p>
+                        <p className="text-xs font-sanskrit text-saffron/70 line-clamp-1">
+                          {item.nameHi}
+                        </p>
+                        <p className="text-xs text-muted-foreground line-clamp-1 mt-0.5">
+                          {item.description}
+                        </p>
+                      </div>
+
+                      {/* Price + Checkbox */}
+                      <div className="flex flex-col items-end gap-1 flex-shrink-0">
+                        <p className="font-heading text-sm text-saffron">₹{item.price}</p>
+                        <div
+                          className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all ${
+                            selected
+                              ? "bg-saffron border-saffron"
+                              : "border-border"
+                          }`}
+                        >
+                          {selected && <CheckCircle2 size={12} className="text-white" />}
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Qty controls (when selected) */}
+                    {selected && sc && (
+                      <div className="flex items-center justify-between px-3 py-2 border-t border-saffron/20 bg-saffron/5">
+                        <span className="text-xs text-muted-foreground">Quantity</span>
+                        <div className="flex items-center gap-2">
+                          <button
+                            onClick={(e) => { e.stopPropagation(); updateQty(item._id, -1); }}
+                            className="w-6 h-6 rounded-full bg-background border border-border flex items-center justify-center hover:border-saffron transition"
+                          >
+                            <Minus size={10} />
+                          </button>
+                          <span className="font-heading text-sm text-foreground w-4 text-center">{sc.qty}</span>
+                          <button
+                            onClick={(e) => { e.stopPropagation(); updateQty(item._id, 1); }}
+                            className="w-6 h-6 rounded-full bg-background border border-border flex items-center justify-center hover:border-saffron transition"
+                          >
+                            <Plus size={10} />
+                          </button>
+                          <span className="text-xs font-semibold text-saffron ml-1">
+                            = ₹{item.price * sc.qty}
+                          </span>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+
+            {/* Running total */}
+            {selectedChadawa.length > 0 && (
+              <div className="bg-saffron/5 border border-saffron/20 rounded-lg px-3 py-2 mb-3">
+                <div className="flex items-center justify-between text-xs text-muted-foreground mb-1">
+                  <span>Puja ({selectedPkg?.label ?? "Base"})</span>
+                  <span>{formatCurrency(pujaPrice)}</span>
+                </div>
+                {selectedChadawa.map((sc) => (
+                  <div key={sc.item._id} className="flex items-center justify-between text-xs text-muted-foreground mb-1">
+                    <span className="line-clamp-1 max-w-[60%]">
+                      {sc.item.name} × {sc.qty}
+                    </span>
+                    <span>₹{sc.item.price * sc.qty}</span>
+                  </div>
+                ))}
+                <div className="border-t border-saffron/20 pt-1 mt-1 flex justify-between font-heading text-sm">
+                  <span className="text-foreground">Total</span>
+                  <span className="text-saffron">{formatCurrency(pujaPrice + chadawaTotal)}</span>
+                </div>
+              </div>
+            )}
+
+            {/* Actions */}
+            <div className="flex gap-2">
+              <button
+                onClick={() => setStep("package")}
+                className="flex-1 text-sm text-muted-foreground hover:text-foreground border border-border rounded-lg py-2.5 transition"
+              >
+                ← Back
+              </button>
+              <button
+                onClick={() => setStep("details")}
+                className="flex-[2] btn-saffron py-2.5 text-sm font-semibold"
+              >
+                {selectedChadawa.length > 0
+                  ? `Next: Fill Details →`
+                  : "Skip & Fill Details →"}
+              </button>
             </div>
           </div>
-          <Button type="submit" loading={loading} fullWidth size="lg">
-            {loading ? "Processing... 🪔" : "Confirm & Pay"}
-          </Button>
-          <button
-            type="button"
-            onClick={() => setShowForm(false)}
-            className="w-full text-xs text-muted-foreground hover:text-foreground text-center mt-1"
-          >
-            ← Change package
-          </button>
-        </form>
-      )}
+        )}
+
+        {/* ── STEP 3: Booking Details ── */}
+        {step === "details" && (
+          <form onSubmit={handleBook} className="card-devotional space-y-4">
+            {/* Header */}
+            <div className="flex items-center justify-between mb-1">
+              <h3 className="font-heading text-lg text-foreground">Book This Puja</h3>
+              {selectedPkg && (
+                <span className="text-xs bg-saffron/10 text-saffron px-2 py-1 rounded-full">
+                  {selectedPkg.label} — {formatCurrency(selectedPkg.price)}
+                </span>
+              )}
+            </div>
+
+            {/* Booking Summary box */}
+            <div className="bg-gradient-to-br from-saffron/5 to-purple-500/5 border border-saffron/20 rounded-xl p-3 space-y-2">
+              {/* Puja row */}
+              <div className="flex items-center gap-2">
+                <div className="w-7 h-7 rounded-full bg-saffron/10 flex items-center justify-center flex-shrink-0">
+                  <span className="text-xs">📿</span>
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-xs font-medium text-foreground line-clamp-1">{puja.name}</p>
+                  {selectedPkg && (
+                    <p className="text-xs text-muted-foreground flex items-center gap-1">
+                      <Users size={10} className="shrink-0" />
+                      {selectedPkg.persons} · {selectedPkg.label}
+                    </p>
+                  )}
+                </div>
+                <p className="text-xs font-heading text-saffron flex-shrink-0">{formatCurrency(pujaPrice)}</p>
+              </div>
+
+              {/* Chadawa rows */}
+              {selectedChadawa.length > 0 && (
+                <>
+                  <div className="border-t border-saffron/10 pt-2">
+                    <p className="text-xs text-muted-foreground mb-1.5 flex items-center gap-1">
+                      <Gift size={10} className="text-saffron" />
+                      Chadawa Add-ons
+                    </p>
+                    {selectedChadawa.map((sc) => (
+                      <div key={sc.item._id} className="flex items-center gap-2 mb-1">
+                        <div className="relative w-5 h-5 rounded overflow-hidden flex-shrink-0">
+                          <Image
+                            src={sc.item.image || "/kasbeswari.jpg"}
+                            alt={sc.item.name}
+                            fill
+                            className="object-cover"
+                          />
+                        </div>
+                        <p className="text-xs text-foreground flex-1 line-clamp-1">{sc.item.name}</p>
+                        <p className="text-xs text-muted-foreground flex-shrink-0">×{sc.qty}</p>
+                        <p className="text-xs font-medium text-saffron flex-shrink-0">₹{sc.item.price * sc.qty}</p>
+                      </div>
+                    ))}
+                  </div>
+                </>
+              )}
+
+              {/* Prasad */}
+              {form.prasadDelivery && (
+                <div className="flex items-center gap-2 border-t border-saffron/10 pt-2">
+                  <span className="text-xs">📦</span>
+                  <p className="text-xs text-foreground flex-1">Prasad Delivery</p>
+                  <p className="text-xs font-medium text-saffron">+₹99</p>
+                </div>
+              )}
+            </div>
+
+            <Input
+              label="Devotee Name"
+              required
+              placeholder="Name for Sankalp"
+              value={form.devoteeName}
+              onChange={(e) => setForm({ ...form, devoteeName: e.target.value })}
+            />
+            <Input
+              label="Gotra (Optional)"
+              placeholder="e.g. Kashyap, Bharadwaj"
+              value={form.gotra}
+              onChange={(e) => setForm({ ...form, gotra: e.target.value })}
+            />
+            <Textarea
+              label="Sankalp / Intention"
+              rows={2}
+              placeholder="Your wish or prayer..."
+              value={form.sankalp}
+              onChange={(e) => setForm({ ...form, sankalp: e.target.value })}
+            />
+            <Input
+              label="Puja Date"
+              type="date"
+              required
+              min={new Date().toISOString().split("T")[0]}
+              value={form.date}
+              onChange={(e) => setForm({ ...form, date: e.target.value })}
+            />
+            <div className="flex items-center gap-2">
+              <input
+                type="checkbox"
+                id="prasad-d"
+                className="w-4 h-4 accent-saffron"
+                checked={form.prasadDelivery}
+                onChange={(e) => setForm({ ...form, prasadDelivery: e.target.checked })}
+              />
+              <label htmlFor="prasad-d" className="text-sm text-foreground cursor-pointer">
+                      Prasad Delivery (+₹151)
+              </label>
+            </div>
+            {form.prasadDelivery && (
+              <Textarea
+                rows={2}
+                placeholder="Delivery address..."
+                value={form.prasadAddress}
+                onChange={(e) => setForm({ ...form, prasadAddress: e.target.value })}
+              />
+            )}
+
+            {/* Grand Total */}
+            <div className="border-t border-deep-gold/20 pt-3 space-y-1.5">
+              <div className="flex justify-between text-sm text-muted-foreground">
+                <span>Puja ({selectedPkg?.label ?? "Base"})</span>
+                <span>{formatCurrency(pujaPrice)}</span>
+              </div>
+              {chadawaTotal > 0 && (
+                <div className="flex justify-between text-sm text-muted-foreground">
+                  <span className="flex items-center gap-1">
+                    <ShoppingBag size={12} />
+                    Chadawa ({selectedChadawa.length} items)
+                  </span>
+                  <span>{formatCurrency(chadawaTotal)}</span>
+                </div>
+              )}
+              {form.prasadDelivery && (
+                <div className="flex justify-between text-sm text-muted-foreground">
+                  <span>Prasad Delivery</span>
+                  <span>+₹151</span>
+                </div>
+              )}
+              <div className="flex justify-between font-heading text-lg border-t border-deep-gold/20 pt-2">
+                <span className="text-foreground">Total</span>
+                <span className="text-saffron">{formatCurrency(grandTotal)}</span>
+              </div>
+            </div>
+
+            <Button type="submit" loading={loading} fullWidth size="lg">
+              {loading ? "Processing... 🪔" : "Confirm & Pay"}
+            </Button>
+
+            <button
+              type="button"
+              onClick={() => setStep(chadawaItems.length > 0 ? "chadawa" : "package")}
+              className="w-full text-xs text-muted-foreground hover:text-foreground text-center mt-1"
+            >
+              {chadawaItems.length > 0 ? "← Change Chadawa" : "← Change package"}
+            </button>
+          </form>
+        )}
+      </div>
     </>
   );
 }

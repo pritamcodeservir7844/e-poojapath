@@ -91,6 +91,9 @@ export default async function TempleDetailPage({ params }: { params: { slug: str
                     {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
                     {pujas.map((puja: any) => (
                       <div key={puja._id.toString()} className="card-devotional">
+                        <div className="text-xs text-saffron font-semibold mb-1 flex items-center gap-1">
+                          🛕 {temple.name}
+                        </div>
                         <h3 className="font-heading text-lg text-foreground">{puja.name}</h3>
                         <p className="font-sanskrit text-saffron text-sm mb-2">{puja.nameHi}</p>
                         <p className="text-muted-foreground text-sm mb-3 line-clamp-2">{puja.description}</p>
@@ -112,6 +115,9 @@ export default async function TempleDetailPage({ params }: { params: { slug: str
                     {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
                     {chadawaItems.map((item: any) => (
                       <div key={item._id.toString()} className="card-devotional">
+                        <div className="text-xs text-saffron font-semibold mb-1 flex items-center gap-1">
+                          🛕 {temple.name}
+                        </div>
                         <h3 className="font-heading text-lg text-foreground">{item.name}</h3>
                         <p className="text-muted-foreground text-sm mb-3 line-clamp-2">{item.description}</p>
                         <div className="flex items-center justify-between">

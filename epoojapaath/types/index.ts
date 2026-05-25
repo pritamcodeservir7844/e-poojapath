@@ -101,6 +101,7 @@ export interface IChadawa {
   deity: string;
   temple: string | ITemple;
   isActive: boolean;
+  isSpecial: boolean;
   createdAt: string;
 }
 

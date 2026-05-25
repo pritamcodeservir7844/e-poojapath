@@ -13,6 +13,7 @@ type ChadawaItem = {
   descriptionHi: string;
   price: number;
   image: string;
+  temple?: { _id: string; name: string; slug: string };
 };
 
 export function ChadawaSectionClient({ items }: { items: ChadawaItem[] }) {
@@ -47,6 +48,11 @@ export function ChadawaSectionClient({ items }: { items: ChadawaItem[] }) {
                   className="object-cover group-hover:scale-105 transition-transform duration-500"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-dark/40 to-transparent" />
+                {item.temple && (
+                  <div className="absolute top-2 left-2 bg-deep-gold/90 text-white text-[10px] px-2 py-0.5 rounded-full font-medium shadow-sm">
+                    🛕 {item.temple.name}
+                  </div>
+                )}
               </div>
               <h3 className="font-heading text-foreground text-lg mb-1">{name}</h3>
               <p className="text-xs text-muted-foreground mb-1 font-sanskrit">{item.nameHi}</p>

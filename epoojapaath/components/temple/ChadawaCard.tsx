@@ -24,6 +24,11 @@ export function ChadawaCard({ item }: { item: ChadawaWithTemple }) {
           className="object-cover group-hover:scale-105 transition-transform duration-500"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-dark/50 to-transparent" />
+        {templeName && (
+          <div className="absolute top-3 left-3 bg-deep-gold/90 text-white text-xs px-2.5 py-1 rounded-full font-medium">
+            🛕 {templeName}
+          </div>
+        )}
         <span className="absolute top-3 right-3 bg-saffron/90 text-white text-xs px-2.5 py-1 rounded-full">
           {item.deity}
         </span>

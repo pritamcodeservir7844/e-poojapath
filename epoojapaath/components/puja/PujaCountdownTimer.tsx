@@ -31,18 +31,25 @@ function getDefaultTarget(): Date {
 }
 
 export function PujaCountdownTimer({ scheduledAt }: { scheduledAt?: string }) {
-  const target = scheduledAt ? new Date(scheduledAt) : getDefaultTarget();
-  const [timeLeft, setTimeLeft] = useState<TimeLeft>(getTimeLeft(target));
+  // Start as null to avoid SSR/client mismatch (hydration error)
+  const [timeLeft, setTimeLeft] = useState<TimeLeft | null>(null);
 
   useEffect(() => {
+    const target = scheduledAt ? new Date(scheduledAt) : getDefaultTarget();
+    // Set immediately on mount (client only)
+    setTimeLeft(getTimeLeft(target));
+
     const interval = setInterval(() => {
       setTimeLeft(getTimeLeft(target));
     }, 1000);
     return () => clearInterval(interval);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [scheduledAt]);
 
-  const isExpired = timeLeft.hours === 0 && timeLeft.minutes === 0 && timeLeft.seconds === 0;
+  // Don't render anything until client has mounted
+  if (timeLeft === null) return null;
+
+  const isExpired =
+    timeLeft.hours === 0 && timeLeft.minutes === 0 && timeLeft.seconds === 0;
 
   if (isExpired) {
     return (
@@ -60,11 +67,17 @@ export function PujaCountdownTimer({ scheduledAt }: { scheduledAt?: string }) {
       </span>
       <span className="text-xs font-medium text-muted-foreground">Puja starts in</span>
       <div className="flex items-center gap-1 font-mono font-bold text-sm">
-        <span className="bg-saffron text-white rounded-md px-2 py-0.5 min-w-[2rem] text-center tabular-nums">{pad(timeLeft.hours)}</span>
+        <span className="bg-saffron text-white rounded-md px-2 py-0.5 min-w-[2rem] text-center tabular-nums">
+          {pad(timeLeft.hours)}
+        </span>
         <span className="text-saffron font-black">:</span>
-        <span className="bg-saffron text-white rounded-md px-2 py-0.5 min-w-[2rem] text-center tabular-nums">{pad(timeLeft.minutes)}</span>
+        <span className="bg-saffron text-white rounded-md px-2 py-0.5 min-w-[2rem] text-center tabular-nums">
+          {pad(timeLeft.minutes)}
+        </span>
         <span className="text-saffron font-black">:</span>
-        <span className="bg-saffron text-white rounded-md px-2 py-0.5 min-w-[2rem] text-center tabular-nums">{pad(timeLeft.seconds)}</span>
+        <span className="bg-saffron text-white rounded-md px-2 py-0.5 min-w-[2rem] text-center tabular-nums">
+          {pad(timeLeft.seconds)}
+        </span>
       </div>
     </div>
   );

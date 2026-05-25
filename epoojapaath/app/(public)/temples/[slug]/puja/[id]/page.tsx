@@ -158,7 +158,7 @@ export default function BookPujaPage({ params }: { params: { slug: string; id: s
             />
             <div className="flex items-center gap-3">
               <input type="checkbox" id="prasad" className="w-4 h-4 accent-saffron" checked={form.prasadDelivery} onChange={(e) => setForm({ ...form, prasadDelivery: e.target.checked })} />
-              <label htmlFor="prasad" className="text-sm text-foreground cursor-pointer">Request Prasad Delivery (+₹99)</label>
+              <label htmlFor="prasad" className="text-sm text-foreground cursor-pointer">Request Prasad Delivery (+₹151)</label>
             </div>
             {form.prasadDelivery && (
               <Textarea
@@ -170,11 +170,11 @@ export default function BookPujaPage({ params }: { params: { slug: string; id: s
             )}
             <div className="border-t border-deep-gold/20 pt-4">
               <div className="flex justify-between text-sm mb-1"><span className="text-muted-foreground">Puja Fee</span><span className="text-foreground font-medium">{formatCurrency(puja.price as number)}</span></div>
-              {form.prasadDelivery && <div className="flex justify-between text-sm mb-1"><span className="text-muted-foreground">Prasad Delivery</span><span className="text-foreground">₹99</span></div>}
-              <div className="flex justify-between font-heading text-xl mt-2"><span className="text-foreground">Total</span><span className="text-saffron">{formatCurrency((puja.price as number) + (form.prasadDelivery ? 99 : 0))}</span></div>
+              {form.prasadDelivery && <div className="flex justify-between text-sm mb-1"><span className="text-muted-foreground">Prasad Delivery</span><span className="text-foreground">₹151</span></div>}
+              <div className="flex justify-between font-heading text-xl mt-2"><span className="text-foreground">Total</span><span className="text-saffron">{formatCurrency((puja.price as number) + (form.prasadDelivery ? 151 : 0))}</span></div>
             </div>
             <Button type="submit" loading={loading} fullWidth size="lg">
-              {loading ? "Processing... 🪔" : `Proceed to Pay ${formatCurrency((puja.price as number) + (form.prasadDelivery ? 99 : 0))}`}
+              {loading ? "Processing... 🪔" : `Proceed to Pay ${formatCurrency((puja.price as number) + (form.prasadDelivery ? 151 : 0))}`}
             </Button>
           </form>
         </div>
