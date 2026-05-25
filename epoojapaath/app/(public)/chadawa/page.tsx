@@ -57,12 +57,13 @@ export default async function ChadawaPage() {
         sanskrit="देवताओं को अर्पण"
         title="Chadawa Offerings"
         subtitle="Offer sacred items to your chosen deity — presented by temple pandits on your behalf. Book special chadawa independently or as an add-on during puja booking."
+        className="pt-16 pb-10"
       />
-      <MandalaDivider />
+      <MandalaDivider className="!py-1" />
 
       {/* ── Special Chadawa Section ── */}
       {specialItems.length > 0 && (
-        <section className="section-padding max-w-7xl mx-auto">
+        <section className="pt-4 pb-16 px-4 md:px-8 lg:px-16 max-w-7xl mx-auto">
           {/* Header */}
           <div className="flex flex-col items-center text-center mb-10">
             <div className="inline-flex items-center gap-2 bg-gradient-to-r from-saffron/10 to-purple-500/10 border border-saffron/30 rounded-full px-5 py-2 mb-4">
@@ -132,7 +133,7 @@ export default async function ChadawaPage() {
 
       {/* ── Regular Chadawa by Temple ── */}
       {regularGroups.length > 0 && (
-        <section className="section-padding max-w-7xl mx-auto">
+        <section className="pt-4 pb-16 px-4 md:px-8 lg:px-16 max-w-7xl mx-auto">
           <div className="flex flex-col items-center text-center mb-10">
             <div className="inline-flex items-center gap-2 bg-purple-500/10 border border-purple-500/30 rounded-full px-5 py-2 mb-4">
               <span className="text-sm font-semibold text-purple-400 tracking-wide uppercase">Chadawa Add-ons</span>

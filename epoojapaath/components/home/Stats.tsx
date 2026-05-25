@@ -25,22 +25,40 @@ function CountUp({ end, suffix = "" }: { end: number; suffix?: string }) {
   return <span ref={ref}>{count.toLocaleString("en-IN")}{suffix}</span>;
 }
 
-const stats = [
-  { label: "Temples Registered",  value: 500,    suffix: "+" },
-  { label: "Pujas Performed",      value: 10000,  suffix: "+" },
-  { label: "Cities Covered",       value: 50,     suffix: "+" },
-  { label: "Happy Devotees",       value: 100000, suffix: "+" },
+const defaultStats = [
+  { key: "temples",  label: "Temples Registered",  defaultValue: 0,   suffix: "" },
+  { key: "bookings", label: "Pujas Performed",     defaultValue: 0,   suffix: "" },
+  { key: "cities",   label: "Cities Covered",      defaultValue: 0,   suffix: "" },
+  { key: "devotees", label: "Happy Devotees",      defaultValue: 0,   suffix: "" },
 ];
 
 export function Stats() {
+  const [data, setData] = useState<Record<string, number>>({
+    temples: 0,
+    bookings: 0,
+    cities: 0,
+    devotees: 0,
+  });
+
+  useEffect(() => {
+    fetch("/api/public/stats")
+      .then((res) => res.json())
+      .then((resData) => {
+        if (resData.success && resData.data) {
+          setData(resData.data);
+        }
+      })
+      .catch((err) => console.error("Error loading stats:", err));
+  }, []);
+
   return (
     <section className="py-16 bg-gradient-to-r from-saffron via-deep-gold to-saffron">
       <div className="max-w-7xl mx-auto px-4 md:px-8">
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
-          {stats.map(({ label, value, suffix }) => (
+          {defaultStats.map(({ key, label, suffix }) => (
             <div key={label} className="text-center">
               <div className="font-heading text-4xl md:text-5xl text-white mb-2">
-                <CountUp end={value} suffix={suffix} />
+                <CountUp end={data[key] || 0} suffix={suffix} />
               </div>
               <p className="text-white/80 text-sm font-medium">{label}</p>
             </div>

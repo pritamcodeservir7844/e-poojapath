@@ -32,6 +32,7 @@ export default async function PujaPage({ searchParams }: PageProps) {
         sanskrit="पूजा सेवाएँ"
         title="Book a Puja"
         subtitle="Sacred rituals performed by learned pandits at verified temples across India."
+        className="pt-16 pb-10"
       />
       <section className="py-5 bg-card-bg border-b border-deep-gold/20">
         <div className="max-w-7xl mx-auto px-4 md:px-8">
@@ -41,8 +42,8 @@ export default async function PujaPage({ searchParams }: PageProps) {
           </form>
         </div>
       </section>
-      <MandalaDivider />
-      <section className="section-padding max-w-7xl mx-auto">
+      <MandalaDivider className="!py-1" />
+      <section className="pt-4 pb-16 px-4 md:px-8 lg:px-16 max-w-7xl mx-auto">
         {pujas.length === 0 ? (
           <EmptyState icon="📿" title="No pujas found" description="Try a different search term." />
         ) : (

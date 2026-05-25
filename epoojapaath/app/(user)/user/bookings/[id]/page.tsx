@@ -6,6 +6,9 @@ import { getBookingById } from "@/services/booking.service";
 import { formatCurrency, formatDate } from "@/lib/utils";
 import Link from "next/link";
 import type { IBooking, ITemple } from "@/types";
+import Review from "@/models/Review";
+import { connectDB } from "@/lib/db";
+import { BookingReviewForm } from "@/components/bookings/BookingReviewForm";
 
 export default async function BookingDetailPage({ params }: { params: { id: string } }) {
   const session = await auth();
@@ -17,6 +20,10 @@ export default async function BookingDetailPage({ params }: { params: { id: stri
   if (booking.user?.toString() !== session.user.id && session.user.role !== "admin") {
     redirect("/user/bookings");
   }
+
+  await connectDB();
+  const reviewRaw = await Review.findOne({ booking: params.id }).lean();
+  const review = reviewRaw ? JSON.parse(JSON.stringify(reviewRaw)) : null;
 
   return (
     <DashboardShell
@@ -124,6 +131,15 @@ export default async function BookingDetailPage({ params }: { params: { id: stri
             <h2 className="font-heading text-lg text-foreground mb-3">Puja Video 🙏</h2>
             <video src={booking.videoUrl} controls className="w-full rounded-xl" />
           </div>
+        )}
+
+        {/* Review Form */}
+        {(booking.status === "completed" || booking.status === "confirmed") && (
+          <BookingReviewForm
+            bookingId={booking._id.toString()}
+            templeId={typeof booking.temple === "object" ? booking.temple._id.toString() : booking.temple}
+            initialReview={review}
+          />
         )}
       </div>
     </DashboardShell>

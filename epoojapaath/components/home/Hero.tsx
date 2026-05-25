@@ -688,22 +688,38 @@ const slides = [
   },
 ];
 
-const stats = [
-  { val: "500+", en: "Temples",  hi: "मंदिर"  },
-  { val: "10K+", en: "Bookings", hi: "बुकिंग" },
-  { val: "50+",  en: "Cities",   hi: "शहर"    },
-];
-
 // ─── Hero ────────────────────────────────────────────────────────────────────
 
 export function Hero() {
   const [current, setCurrent] = useState(0);
   const { t, lang } = useLang();
+  const [statsData, setStatsData] = useState({ temples: 0, bookings: 0, cities: 0 });
 
   useEffect(() => {
     const timer = setInterval(() => setCurrent((c) => (c + 1) % slides.length), 3400);
     return () => clearInterval(timer);
   }, []);
+
+  useEffect(() => {
+    fetch("/api/public/stats")
+      .then((res) => res.json())
+      .then((resData) => {
+        if (resData.success && resData.data) {
+          setStatsData({
+            temples: resData.data.temples,
+            bookings: resData.data.bookings,
+            cities: resData.data.cities,
+          });
+        }
+      })
+      .catch((err) => console.error("Error loading stats:", err));
+  }, []);
+
+  const statsList = [
+    { val: `${statsData.temples}`, en: "Temples", hi: "मंदिर" },
+    { val: `${statsData.bookings}`, en: "Bookings", hi: "बुकिंग" },
+    { val: `${statsData.cities}`, en: "Cities", hi: "शहर" },
+  ];
 
   const slide = slides[current];
   const { Illustration } = slide;
@@ -829,7 +845,7 @@ export function Hero() {
 
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.7 }}
               className="flex flex-wrap gap-8">
-              {stats.map(({ val, en, hi }) => (
+              {statsList.map(({ val, en, hi }) => (
                 <div key={en}>
                   <div className="font-heading text-3xl font-bold bg-clip-text text-transparent"
                     style={{ backgroundImage: "linear-gradient(135deg, #D4820A, #EC9DD4)" }}>

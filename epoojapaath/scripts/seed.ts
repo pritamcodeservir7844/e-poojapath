@@ -10,6 +10,7 @@ import Chadawa from "../models/Chadawa";
 import Booking from "../models/Booking";
 import Blog from "../models/Blog";
 import Ad from "../models/Ad";
+import Review from "../models/Review";
 
 const MONGODB_URI = process.env.MONGODB_URI!;
 
@@ -18,7 +19,7 @@ async function seed() {
   console.log("🔗 Connected to MongoDB");
 
   // Clear all
-  await Promise.all([User, Temple, Puja, Chadawa, Booking, Blog, Ad].map((M) => M.deleteMany({})));
+  await Promise.all([User, Temple, Puja, Chadawa, Booking, Blog, Ad, Review].map((M) => M.deleteMany({})));
   console.log("🗑️  Cleared existing data");
 
   const hashedPw = await bcrypt.hash("password123", 12);
@@ -40,15 +41,47 @@ async function seed() {
       name: "Tripura Sundari Temple",
       slug: "tripura-sundari",
       shortDescription: "One of the Sacred 51 Shakti Peethas of India — Maa Tripurasundari Temple, Udaipur, Tripura, established in 1501 AD by Maharaja Dhanya Manikya.",
-      description: "Tripura Sundari Temple, popularly known as Maa Bari, is one of the holiest Hindu pilgrimage sites and among the revered 51 Shakti Peethas in India. Located in the historic town of Udaipur in Tripura, this ancient temple is dedicated to Goddess Tripura Sundari, an incarnation of Goddess Shakti and Maa Kali. Devotees from across India visit this sacred temple seeking blessings for prosperity, protection, success, peace, marriage, health, and spiritual growth.\n\nThe sacred Tripura Sundari Temple was established in the year 1501 by Maharaja Dhanya Manikya, the ruler of the Manikya dynasty of Tripura. According to Hindu mythology and Tantric traditions, this temple is one of the 51 Shakti Peethas where the right foot of Goddess Sati is believed to have fallen after Lord Shiva carried her divine body across the universe.\n\nThe temple holds immense importance in Shaktism and Tantric worship traditions. Built in traditional Bengali-style architecture with a unique square sanctum and cone-shaped dome, the temple has remained a major spiritual destination for centuries. The deity worshipped here is Maa Tripura Sundari, also known as Soroshi Kali, represented in the form of a black stone idol symbolizing supreme feminine divine power.",
-      deity: "Maa Tripura Sundari",
+      description: `Experience Divine Blessings at Maa Tripurasundari Temple
+Tripura Sundari Temple, popularly known as Maa Bari, is one of the holiest Hindu pilgrimage sites and among the revered 51 Shakti Peethas in India. Located in the historic town of Udaipur in Tripura, this ancient temple is dedicated to Goddess Tripura Sundari, an incarnation of Goddess Shakti and Maa Kali. Devotees from across India visit this sacred temple seeking blessings for prosperity, protection, success, peace, marriage, health, and spiritual growth.
+
+History of Tripura Sundari Temple
+The sacred Tripura Sundari Temple was established in the year 1501 by Maharaja Dhanya Manikya, the ruler of the Manikya dynasty of Tripura. According to Hindu mythology and Tantric traditions, this temple is one of the 51 Shakti Peethas where the right foot of Goddess Sati is believed to have fallen after Lord Shiva carried her divine body across the universe.
+The temple holds immense importance in Shaktism and Tantric worship traditions. Built in traditional Bengali-style architecture with a unique square sanctum and cone-shaped dome, the temple has remained a major spiritual destination for centuries.
+The deity worshipped here is Maa Tripura Sundari, also known as Soroshi Kali, represented in the form of a black stone idol symbolizing supreme feminine divine power.
+
+Spiritual Significance of Tripura Sundari Temple
+The Tripura Sundari Temple is considered one of the most powerful Shakti Peethas in India. Devotees believe that prayers and pujas offered here bring divine blessings, spiritual protection, fulfillment of wishes, and removal of negative energies.
+
+Why the Temple is Spiritually Powerful
+• One of the sacred 51 Shakti Peethas
+• Dedicated to Maa Tripura Sundari, the goddess of supreme power
+• Major center of Tantric and Shakti worship
+• Known for wish fulfillment and spiritual healing
+• Strong spiritual vibrations and ancient divine energy
+• Thousands of devotees visit during Diwali and Navratri
+
+Temple Timings
+• Summer (March to Oct): 5:00 AM to 9:00 PM
+• Winter (Nov to Feb): 5:30 AM to 8:30 PM
+
+Daily Puja & Ritual Schedule
+• Mangal Aarti: 4:00 AM (Summer) / 4:30 AM (Winter)
+• Abhishek & Shringar: 5:00 AM to 6:00 AM (Summer) / 5:30 AM to 7:00 AM (Winter)
+• General Darshan Begins: 6:00 AM (Summer) / 7:00 AM (Winter)
+• Bhog Offering: 12:00 PM to 1:00 PM
+• Temple Closure (Vishram): 1:00 PM to 2:30 PM
+• Evening (Sandhya) Aarti: 7:15 PM (Summer) / 6:30 PM (Winter)
+
+Offerings to Maa Tripura Sundari
+At the Tripura Sundari Shaktipeeth Temple, the deity is offered 🌺 Red Hibiscus Flower, 🪔 Deep & Dhuno, Peda Prasad, Coconut, Chunari & Saree, Kumkum & Sindoor are also offered during worship.`,
+      deity: "Maa Kali",
       status: "approved",
       featured: true,
       owner: admin._id,
       location: { address: "Udaipur, Tripura", city: "Udaipur", state: "Tripura", pincode: "799120", lat: 23.5048, lng: 91.4986 },
       coverImage: "/tripura-sundari.jpeg",
       images: ["/tripura-sundari.jpeg"],
-      timings: "Summer (Mar–Oct): 5:00 AM – 9:00 PM | Winter (Nov–Feb): 5:30 AM – 8:30 PM",
+      timings: "Summer (March to Oct): 5:00 AM to 9:00 PM | Winter (Nov to Feb): 5:30 AM to 8:30 PM",
       established: "1501 AD",
       contactPhone: "+91 3821 223 555",
       contactEmail: "info@tripurasundari.org",
@@ -61,7 +94,39 @@ async function seed() {
       name: "Kasbeswari Kali Temple",
       slug: "kasbeswari-kali",
       shortDescription: "Sacred Shaktipeeth in Tripura with a rare 15th-century sandstone idol of Maa Durga, worshipped as Maa Kali — an ancient Indo-Bangla bond of faith and devotion.",
-      description: "Kasbeswari Kali Temple is one of the revered spiritual destinations in Tripura dedicated to Goddess Kali, worshipped locally as Maa Kasbeswari. The sacred Kasbeswari Shaktipeeth Temple is home to a rare 15th-century sandstone idol of Maa Durga, worshipped with deep devotion as Maa Kali. Built in the 17th century, this ancient temple carries centuries of divine energy, where Maa blesses devotees with protection, strength, and victory over evil. Rooted in the shared spiritual heritage of India and Bangladesh, it stands as a timeless Indo-Bangla bond of faith and devotion. With a sacred Shivalinga at Maa's feet, this powerful Shaktipeeth radiates unmatched spiritual vibrations and wish-fulfilling blessings. Maa Kasbeswari is worshipped as the divine mother who removes fear, negativity, and obstacles from devotees' lives. Devotees believe that sincere prayers and offerings at the temple bring spiritual strength, prosperity, and fulfillment of wishes.",
+      description: `Experience the Divine Blessings of Maa Kasbeswari
+Kasbeswari Kali Temple is one of the revered spiritual destinations in Tripura dedicated to Goddess Kali, worshipped locally as Maa Kasbeswari. Known for its peaceful spiritual atmosphere and deep devotional significance, the temple attracts thousands of devotees seeking protection, prosperity, courage, and divine blessings.
+
+History of the Temple
+The sacred Kasbeswari Shaktipeeth Temple in Tripura is home to a rare 15th-century sandstone idol of Maa Durga, worshipped with deep devotion as Maa Kali. Built in the 17th century, this ancient temple carries centuries of divine energy, where Maa blesses devotees with protection, strength, and victory over evil. Rooted in the shared spiritual heritage of India and Bangladesh, it stands as a timeless Indo-Bangla bond of faith and devotion. With a sacred Shivalinga at Maa’s feet, this powerful Shaktipeeth radiates unmatched spiritual vibrations and wish-fulfilling blessings.
+
+Spiritual Significance of Maa Kasbeswari
+Maa Kasbeswari is worshipped as the divine mother who removes fear, negativity, and obstacles from devotees’ lives. Devotees believe that sincere prayers and offerings at the temple bring spiritual strength, prosperity, and fulfillment of wishes.
+
+Why the Temple is Spiritually Powerful
+• Strong Presence of Divine Shakti
+• Ancient Kali Worship Traditions
+• Sacred center of Kali and Shakti worship
+• Powerful spiritual vibrations and divine atmosphere
+• Known for protection and wish fulfillment
+• Important temple during Kali Puja and Navratri
+• Spiritual peace and positive energy
+• Ancient devotional traditions of Tripura
+
+Temple Timings
+• Summer (March to Oct): 5:00 AM to 9:00 PM
+• Winter (Nov to Feb): 5:30 AM to 8:30 PM
+
+Daily Puja & Ritual Schedule
+• Mangal Aarti: 4:00 AM (Summer) / 4:30 AM (Winter)
+• Abhishek & Shringar: 5:00 AM to 6:00 AM (Summer) / 5:30 AM to 7:00 AM (Winter)
+• General Darshan Begins: 6:00 AM (Summer) / 7:00 AM (Winter)
+• Bhog Offering: 12:00 PM to 1:00 PM
+• Temple Closure (Vishram): 2:00 PM to 5:00 PM
+• Evening (Sandhya) Aarti: 7:15 PM (Summer) / 6:30 PM (Winter)
+
+Offerings to Maa Kasbeswari
+At the Kasbeswari Kali Temple, the deity is offered 🌺 Red Hibiscus Flower, 🪔 Deep & Dhuno, Peda Prasad, Coconut, Chunari & Saree, Kumkum & Sindoor are also offered during worship.`,
       deity: "Maa Kali",
       status: "approved",
       featured: true,
@@ -69,7 +134,7 @@ async function seed() {
       location: { address: "Kasba, Tripura", city: "Kasba", state: "Tripura", pincode: "799102", lat: 23.6300, lng: 91.3500 },
       coverImage: "/kasbeswari.jpeg",
       images: ["/kasbeswari.jpeg"],
-      timings: "Summer (Mar–Oct): 5:00 AM – 9:00 PM | Winter (Nov–Feb): 5:30 AM – 8:30 PM",
+      timings: "Summer (March to Oct): 5:00 AM to 9:00 PM | Winter (Nov to Feb): 5:30 AM to 8:30 PM",
       established: "17th century",
       contactPhone: "+91 3821 224 666",
       contactEmail: "info@kasbeswarikali.org",
@@ -82,7 +147,38 @@ async function seed() {
       name: "Tripuresh Bhairav Temple",
       slug: "tripuresh-bhairav",
       shortDescription: "Sacred Bhairav Temple in Tripura — Baba Tripuresh Bhairav, divine guardian and protector of Maa Tripura Sundari Shakti Peetha, established in the 15th century.",
-      description: "Tripuresh Bhairav Temple, popularly known as Shibbari Temple, is one of the most revered Shiva temples in Tripura and holds immense spiritual importance among devotees of Lord Shiva and Shakti traditions. Located near the sacred Tripura Sundari Temple, this holy temple is dedicated to Baba Tripuresh Bhairav, the divine Bhairav form associated with Maa Tripura Sundari.\n\nEstablished in the 15th century, this sacred temple is deeply connected with the spiritual heritage of Tripura Sundari Temple and Shakti worship traditions. In Hindu mythology and Tantric belief, every Shakti Peetha is protected by a Bhairav, a fierce and divine manifestation of Lord Shiva.\n\nBaba Tripuresh Bhairav is regarded as the guardian deity and divine protector of Maa Tripura Sundari Temple. Devotees traditionally visit Bhairav Temple before or after offering prayers to Maa Tripura Sundari, completing the sacred spiritual journey. The temple has remained an important centre of Shiva worship, meditation, and Tantric spiritual practices for generations.",
+      description: `Experience the Divine Power of Baba Tripuresh Bhairav
+Tripuresh Bhairav Temple, popularly known as Shibbari Temple, is one of the most revered Shiva temples in Tripura and holds immense spiritual importance among devotees of Lord Shiva and Shakti traditions. Located near the sacred Tripura Sundari Temple, this holy temple is dedicated to Baba Tripuresh Bhairav, the divine Bhairav form associated with Maa Tripura Sundari.
+Devotees visit this sacred temple seeking blessings for protection, spiritual strength, peace, success, and removal of negative energies.
+
+History of Tripuresh Bhairav Temple
+Established in 15th Century, this sacred Tripuresh Bhairav Temple is deeply connected with the spiritual heritage of Tripura Sundari Temple and Shakti worship traditions. In Hindu mythology and Tantric belief, every Shakti Peetha is protected by a Bhairav, a fierce and divine manifestation of Lord Shiva.
+Baba Tripuresh Bhairav is regarded as the guardian deity and divine protector of Maa Tripura Sundari Temple. Devotees traditionally visit Bhairav Temple before or after offering prayers to Maa Tripura Sundari, completing the sacred spiritual journey.
+The temple has remained an important centre of Shiva worship, meditation, and Tantric spiritual practices for generations.
+
+Spiritual Significance of Tripuresh Bhairav Temple
+Tripuresh Bhairav Temple is considered a powerful spiritual center where devotees seek divine protection, courage, inner strength, and liberation from fear and negativity.
+
+Why Devotees Visit Baba Tripuresh Bhairav
+• Sacred Bhairav associated with Tripura Sundari Shakti Peetha
+• Divine protector and guardian deity
+• Powerful center for Shiva worship and meditation
+• Believed to remove fear, negativity, and obstacles
+• Strong spiritual and Tantric significance
+• Known for blessings of protection and spiritual energy
+
+Temple Timings
+• Summer (Mar 1 – Oct 15): 5:00 AM to 9:00 PM
+• Winter (Oct 16 – Feb 28): 5:30 AM to 8:30 PM
+
+Key Daily Rituals & Timings:
+• Mangala Aarti: Dawn (4:00 AM in summer; 4:30 AM in winter)
+• Main Puja: 9:30 AM to 11:00 AM
+• Temple Rest/Bhog: The Goddess rests after Annabhog between 2:00 PM and 2:30 PM.
+• Sandhya Aarti: Dusk (6:00 PM in winter; 7:00 PM in summer)
+
+Offerings at Tripuresh Bhairav
+At the Tripuresh Bhairav Temple, the deity is offered Bilva Leaves, Flowers & Garland, Milk Abhishek, Dhup & Deep, Coconut, Peda are also offered during worship.`,
       deity: "Lord Bhairav",
       status: "approved",
       featured: true,
@@ -90,7 +186,7 @@ async function seed() {
       location: { address: "Udaipur, Tripura", city: "Udaipur", state: "Tripura", pincode: "799120", lat: 23.5060, lng: 91.4990 },
       coverImage: "/tripuresh-bhairav.jpeg",
       images: ["/tripuresh-bhairav.jpeg"],
-      timings: "Summer (Mar–Oct 15): 5:00 AM – 9:00 PM | Winter (Oct 16–Feb): 5:30 AM – 8:30 PM",
+      timings: "Summer (Mar 1 – Oct 15): 5:00 AM to 9:00 PM | Winter (Oct 16 – Feb 28): 5:30 AM to 8:30 PM",
       established: "15th century",
       contactPhone: "+91 3821 223 777",
       contactEmail: "info@tripureshbhairav.org",
@@ -1041,6 +1137,29 @@ async function seed() {
     },
   ]);
   console.log("📢 Created 2 ads");
+
+  // Reviews
+  await Review.insertMany([
+    {
+      user: user1._id,
+      temple: t1._id,
+      rating: 5,
+      comment: "I booked a Rudrabhishek at Tripura Sundari Temple through ePoojapaath. The pandit performed it beautifully and I received a video within hours. Feeling truly blessed!",
+    },
+    {
+      user: user2._id,
+      temple: t2._id,
+      rating: 5,
+      comment: "Offered Chadawa to Maa Kasbeswari Kali Temple on my mother's birthday. The process was seamless, and the prasad arrived in 3 days. Thank you ePoojapaath!",
+    },
+    {
+      user: user1._id,
+      temple: t3._id,
+      rating: 5,
+      comment: "Highly recommended! Authentic and peaceful experience. The Puja was conducted properly with my name and Gotra.",
+    },
+  ]);
+  console.log("⭐ Created 3 reviews");
 
   console.log("\n✅ Seed complete!");
   console.log("📧 Admin:   admin@epoojapaath.com / password123");

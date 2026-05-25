@@ -1,8 +1,9 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { useState, useEffect } from "react";
 
-const testimonials = [
+const fallbackTestimonials = [
   {
     name: "Priya Sharma",
     city: "Delhi",
@@ -29,7 +30,33 @@ const testimonials = [
   },
 ];
 
+const AVATARS = ["🙏", "🕉️", "🌸", "🪔", "🌺", "✨"];
+
 export function Testimonials() {
+  const [reviews, setReviews] = useState<any[]>([]);
+
+  useEffect(() => {
+    fetch("/api/public/testimonials")
+      .then((res) => res.json())
+      .then((resData) => {
+        if (resData.success && resData.data && resData.data.length > 0) {
+          setReviews(resData.data);
+        }
+      })
+      .catch((err) => console.error("Error loading testimonials:", err));
+  }, []);
+
+  const displayList = reviews.length > 0
+    ? reviews.map((r, i) => ({
+        name: r.user?.name || "Devotee",
+        city: r.user?.city || "India",
+        avatar: AVATARS[i % AVATARS.length],
+        rating: r.rating || 5,
+        text: r.comment || "",
+        puja: r.temple?.name || "Verified Puja",
+      }))
+    : fallbackTestimonials;
+
   return (
     <section className="section-padding bg-gradient-to-b from-card-bg to-cream">
       <div className="max-w-7xl mx-auto">
@@ -40,9 +67,9 @@ export function Testimonials() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {testimonials.map(({ name, city, avatar, rating, text, puja }, i) => (
+          {displayList.slice(0, 3).map(({ name, city, avatar, rating, text, puja }, i) => (
             <motion.div
-              key={name}
+              key={`${name}-${i}`}
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}

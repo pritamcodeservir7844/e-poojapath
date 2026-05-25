@@ -67,7 +67,9 @@ export default async function TempleDetailPage({ params }: { params: { slug: str
               {/* About */}
               <section className="card-devotional">
                 <h2 className="font-heading text-2xl text-foreground mb-4">About This Temple</h2>
-                <p className="text-muted-foreground leading-relaxed mb-4">{temple.description}</p>
+                <div className="mb-6">
+                  {renderDescription(temple.description)}
+                </div>
                 <div className="grid grid-cols-2 gap-4 text-sm">
                   <div><span className="font-medium text-foreground">Deity:</span> <span className="text-muted-foreground">{temple.deity}</span></div>
                   <div><span className="font-medium text-foreground">Established:</span> <span className="text-muted-foreground">{temple.established || "Ancient"}</span></div>
@@ -220,3 +222,105 @@ export default async function TempleDetailPage({ params }: { params: { slug: str
     </PublicPage>
   );
 }
+
+function renderDescription(description: string) {
+  if (!description) return null;
+
+  const lines = description.split('\n');
+  const renderedElements: React.ReactNode[] = [];
+  let currentList: React.ReactNode[] = [];
+
+  const renderInlineText = (text: string) => {
+    // Matches **bold text**
+    const parts = text.split(/(\*\*.*?\*\*)/g);
+    return parts.map((part, i) => {
+      if (part.startsWith('**') && part.endsWith('**')) {
+        return <strong key={i} className="font-semibold text-foreground">{part.slice(2, -2)}</strong>;
+      }
+      return part;
+    });
+  };
+
+  const flushList = (key: number) => {
+    if (currentList.length > 0) {
+      renderedElements.push(
+        <ul key={`list-${key}`} className="list-disc pl-5 space-y-1 mb-4 text-muted-foreground text-sm">
+          {...currentList}
+        </ul>
+      );
+      currentList = [];
+    }
+  };
+
+  lines.forEach((line, index) => {
+    const trimmed = line.trim();
+    if (!trimmed) {
+      flushList(index);
+      return;
+    }
+
+    // Check if it's a bullet point (starts with •, *, ⦁, or -)
+    if (/^[•*⦁-]\s*/.test(trimmed)) {
+      const cleanLine = trimmed.replace(/^[•*⦁-]\s*/, '');
+      currentList.push(<li key={`li-${index}`}>{renderInlineText(cleanLine)}</li>);
+      return;
+    }
+
+    // Since this line is not a bullet, flush any existing list items
+    flushList(index);
+
+    // Check if it's a markdown heading
+    if (trimmed.startsWith("### ")) {
+      renderedElements.push(
+        <h4 key={`h4-${index}`} className="font-body text-sm text-foreground font-semibold mt-4 mb-1">
+          {renderInlineText(trimmed.slice(4))}
+        </h4>
+      );
+      return;
+    }
+    if (trimmed.startsWith("## ")) {
+      renderedElements.push(
+        <h3 key={`h3-${index}`} className="font-body text-base text-foreground font-semibold mt-5 mb-2">
+          {renderInlineText(trimmed.slice(3))}
+        </h3>
+      );
+      return;
+    }
+
+    // Auto-detect headings: if it's short, doesn't end with sentence ending punctuation,
+    // and matches common heading words.
+    const isHeading = 
+      trimmed.length < 65 && 
+      !/[.,;.?!]/.test(trimmed.slice(-1)) &&
+      (trimmed.includes("History") || 
+       trimmed.includes("Significance") || 
+       trimmed.includes("Why") || 
+       trimmed.includes("Timings") || 
+       trimmed.includes("Ritual") || 
+       trimmed.includes("Offerings") ||
+       trimmed.includes("Schedule") ||
+       trimmed.startsWith("Experience"));
+
+    if (isHeading) {
+      renderedElements.push(
+        <h3 key={`h3-auto-${index}`} className="font-body text-base text-foreground font-semibold mt-4 mb-1.5">
+          {renderInlineText(trimmed)}
+        </h3>
+      );
+      return;
+    }
+
+    // Default paragraph
+    renderedElements.push(
+      <p key={`p-${index}`} className="text-muted-foreground text-sm leading-relaxed mb-3">
+        {renderInlineText(trimmed)}
+      </p>
+    );
+  });
+
+  // Flush any final list
+  flushList(lines.length);
+
+  return renderedElements;
+}
+

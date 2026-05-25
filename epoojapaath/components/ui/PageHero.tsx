@@ -2,12 +2,13 @@ interface PageHeroProps {
   sanskrit: string;
   title: string;
   subtitle?: string;
+  className?: string;
 }
 
-export function PageHero({ sanskrit, title, subtitle }: PageHeroProps) {
+export function PageHero({ sanskrit, title, subtitle, className = "py-20" }: PageHeroProps) {
   return (
     <section
-      className="py-20 text-center relative overflow-hidden"
+      className={`${className} text-center relative overflow-hidden`}
       style={{
         background: "linear-gradient(135deg, #F5F0FF 0%, #FFF0F8 50%, #EEF2FF 100%)",
       }}
