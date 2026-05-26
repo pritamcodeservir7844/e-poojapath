@@ -235,9 +235,9 @@ export default async function TempleDetailPage({ params }: { params: { slug: str
                     className="flex-1 bg-green-50 border border-green-200 text-green-700 text-xs text-center py-2 rounded-lg hover:bg-green-100 transition-colors">
                     WhatsApp
                   </a>
-                  <a href={`https://twitter.com/intent/tweet?text=Discover ${temple.name} on ePoojapaath!`} target="_blank" rel="noopener noreferrer"
+                  <a href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent((process.env.NEXT_PUBLIC_APP_URL ?? "https://e-poojapath.vercel.app") + "/temples/" + temple.slug)}`} target="_blank" rel="noopener noreferrer"
                     className="flex-1 bg-blue-50 border border-blue-200 text-blue-700 text-xs text-center py-2 rounded-lg hover:bg-blue-100 transition-colors">
-                    Twitter
+                    Facebook
                   </a>
                 </div>
               </div>

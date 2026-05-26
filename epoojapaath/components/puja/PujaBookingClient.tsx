@@ -2,11 +2,11 @@
 
 import { useState, useEffect } from "react";
 import Image from "next/image";
-import { useSession } from "next-auth/react";
+import { useSession, signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import dynamic from "next/dynamic";
 import { PujaPackageModal } from "./PujaPackageModal";
-import { Input, Textarea } from "@/components/ui/Input";
+import { Input, Textarea, Select } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
 import { devToast } from "@/lib/toast";
 import { formatCurrency } from "@/lib/utils";
@@ -45,11 +45,13 @@ export function PujaBookingClient({ puja, chadawaItems = [] }: Props) {
   const [selectedChadawa, setSelectedChadawa] = useState<SelectedChadawa[]>([]);
   const [form, setForm] = useState({
     devoteeName: "",
+    whatsappPhone: "",
     gotra: "",
     sankalp: "",
     date: "",
     prasadDelivery: false,
     prasadAddress: "",
+    dakshina: 0,
   });
   const [loading, setLoading] = useState(false);
   const [booked, setBooked] = useState(false);
@@ -63,7 +65,7 @@ export function PujaBookingClient({ puja, chadawaItems = [] }: Props) {
   const pujaPrice = selectedPkg ? selectedPkg.price : puja.price;
   const chadawaTotal = selectedChadawa.reduce((sum, sc) => sum + sc.item.price * sc.qty, 0);
   const prasadPrice = form.prasadDelivery ? 151 : 0;
-  const grandTotal = pujaPrice + chadawaTotal + prasadPrice;
+  const grandTotal = pujaPrice + chadawaTotal + prasadPrice + Number(form.dakshina || 0);
 
   function toggleChadawa(item: IChadawa & { _id: string }) {
     setSelectedChadawa((prev) => {
@@ -105,9 +107,55 @@ export function PujaBookingClient({ puja, chadawaItems = [] }: Props) {
 
   async function handleBook(e: React.FormEvent) {
     e.preventDefault();
-    if (!session) { router.push("/login"); return; }
+    let currentSession = session;
     setLoading(true);
     try {
+      if (!currentSession) {
+        if (!form.devoteeName.trim()) {
+          devToast.error("Devotee Name is required");
+          setLoading(false);
+          return;
+        }
+        if (!form.whatsappPhone.trim() || form.whatsappPhone.trim().length < 10) {
+          devToast.error("Please enter a valid 10-digit WhatsApp number");
+          setLoading(false);
+          return;
+        }
+
+        const guestRes = await fetch("/api/auth/guest", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            name: form.devoteeName,
+            phone: form.whatsappPhone,
+          }),
+        });
+        const guestData = await guestRes.json();
+        if (!guestData.success) {
+          devToast.error(guestData.error || "Guest login failed");
+          setLoading(false);
+          return;
+        }
+
+        const signInResult = await signIn("credentials", {
+          email: guestData.email,
+          password: guestData.password,
+          redirect: false,
+        });
+
+        if (signInResult?.error) {
+          devToast.error("Failed to authenticate guest session");
+          setLoading(false);
+          return;
+        }
+
+        currentSession = {
+          user: {
+            name: form.devoteeName,
+            email: guestData.email,
+          }
+        } as any;
+      }
       const orderRes = await fetch("/api/payment/create-order", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -126,7 +174,7 @@ export function PujaBookingClient({ puja, chadawaItems = [] }: Props) {
         description: puja.name,
         order_id: orderData.data.id,
         theme: { color: "#D4820A" },
-        prefill: { name: session.user?.name, email: session.user?.email },
+        prefill: { name: currentSession?.user?.name, email: currentSession?.user?.email },
         handler: async (response: {
           razorpay_order_id: string;
           razorpay_payment_id: string;
@@ -521,7 +569,14 @@ export function PujaBookingClient({ puja, chadawaItems = [] }: Props) {
                 <div className="flex items-center gap-2 border-t border-saffron/10 pt-2">
                   <span className="text-xs">📦</span>
                   <p className="text-xs text-foreground flex-1">Prasad Delivery</p>
-                  <p className="text-xs font-medium text-saffron">+₹99</p>
+                  <p className="text-xs font-medium text-saffron">+₹151</p>
+                </div>
+              )}
+              {form.dakshina > 0 && (
+                <div className="flex items-center gap-2 border-t border-saffron/10 pt-2">
+                  <span className="text-xs">🙏</span>
+                  <p className="text-xs text-foreground flex-1">Pandit Ji Dakshina</p>
+                  <p className="text-xs font-medium text-saffron">+{formatCurrency(form.dakshina)}</p>
                 </div>
               )}
             </div>
@@ -533,6 +588,16 @@ export function PujaBookingClient({ puja, chadawaItems = [] }: Props) {
               value={form.devoteeName}
               onChange={(e) => setForm({ ...form, devoteeName: e.target.value })}
             />
+            {!session && (
+              <Input
+                label="WhatsApp Mobile Number"
+                required
+                placeholder="10-digit mobile number"
+                type="tel"
+                value={form.whatsappPhone}
+                onChange={(e) => setForm({ ...form, whatsappPhone: e.target.value })}
+              />
+            )}
             <Input
               label="Gotra (Optional)"
               placeholder="e.g. Kashyap, Bharadwaj"
@@ -553,6 +618,25 @@ export function PujaBookingClient({ puja, chadawaItems = [] }: Props) {
               min={new Date().toISOString().split("T")[0]}
               value={form.date}
               onChange={(e) => setForm({ ...form, date: e.target.value })}
+            />
+            <Select
+              label="Dakshina to Pandit Ji (Optional)"
+              value={form.dakshina.toString()}
+              onChange={(e) => setForm({ ...form, dakshina: Number(e.target.value) })}
+              options={[
+                { value: "0", label: "None" },
+                { value: "51", label: "₹51" },
+                { value: "101", label: "₹101" },
+                { value: "151", label: "₹151" },
+                { value: "201", label: "₹201" },
+                { value: "251", label: "₹251" },
+                { value: "501", label: "₹501" },
+                { value: "551", label: "₹551" },
+                { value: "1001", label: "₹1,001" },
+                { value: "2100", label: "₹2,100" },
+                { value: "5100", label: "₹5,100" },
+                { value: "9999", label: "₹9,999" },
+              ]}
             />
             <div className="flex items-center gap-2">
               <input
@@ -592,8 +676,12 @@ export function PujaBookingClient({ puja, chadawaItems = [] }: Props) {
               )}
               {form.prasadDelivery && (
                 <div className="flex justify-between text-sm text-muted-foreground">
-                  <span>Prasad Delivery</span>
-                  <span>+₹151</span>
+                  <span>Prasad Delivery</span><span>+₹151</span>
+                </div>
+              )}
+              {form.dakshina > 0 && (
+                <div className="flex justify-between text-sm text-muted-foreground">
+                  <span>Pandit Ji Dakshina</span><span>+{formatCurrency(form.dakshina)}</span>
                 </div>
               )}
               <div className="flex justify-between font-heading text-lg border-t border-deep-gold/20 pt-2">

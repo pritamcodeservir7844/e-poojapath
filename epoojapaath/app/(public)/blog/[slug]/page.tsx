@@ -66,10 +66,10 @@ export default async function BlogDetailPage({ params }: { params: { slug: strin
                     className="bg-green-100 text-green-700 text-sm px-4 py-2 rounded-lg hover:bg-green-200 transition-colors">
                     WhatsApp
                   </a>
-                  <a href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(blog.title)}&url=${process.env.NEXT_PUBLIC_APP_URL}/blog/${blog.slug}`}
+                  <a href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent((process.env.NEXT_PUBLIC_APP_URL ?? "https://e-poojapath.vercel.app") + "/blog/" + blog.slug)}`}
                     target="_blank" rel="noopener noreferrer"
                     className="bg-blue-100 text-blue-700 text-sm px-4 py-2 rounded-lg hover:bg-blue-200 transition-colors">
-                    Twitter
+                    Facebook
                   </a>
                 </div>
               </div>

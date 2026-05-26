@@ -17,7 +17,11 @@ export default async function BookingDetailPage({ params }: { params: { id: stri
   const booking = await getBookingById(params.id).catch(() => null) as (IBooking & { _id: string; temple: ITemple & { _id: string } }) | null;
   if (!booking) notFound();
 
-  if (booking.user?.toString() !== session.user.id && session.user.role !== "admin") {
+  const bookingUserId = typeof booking.user === "object" && booking.user !== null
+    ? (booking.user as any)._id?.toString()
+    : booking.user?.toString();
+
+  if (bookingUserId !== session.user.id && session.user.role !== "admin") {
     redirect("/user/bookings");
   }
 
@@ -91,10 +95,23 @@ export default async function BookingDetailPage({ params }: { params: { id: stri
               <dt className="text-muted-foreground">Date</dt>
               <dd className="font-medium text-foreground mt-0.5">{formatDate(booking.date)}</dd>
             </div>
-            <div>
-              <dt className="text-muted-foreground">Amount Paid</dt>
-              <dd className="font-heading text-saffron text-base mt-0.5">{formatCurrency(booking.amount)}</dd>
-            </div>
+            {booking.dakshina && booking.dakshina > 0 ? (
+              <>
+                <div>
+                  <dt className="text-muted-foreground">Pandit Ji Dakshina</dt>
+                  <dd className="font-medium text-foreground mt-0.5">{formatCurrency(booking.dakshina)}</dd>
+                </div>
+                <div>
+                  <dt className="text-muted-foreground">Total Amount Paid</dt>
+                  <dd className="font-heading text-saffron text-base mt-0.5">{formatCurrency(booking.amount)}</dd>
+                </div>
+              </>
+            ) : (
+              <div>
+                <dt className="text-muted-foreground">Amount Paid</dt>
+                <dd className="font-heading text-saffron text-base mt-0.5">{formatCurrency(booking.amount)}</dd>
+              </div>
+            )}
           </dl>
         </div>
 

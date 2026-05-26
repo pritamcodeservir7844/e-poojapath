@@ -8,6 +8,7 @@ export interface IBookingDoc extends Document {
   serviceName: string;
   serviceNameHi: string;
   amount: number;
+  dakshina?: number;
   devoteeName: string;
   gotra?: string;
   sankalp?: string;
@@ -31,6 +32,7 @@ const BookingSchema = new Schema<IBookingDoc>(
     serviceName:   { type: String, required: true },
     serviceNameHi: { type: String, required: true },
     amount:        { type: Number, required: true },
+    dakshina:      { type: Number, default: 0 },
     devoteeName:   { type: String, required: true },
     gotra:         { type: String },
     sankalp:       { type: String },

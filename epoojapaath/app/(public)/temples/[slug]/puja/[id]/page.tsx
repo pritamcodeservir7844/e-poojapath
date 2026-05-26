@@ -1,13 +1,13 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useSession } from "next-auth/react";
+import { useSession, signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import dynamic from "next/dynamic";
 import { devToast } from "@/lib/toast";
 import { formatCurrency } from "@/lib/utils";
-import { Input, Textarea } from "@/components/ui/Input";
+import { Input, Textarea, Select } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
 import { Clock, CheckCircle2, Sparkles } from "lucide-react";
 
@@ -23,13 +23,17 @@ export default function BookPujaPage({ params }: { params: { slug: string; id: s
   const { data: session } = useSession();
   const router = useRouter();
   const [puja, setPuja] = useState<Record<string, unknown> | null>(null);
-  const [form, setForm] = useState({ devoteeName: "", gotra: "", sankalp: "", date: "", prasadDelivery: false, prasadAddress: "" });
+  const [form, setForm] = useState({ devoteeName: "", whatsappPhone: "", gotra: "", sankalp: "", date: "", prasadDelivery: false, prasadAddress: "", dakshina: 0 });
   const [loading, setLoading] = useState(false);
   const [booked, setBooked] = useState(false);
 
   useEffect(() => {
     fetch(`/api/pujas/${params.id}`).then((r) => r.json()).then((d) => setPuja(d.data));
   }, [params.id]);
+
+  const pujaPrice = puja?.price ? Number(puja.price) : 0;
+  const prasadPrice = form.prasadDelivery ? 151 : 0;
+  const grandTotal = pujaPrice + prasadPrice + Number(form.dakshina || 0);
 
   useEffect(() => {
     const script = document.createElement("script");
@@ -39,25 +43,71 @@ export default function BookPujaPage({ params }: { params: { slug: string; id: s
 
   async function handleBook(e: React.FormEvent) {
     e.preventDefault();
-    if (!session) { router.push("/login"); return; }
+    let currentSession = session;
     setLoading(true);
     try {
+      if (!currentSession) {
+        if (!form.devoteeName.trim()) {
+          devToast.error("Devotee Name is required");
+          setLoading(false);
+          return;
+        }
+        if (!form.whatsappPhone.trim() || form.whatsappPhone.trim().length < 10) {
+          devToast.error("Please enter a valid 10-digit WhatsApp number");
+          setLoading(false);
+          return;
+        }
+
+        const guestRes = await fetch("/api/auth/guest", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            name: form.devoteeName,
+            phone: form.whatsappPhone,
+          }),
+        });
+        const guestData = await guestRes.json();
+        if (!guestData.success) {
+          devToast.error(guestData.error || "Guest login failed");
+          setLoading(false);
+          return;
+        }
+
+        const signInResult = await signIn("credentials", {
+          email: guestData.email,
+          password: guestData.password,
+          redirect: false,
+        });
+
+        if (signInResult?.error) {
+          devToast.error("Failed to authenticate guest session");
+          setLoading(false);
+          return;
+        }
+
+        currentSession = {
+          user: {
+            name: form.devoteeName,
+            email: guestData.email,
+          }
+        } as any;
+      }
       const orderRes = await fetch("/api/payment/create-order", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ amount: puja?.price, notes: { pujaName: puja?.name, templeSlug: params.slug } }),
+        body: JSON.stringify({ amount: grandTotal, notes: { pujaName: puja?.name as string, templeSlug: params.slug } }),
       });
       const orderData = await orderRes.json();
 
       new window.Razorpay({
         key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
-        amount: (puja?.price as number) * 100,
+        amount: grandTotal * 100,
         currency: "INR",
         name: "ePoojapaath",
         description: puja?.name as string,
         order_id: orderData.data.id,
         theme: { color: "#D4820A" },
-        prefill: { name: session.user?.name, email: session.user?.email },
+        prefill: { name: currentSession?.user?.name, email: currentSession?.user?.email },
         handler: async (response: { razorpay_order_id: string; razorpay_payment_id: string; razorpay_signature: string }) => {
           const verifyRes = await fetch("/api/payment/verify", {
             method: "POST",
@@ -69,7 +119,7 @@ export default function BookPujaPage({ params }: { params: { slug: string; id: s
             await fetch("/api/bookings", {
               method: "POST",
               headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ ...form, temple: puja?.temple, service: params.id, serviceType: "puja", serviceName: puja?.name, serviceNameHi: puja?.nameHi, amount: puja?.price, orderId: response.razorpay_order_id, paymentId: response.razorpay_payment_id }),
+              body: JSON.stringify({ ...form, temple: puja?.temple, service: params.id, serviceType: "puja", serviceName: puja?.name, serviceNameHi: puja?.nameHi, amount: grandTotal, orderId: response.razorpay_order_id, paymentId: response.razorpay_payment_id }),
             });
             setBooked(true);
             devToast.blessing("🙏 Puja Booked! Divine blessings incoming...");
@@ -135,6 +185,16 @@ export default function BookPujaPage({ params }: { params: { slug: string; id: s
               value={form.devoteeName}
               onChange={(e) => setForm({ ...form, devoteeName: e.target.value })}
             />
+            {!session && (
+              <Input
+                label="WhatsApp Mobile Number"
+                required
+                placeholder="10-digit mobile number"
+                type="tel"
+                value={form.whatsappPhone}
+                onChange={(e) => setForm({ ...form, whatsappPhone: e.target.value })}
+              />
+            )}
             <Input
               label="Gotra (Optional)"
               placeholder="e.g. Kashyap, Bharadwaj"
@@ -156,6 +216,25 @@ export default function BookPujaPage({ params }: { params: { slug: string; id: s
               value={form.date}
               onChange={(e) => setForm({ ...form, date: e.target.value })}
             />
+            <Select
+              label="Dakshina to Pandit Ji (Optional)"
+              value={form.dakshina.toString()}
+              onChange={(e) => setForm({ ...form, dakshina: Number(e.target.value) })}
+              options={[
+                { value: "0", label: "None" },
+                { value: "51", label: "₹51" },
+                { value: "101", label: "₹101" },
+                { value: "151", label: "₹151" },
+                { value: "201", label: "₹201" },
+                { value: "251", label: "₹251" },
+                { value: "501", label: "₹501" },
+                { value: "551", label: "₹551" },
+                { value: "1001", label: "₹1,001" },
+                { value: "2100", label: "₹2,100" },
+                { value: "5100", label: "₹5,100" },
+                { value: "9999", label: "₹9,999" },
+              ]}
+            />
             <div className="flex items-center gap-3">
               <input type="checkbox" id="prasad" className="w-4 h-4 accent-saffron" checked={form.prasadDelivery} onChange={(e) => setForm({ ...form, prasadDelivery: e.target.checked })} />
               <label htmlFor="prasad" className="text-sm text-foreground cursor-pointer">Request Prasad Delivery (+₹151)</label>
@@ -169,13 +248,14 @@ export default function BookPujaPage({ params }: { params: { slug: string; id: s
               />
             )}
             <div className="border-t border-deep-gold/20 pt-4">
-              <div className="flex justify-between text-sm mb-1"><span className="text-muted-foreground">Puja Fee</span><span className="text-foreground font-medium">{formatCurrency(puja.price as number)}</span></div>
-              {form.prasadDelivery && <div className="flex justify-between text-sm mb-1"><span className="text-muted-foreground">Prasad Delivery</span><span className="text-foreground">₹151</span></div>}
-              <div className="flex justify-between font-heading text-xl mt-2"><span className="text-foreground">Total</span><span className="text-saffron">{formatCurrency((puja.price as number) + (form.prasadDelivery ? 151 : 0))}</span></div>
-            </div>
-            <Button type="submit" loading={loading} fullWidth size="lg">
-              {loading ? "Processing... 🪔" : `Proceed to Pay ${formatCurrency((puja.price as number) + (form.prasadDelivery ? 151 : 0))}`}
-            </Button>
+               <div className="flex justify-between text-sm mb-1"><span className="text-muted-foreground">Puja Fee</span><span className="text-foreground font-medium">{formatCurrency(pujaPrice)}</span></div>
+               {form.prasadDelivery && <div className="flex justify-between text-sm mb-1"><span className="text-muted-foreground">Prasad Delivery</span><span className="text-foreground">₹151</span></div>}
+               {form.dakshina > 0 && <div className="flex justify-between text-sm mb-1"><span className="text-muted-foreground">Pandit Ji Dakshina</span><span className="text-foreground">+{formatCurrency(form.dakshina)}</span></div>}
+               <div className="flex justify-between font-heading text-xl mt-2"><span className="text-foreground">Total</span><span className="text-saffron">{formatCurrency(grandTotal)}</span></div>
+             </div>
+             <Button type="submit" loading={loading} fullWidth size="lg">
+               {loading ? "Processing... 🪔" : `Proceed to Pay ${formatCurrency(grandTotal)}`}
+             </Button>
           </form>
         </div>
       </div>

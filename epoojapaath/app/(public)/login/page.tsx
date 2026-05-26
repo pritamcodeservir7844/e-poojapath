@@ -11,8 +11,13 @@ import { devToast } from "@/lib/toast";
 import { Home } from "lucide-react";
 
 export default function LoginPage() {
+  const [loginMethod, setLoginMethod] = useState<"email" | "whatsapp">("email");
   const [email,    setEmail]    = useState("");
   const [password, setPassword] = useState("");
+  const [phone,    setPhone]    = useState("");
+  const [otp,      setOtp]      = useState("");
+  const [otpSent,  setOtpSent]  = useState(false);
+  const [otpLoading, setOtpLoading] = useState(false);
   const [loading,  setLoading]  = useState(false);
   const router = useRouter();
 
@@ -30,6 +35,64 @@ export default function LoginPage() {
         router.push("/");
         router.refresh();
       }
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function handleSendOtp(e: React.FormEvent) {
+    e.preventDefault();
+    if (!phone || phone.trim().length < 10) {
+      devToast.error("Please enter a valid 10-digit mobile number");
+      return;
+    }
+    setOtpLoading(true);
+    setTimeout(() => {
+      setOtpSent(true);
+      setOtpLoading(false);
+      devToast.blessing("Verification code sent! Use OTP 123456 (Simulated for testing)");
+    }, 1000);
+  }
+
+  async function handleVerifyOtp(e: React.FormEvent) {
+    e.preventDefault();
+    if (otp !== "123456") {
+      devToast.error("Invalid verification code");
+      return;
+    }
+    setLoading(true);
+    try {
+      const res = await fetch("/api/auth/guest", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: "Devotee",
+          phone: phone,
+        }),
+      });
+      const guestData = await res.json();
+      if (!guestData.success) {
+        devToast.error(guestData.error || "Login failed");
+        return;
+      }
+
+      const result = await signIn("credentials", {
+        email: guestData.email,
+        password: guestData.password,
+        redirect: false,
+      });
+
+      if (result?.error === "BLOCKED") {
+        devToast.error("Your account has been blocked. Contact support@epoojapaath.com");
+      } else if (result?.error) {
+        devToast.error("Authentication failed");
+      } else {
+        devToast.blessing("Welcome back! Jai Shri Ram 🙏");
+        router.push("/");
+        router.refresh();
+      }
+    } catch {
+      devToast.error("Something went wrong. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -56,7 +119,7 @@ export default function LoginPage() {
           </Link>
         </div>
         <div className="card-devotional shadow-xl">
-          <div className="text-center mb-8">
+          <div className="text-center mb-6">
             <div className="inline-block bg-white rounded-2xl px-3 py-2 shadow-sm mb-4">
               <Image src="/epoojalogo.png" alt="ePoojapaath" width={80} height={80} className="object-contain h-16 w-auto" />
             </div>
@@ -64,15 +127,86 @@ export default function LoginPage() {
             <p className="font-sanskrit text-saffron text-sm mt-1">ॐ नमः शिवाय</p>
           </div>
 
-          <form onSubmit={handleLogin} className="space-y-4">
-            <Input label="Email Address" type="email" required placeholder="your@email.com"
-              value={email} onChange={(e) => setEmail(e.target.value)} />
-            <Input label="Password" type="password" required placeholder="••••••••"
-              value={password} onChange={(e) => setPassword(e.target.value)} />
-            <Button type="submit" loading={loading} fullWidth size="lg">
-              {loading ? "Signing in... 🪔" : "Sign In 🛕"}
-            </Button>
-          </form>
+          {/* Method Toggle */}
+          <div className="flex rounded-xl bg-muted p-1 mb-6 border border-border">
+            <button
+              onClick={() => { setLoginMethod("email"); setOtpSent(false); }}
+              className={`flex-1 text-xs font-semibold py-2.5 rounded-lg transition-all ${
+                loginMethod === "email"
+                  ? "bg-background text-foreground shadow-sm"
+                  : "text-muted-foreground hover:text-foreground"
+              }`}
+            >
+              Email Login
+            </button>
+            <button
+              onClick={() => setLoginMethod("whatsapp")}
+              className={`flex-1 text-xs font-semibold py-2.5 rounded-lg transition-all ${
+                loginMethod === "whatsapp"
+                  ? "bg-background text-foreground shadow-sm"
+                  : "text-muted-foreground hover:text-foreground"
+              }`}
+            >
+              WhatsApp Login
+            </button>
+          </div>
+
+          {loginMethod === "email" ? (
+            <form onSubmit={handleLogin} className="space-y-4">
+              <Input label="Email Address" type="email" required placeholder="your@email.com"
+                value={email} onChange={(e) => setEmail(e.target.value)} />
+              <Input label="Password" type="password" required placeholder="••••••••"
+                value={password} onChange={(e) => setPassword(e.target.value)} />
+              <Button type="submit" loading={loading} fullWidth size="lg">
+                {loading ? "Signing in... 🪔" : "Sign In 🛕"}
+              </Button>
+            </form>
+          ) : (
+            <div className="space-y-4">
+              {!otpSent ? (
+                <form onSubmit={handleSendOtp} className="space-y-4">
+                  <Input
+                    label="WhatsApp Mobile Number"
+                    type="tel"
+                    required
+                    placeholder="10-digit mobile number"
+                    value={phone}
+                    onChange={(e) => setPhone(e.target.value)}
+                  />
+                  <Button type="submit" loading={otpLoading} fullWidth size="lg">
+                    {otpLoading ? "Sending Code... ✉️" : "Send Verification Code 🌸"}
+                  </Button>
+                </form>
+              ) : (
+                <form onSubmit={handleVerifyOtp} className="space-y-4">
+                  <div className="bg-saffron/10 border border-saffron/30 rounded-xl p-3 text-center mb-2">
+                    <p className="text-xs text-saffron font-medium">
+                      Simulated code: <span className="font-bold underline text-sm">123456</span>
+                    </p>
+                  </div>
+                  <Input
+                    label="Verification Code (OTP)"
+                    type="text"
+                    required
+                    maxLength={6}
+                    placeholder="Enter 6-digit OTP"
+                    value={otp}
+                    onChange={(e) => setOtp(e.target.value)}
+                  />
+                  <Button type="submit" loading={loading} fullWidth size="lg">
+                    {loading ? "Verifying... 🪔" : "Verify & Sign In 🛕"}
+                  </Button>
+                  <button
+                    type="button"
+                    onClick={() => setOtpSent(false)}
+                    className="w-full text-xs text-muted-foreground hover:text-foreground text-center mt-2"
+                  >
+                    ← Change mobile number
+                  </button>
+                </form>
+              )}
+            </div>
+          )}
 
           <p className="text-center text-muted-foreground text-sm mt-6">
             Don&apos;t have an account?{" "}

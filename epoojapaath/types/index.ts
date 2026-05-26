@@ -114,6 +114,7 @@ export interface IBooking {
   serviceName: string;
   serviceNameHi: string;
   amount: number;
+  dakshina?: number;
   devoteeName: string;
   gotra?: string;
   sankalp?: string;

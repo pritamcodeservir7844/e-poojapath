@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { useSession } from "next-auth/react";
+import { useSession, signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
@@ -75,7 +75,7 @@ export default function ChadawaDetailPage({ params }: { params: { id: string } }
   const router = useRouter();
   const [chadawa, setChadawa] = useState<ChadawaData | null>(null);
   const [qty, setQty] = useState<Record<number, number>>({});
-  const [form, setForm] = useState({ devoteeName: "", gotra: "", sankalp: "", date: "" });
+  const [form, setForm] = useState({ devoteeName: "", whatsappPhone: "", gotra: "", sankalp: "", date: "" });
   const [loading, setLoading] = useState(false);
   const [offered, setOffered] = useState(false);
   const [showForm, setShowForm] = useState(false);
@@ -109,9 +109,55 @@ export default function ChadawaDetailPage({ params }: { params: { id: string } }
 
   async function handleOffer(e: React.FormEvent) {
     e.preventDefault();
-    if (!session) { router.push("/login"); return; }
+    let currentSession = session;
     setLoading(true);
     try {
+      if (!currentSession) {
+        if (!form.devoteeName.trim()) {
+          devToast.error("Devotee Name is required");
+          setLoading(false);
+          return;
+        }
+        if (!form.whatsappPhone.trim() || form.whatsappPhone.trim().length < 10) {
+          devToast.error("Please enter a valid 10-digit WhatsApp number");
+          setLoading(false);
+          return;
+        }
+
+        const guestRes = await fetch("/api/auth/guest", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            name: form.devoteeName,
+            phone: form.whatsappPhone,
+          }),
+        });
+        const guestData = await guestRes.json();
+        if (!guestData.success) {
+          devToast.error(guestData.error || "Guest login failed");
+          setLoading(false);
+          return;
+        }
+
+        const signInResult = await signIn("credentials", {
+          email: guestData.email,
+          password: guestData.password,
+          redirect: false,
+        });
+
+        if (signInResult?.error) {
+          devToast.error("Failed to authenticate guest session");
+          setLoading(false);
+          return;
+        }
+
+        currentSession = {
+          user: {
+            name: form.devoteeName,
+            email: guestData.email,
+          }
+        } as any;
+      }
       const orderRes = await fetch("/api/payment/create-order", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -127,7 +173,7 @@ export default function ChadawaDetailPage({ params }: { params: { id: string } }
         description: chadawa?.name,
         order_id: orderData.data.id,
         theme: { color: "#D4820A" },
-        prefill: { name: session.user?.name, email: session.user?.email },
+        prefill: { name: currentSession?.user?.name, email: currentSession?.user?.email },
         handler: async (response: {
           razorpay_order_id: string;
           razorpay_payment_id: string;
@@ -526,6 +572,9 @@ export default function ChadawaDetailPage({ params }: { params: { id: string } }
                   {selectedItems.length > 0 && <span className="ml-1">({selectedItems.length} items)</span>}
                 </p>
                 <Input label="Devotee Name" required placeholder="Name for Sankalp" value={form.devoteeName} onChange={(e) => setForm({ ...form, devoteeName: e.target.value })} />
+                {!session && (
+                  <Input label="WhatsApp Mobile Number" required placeholder="10-digit mobile number" type="tel" value={form.whatsappPhone} onChange={(e) => setForm({ ...form, whatsappPhone: e.target.value })} />
+                )}
                 <Input label="Gotra (Optional)" placeholder="e.g. Kashyap, Bharadwaj" value={form.gotra} onChange={(e) => setForm({ ...form, gotra: e.target.value })} />
                 <Textarea label="Sankalp / Wish" rows={2} placeholder="Your prayer or intention..." value={form.sankalp} onChange={(e) => setForm({ ...form, sankalp: e.target.value })} />
                 <Input label="Offering Date" type="date" required min={new Date().toISOString().split("T")[0]} value={form.date} onChange={(e) => setForm({ ...form, date: e.target.value })} />
@@ -555,6 +604,9 @@ export default function ChadawaDetailPage({ params }: { params: { id: string } }
               <Input label="Your Name" required placeholder="Devotee name" value={form.devoteeName} onChange={(e) => setForm({ ...form, devoteeName: e.target.value })} />
               <Input label="Date" type="date" required min={new Date().toISOString().split("T")[0]} value={form.date} onChange={(e) => setForm({ ...form, date: e.target.value })} />
             </div>
+            {!session && (
+              <Input label="WhatsApp Mobile Number" required placeholder="10-digit number" type="tel" value={form.whatsappPhone} onChange={(e) => setForm({ ...form, whatsappPhone: e.target.value })} />
+            )}
             <Textarea label="Sankalp" rows={1} placeholder="Your prayer..." value={form.sankalp} onChange={(e) => setForm({ ...form, sankalp: e.target.value })} />
             <div className="flex gap-3 items-center">
               <div>

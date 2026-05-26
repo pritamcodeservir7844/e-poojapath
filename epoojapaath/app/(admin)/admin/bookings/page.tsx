@@ -8,6 +8,7 @@ import { Select } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
 import { formatCurrency, formatDateShort } from "@/lib/utils";
 import type { IBooking, IUser, ITemple } from "@/types";
+import Link from "next/link";
 
 type BookingRow = IBooking & { _id: string; user: Partial<IUser>; temple: Partial<ITemple> };
 
@@ -30,6 +31,7 @@ export default async function AdminBookingsPage({ searchParams }: PageProps) {
     { key: "temple",      header: "Temple",   render: (b: BookingRow) => (b.temple as Partial<ITemple>)?.name || "—" },
     { key: "date",        header: "Date",     render: (b: BookingRow) => formatDateShort(b.date) },
     { key: "amount",      header: "Amount",   render: (b: BookingRow) => formatCurrency(b.amount) },
+    { key: "dakshina",    header: "Dakshina", render: (b: BookingRow) => b.dakshina ? formatCurrency(b.dakshina) : "—" },
     { key: "serviceType", header: "Type",     render: (b: BookingRow) => <Badge variant={b.serviceType === "puja" ? "saffron" : "purple"}>{b.serviceType}</Badge> },
     { key: "status",      header: "Status",   render: (b: BookingRow) => {
       const statusMap: Record<string, any> = {
@@ -41,6 +43,13 @@ export default async function AdminBookingsPage({ searchParams }: PageProps) {
       return <Badge variant={statusMap[b.status] || "pending"}>{b.status}</Badge>
     }},
     { key: "paymentStatus",header:"Payment",  render: (b: BookingRow) => <Badge variant={b.paymentStatus as any}>{b.paymentStatus}</Badge> },
+    {
+      key: "_id",
+      header: "",
+      render: (b: BookingRow) => (
+        <Link href={`/user/bookings/${b._id}`} className="text-saffron text-xs hover:underline">Details →</Link>
+      ),
+    },
   ];
 
   return (
