@@ -42,18 +42,28 @@ export default async function TempleDetailPage({ params }: { params: { slug: str
         <div className="relative h-72 md:h-96 w-full">
           <Image src={temple.coverImage || "/placeholder-temple.jpg"} alt={temple.name} fill className="object-cover" />
           <div className="absolute inset-0 bg-gradient-to-t from-dark/80 via-dark/30 to-transparent" />
-          <div className="absolute bottom-8 left-8 right-8">
-            <p className="font-sanskrit text-saffron mb-1">{temple.deity}</p>
-            <h1 className="font-heading text-4xl md:text-5xl text-white">{temple.name}</h1>
-            <div className="flex items-center gap-2 text-white/70 mt-2">
-              <MapPin size={16} className="text-saffron" />
-              <span>{temple.location.city}, {temple.location.state}</span>
-              {temple.rating > 0 && (
-                <span className="flex items-center gap-1 ml-4">
-                  <Star size={14} className="text-saffron fill-saffron" />
-                  {temple.rating.toFixed(1)} ({temple.reviewCount} reviews)
-                </span>
-              )}
+          <div className="absolute bottom-8 left-8 right-8 flex flex-col md:flex-row md:items-end md:justify-between gap-4">
+            <div>
+              <p className="font-sanskrit text-saffron mb-1">{temple.deity}</p>
+              <h1 className="font-heading text-4xl md:text-5xl text-white">{temple.name}</h1>
+              <div className="flex items-center gap-2 text-white/70 mt-2">
+                <MapPin size={16} className="text-saffron" />
+                <span>{temple.location.city}, {temple.location.state}</span>
+                {temple.rating > 0 && (
+                  <span className="flex items-center gap-1 ml-4">
+                    <Star size={14} className="text-saffron fill-saffron" />
+                    {temple.rating.toFixed(1)} ({temple.reviewCount} reviews)
+                  </span>
+                )}
+              </div>
+            </div>
+            <div className="shrink-0">
+              <Link
+                href={pujas.length > 0 ? "#pujas-section" : `/puja?temple=${temple.slug}`}
+                className="btn-saffron text-sm md:text-base py-2.5 px-6 shadow-lg inline-flex items-center gap-2 font-medium hover:scale-105 transition-all"
+              >
+                <span>Book a Puja 🪔</span>
+              </Link>
             </div>
           </div>
         </div>
@@ -87,7 +97,7 @@ export default async function TempleDetailPage({ params }: { params: { slug: str
 
               {/* Pujas */}
               {pujas.length > 0 && (
-                <section>
+                <section id="pujas-section">
                   <h2 className="font-heading text-2xl text-foreground mb-6">Available Pujas</h2>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
@@ -161,6 +171,21 @@ export default async function TempleDetailPage({ params }: { params: { slug: str
 
             {/* Sidebar */}
             <div className="space-y-6">
+              <div className="card-devotional bg-gradient-to-br from-saffron/10 to-amber-500/10 border border-saffron/30 shadow-md">
+                <h3 className="font-heading text-lg text-foreground mb-2 flex items-center gap-2">
+                  🪔 Online Puja Booking
+                </h3>
+                <p className="text-sm text-muted-foreground mb-4 leading-relaxed">
+                  Book sacred Vedic rituals and pujas performed by experienced pandits in your name at verified temples.
+                </p>
+                <Link
+                  href={pujas.length > 0 ? "#pujas-section" : `/puja?temple=${temple.slug}`}
+                  className="btn-saffron w-full text-center block text-sm font-semibold py-2.5 rounded-lg shadow-sm hover:shadow-md transition-all"
+                >
+                  Book a Puja Now 🎴
+                </Link>
+              </div>
+
               <div className="card-devotional">
                 <h3 className="font-heading text-lg text-foreground mb-4">Contact Temple</h3>
                 <ul className="space-y-3">

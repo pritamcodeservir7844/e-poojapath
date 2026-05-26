@@ -28,7 +28,6 @@ export const metadata: Metadata = {
     description: "Book online pujas, Chadawa offerings, and discover temples across India.",
     images: ["/og-image.png"],
   },
-  icons: { icon: "/favicon.ico", apple: "/apple-touch-icon.png" },
   manifest: "/manifest.json",
 };
 

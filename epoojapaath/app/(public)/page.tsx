@@ -16,6 +16,7 @@ import { TempleRegisterCTA } from "@/components/home/TempleRegisterCTA";
 import { MandalaDivider } from "@/components/shared/MandalaDivider";
 import { AdBanner } from "@/components/ads/AdBanner";
 import { AIChat } from "@/components/ai-chat/AIChat";
+import { WhatsAppWidget } from "@/components/shared/WhatsAppWidget";
 import { getActiveAd } from "@/services/ad.service";
 import { serialize } from "@/lib/utils";
 
@@ -50,6 +51,7 @@ export default async function HomePage() {
       </main>
       <Footer />
       <AIChat />
+      <WhatsAppWidget />
     </>
   );
 }

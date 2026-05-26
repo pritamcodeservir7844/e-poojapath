@@ -8,9 +8,8 @@ import { MandalaDivider } from "@/components/shared/MandalaDivider";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { connectDB } from "@/lib/db";
 import Chadawa from "@/models/Chadawa";
-import Temple from "@/models/Temple";
 import { serialize } from "@/lib/utils";
-import { Sparkles, Star } from "lucide-react";
+import { Sparkles } from "lucide-react";
 
 async function getSpecialChadawa() {
   await connectDB();
@@ -19,50 +18,23 @@ async function getSpecialChadawa() {
     .lean();
 }
 
-async function getRegularChadawaByTemple() {
-  await connectDB();
-  const items = await Chadawa.find({ isActive: true, isSpecial: false })
-    .populate("temple", "name slug coverImage deity")
-    .lean();
-
-  // Group by temple
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const grouped: Record<string, { temple: any; items: any[] }> = {};
-  for (const item of items) {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const t = item.temple as any;
-    const templeId = t?._id?.toString() ?? "unknown";
-    if (!grouped[templeId]) {
-      grouped[templeId] = { temple: t, items: [] };
-    }
-    grouped[templeId].items.push(item);
-  }
-  return Object.values(grouped);
-}
-
 export default async function ChadawaPage() {
-  const [specialRaw, regularGroupsRaw] = await Promise.all([
-    getSpecialChadawa().catch(() => []),
-    getRegularChadawaByTemple().catch(() => []),
-  ]);
-
+  const specialRaw = await getSpecialChadawa().catch(() => []);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const specialItems = serialize(specialRaw) as any[];
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const regularGroups = serialize(regularGroupsRaw) as { temple: any; items: any[] }[];
 
   return (
     <PublicPage>
       <PageHero
         sanskrit="देवताओं को अर्पण"
         title="Chadawa Offerings"
-        subtitle="Offer sacred items to your chosen deity — presented by temple pandits on your behalf. Book special chadawa independently or as an add-on during puja booking."
+        subtitle="Offer sacred items to your chosen deity — presented by temple pandits on your behalf. Book special chadawa independently."
         className="pt-16 pb-10"
       />
       <MandalaDivider className="!py-1" />
 
       {/* ── Special Chadawa Section ── */}
-      {specialItems.length > 0 && (
+      {specialItems.length > 0 ? (
         <section className="pt-4 pb-16 px-4 md:px-8 lg:px-16 max-w-7xl mx-auto">
           {/* Header */}
           <div className="flex flex-col items-center text-center mb-10">
@@ -116,90 +88,9 @@ export default async function ChadawaPage() {
             </div>
           ))}
         </section>
-      )}
-
-      {/* ── Divider ── */}
-      {specialItems.length > 0 && regularGroups.length > 0 && (
-        <div className="max-w-7xl mx-auto px-4 md:px-8">
-          <div className="relative flex items-center gap-4 py-4">
-            <div className="flex-1 h-px bg-border" />
-            <span className="text-muted-foreground text-sm font-medium px-2 whitespace-nowrap">
-              🌸 Temple-wise Chadawa Add-ons
-            </span>
-            <div className="flex-1 h-px bg-border" />
-          </div>
-        </div>
-      )}
-
-      {/* ── Regular Chadawa by Temple ── */}
-      {regularGroups.length > 0 && (
-        <section className="pt-4 pb-16 px-4 md:px-8 lg:px-16 max-w-7xl mx-auto">
-          <div className="flex flex-col items-center text-center mb-10">
-            <div className="inline-flex items-center gap-2 bg-purple-500/10 border border-purple-500/30 rounded-full px-5 py-2 mb-4">
-              <span className="text-sm font-semibold text-purple-400 tracking-wide uppercase">Chadawa Add-ons</span>
-            </div>
-            <h2 className="font-heading text-3xl md:text-4xl text-foreground mb-3">
-              Temple-wise Chadawa
-            </h2>
-            <p className="text-muted-foreground max-w-2xl text-sm leading-relaxed">
-              Add these sacred offerings when booking a puja, or offer them standalone to the deity of your choice.
-            </p>
-          </div>
-
-          {regularGroups.length === 0 ? (
-            <EmptyState icon="🌸" title="No offerings available" description="Check back soon for chadawa offerings." />
-          ) : (
-            <div className="space-y-14">
-              {regularGroups.map(({ temple, items }) => (
-                <div key={temple?._id}>
-                  {/* Temple Header */}
-                  <div className="flex items-center gap-4 mb-6 pb-4 border-b border-border">
-                    <div className="relative w-14 h-14 rounded-xl overflow-hidden flex-shrink-0">
-                      {temple?.coverImage ? (
-                        <Image
-                          src={temple.coverImage}
-                          alt={temple.name ?? "Temple"}
-                          fill
-                          className="object-cover"
-                        />
-                      ) : (
-                        <div className="w-full h-full bg-gradient-to-br from-saffron/30 to-deep-gold/30 flex items-center justify-center text-2xl">
-                          🛕
-                        </div>
-                      )}
-                    </div>
-                    <div className="flex-1">
-                      <h3 className="font-heading text-xl text-foreground">{temple?.name}</h3>
-                      {temple?.deity && (
-                        <p className="text-sm text-muted-foreground">Deity: {temple.deity}</p>
-                      )}
-                    </div>
-                    {temple?.slug && (
-                      <Link
-                        href={`/temples/${temple.slug}`}
-                        className="text-sm text-saffron hover:underline font-medium flex-shrink-0"
-                      >
-                        View Temple →
-                      </Link>
-                    )}
-                  </div>
-
-                  {/* Chadawa Grid */}
-                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                    {items.map((item) => (
-                      <RegularChadawaCard key={item._id} item={item} />
-                    ))}
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
-        </section>
-      )}
-
-      {specialItems.length === 0 && regularGroups.length === 0 && (
-        <section className="section-padding max-w-7xl mx-auto">
-          <EmptyState icon="🌸" title="No offerings available" description="Check back soon for chadawa offerings." />
+      ) : (
+        <section className="section-padding max-w-7xl mx-auto py-16">
+          <EmptyState icon="🌸" title="No offerings available" description="Check back soon for special chadawa offerings." />
         </section>
       )}
     </PublicPage>
@@ -270,45 +161,3 @@ function SpecialChadawaCard({ item }: { item: any }) {
   );
 }
 
-// ── Regular Add-on Chadawa Card ───────────────────────────────────────────────
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function RegularChadawaCard({ item }: { item: any }) {
-  return (
-    <div className="card-devotional group overflow-hidden p-0 flex flex-col">
-      {/* Image */}
-      <div className="relative h-36 overflow-hidden">
-        <Image
-          src={item.image || "/placeholder-puja.jpg"}
-          alt={item.name}
-          fill
-          className="object-cover group-hover:scale-105 transition-transform duration-500"
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-        {/* Temple badge */}
-        <div className="absolute top-2 right-2 bg-black/60 text-white text-[10px] px-2 py-0.5 rounded-full font-medium backdrop-blur-sm">
-          🛕 {typeof item.temple === "object" ? item.temple.name : "Temple"}
-        </div>
-        <div className="absolute bottom-2 left-3 right-3">
-          <p className="text-white font-heading text-sm leading-tight line-clamp-2">{item.name}</p>
-        </div>
-      </div>
-
-      {/* Content */}
-      <div className="p-3 flex flex-col flex-1">
-        <p className="font-sanskrit text-saffron text-xs mb-1">{item.nameHi}</p>
-        <p className="text-muted-foreground text-xs leading-relaxed line-clamp-2 mb-3 flex-1">
-          {item.description}
-        </p>
-        <div className="flex items-center justify-between mt-auto">
-          <p className="font-heading text-lg text-saffron">₹{item.price}</p>
-          <Link
-            href={`/chadawa/${item._id}`}
-            className="bg-gradient-to-r from-purple-600 to-saffron text-white text-xs font-semibold px-3 py-1.5 rounded-full hover:opacity-90 transition"
-          >
-            Offer 🌸
-          </Link>
-        </div>
-      </div>
-    </div>
-  );
-}
