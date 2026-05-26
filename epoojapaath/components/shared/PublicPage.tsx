@@ -1,6 +1,7 @@
 import { Navbar } from "./Navbar";
 import { Footer } from "./Footer";
 import { AIChat } from "@/components/ai-chat/AIChat";
+import { WhatsAppWidget } from "./WhatsAppWidget";
 
 interface PublicPageProps {
   children: React.ReactNode;
@@ -30,7 +31,12 @@ export function PublicPage({ children, showAIChat = false }: PublicPageProps) {
       <Navbar />
       <main className="pt-16 relative z-10">{children}</main>
       <Footer />
-      {showAIChat && <AIChat />}
+      {showAIChat && (
+        <>
+          <AIChat />
+          <WhatsAppWidget />
+        </>
+      )}
     </div>
   );
 }

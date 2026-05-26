@@ -231,13 +231,19 @@ export default async function TempleDetailPage({ params }: { params: { slug: str
               <div className="card-devotional">
                 <h3 className="font-heading text-lg text-foreground mb-3">Share Temple</h3>
                 <div className="flex gap-2">
-                  <a href={`https://wa.me/?text=Check out ${temple.name} on ePoojapaath!`} target="_blank" rel="noopener noreferrer"
-                    className="flex-1 bg-green-50 border border-green-200 text-green-700 text-xs text-center py-2 rounded-lg hover:bg-green-100 transition-colors">
-                    WhatsApp
+                  <a href={`https://wa.me/?text=${encodeURIComponent(`Check out ${temple.name} on ePoojapaath: ` + (process.env.NEXT_PUBLIC_APP_URL ?? "https://e-poojapath.vercel.app") + "/temples/" + temple.slug)}`} target="_blank" rel="noopener noreferrer"
+                    className="flex-1 bg-green-50 border border-green-200 text-green-700 text-xs font-semibold py-2 px-3 rounded-lg hover:bg-green-100 transition-colors flex items-center justify-center gap-1.5">
+                    <svg viewBox="0 0 24 24" className="w-4 h-4 fill-current" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.06 5.348 5.397.01 12.008.01c3.202.001 6.212 1.246 8.477 3.514 2.266 2.268 3.507 5.28 3.505 8.484-.004 6.657-5.34 11.997-11.953 11.997-2.005-.001-3.973-.502-5.724-1.458L0 24zm6.59-4.846c1.6.95 3.188 1.449 4.825 1.451 5.436 0 9.86-4.37 9.864-9.799.002-2.63-1.023-5.101-2.885-6.965C16.58 1.978 14.108.954 11.998.954 6.56.954 2.136 5.325 2.132 10.756c-.001 1.637.45 3.238 1.309 4.63l-.995 3.635 3.731-.977zm11.368-6.19c-.3-.149-1.772-.874-2.046-.974-.275-.1-.475-.149-.675.15-.2.299-.775.974-.95 1.173-.175.2-.35.225-.65.075-.3-.15-1.265-.466-2.41-1.488-.89-.795-1.492-1.776-1.667-2.076-.175-.3-.019-.462.13-.611.135-.133.3-.349.45-.524.15-.175.2-.299.3-.499.1-.2.05-.375-.025-.524-.075-.15-.675-1.625-.925-2.225-.244-.589-.492-.51-.675-.518-.174-.007-.374-.009-.574-.009-.2 0-.525.075-.8.375-.276.3-1.05 1.025-1.05 2.5 0 1.475 1.075 2.9 1.225 3.1.15.2 2.11 3.22 5.116 4.52.716.31 1.274.495 1.71.634.72.228 1.375.196 1.893.118.577-.087 1.772-.724 2.022-1.424.25-.7.25-1.299.175-1.424-.075-.125-.275-.199-.575-.349z"/>
+                    </svg>
+                    <span>WhatsApp</span>
                   </a>
                   <a href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent((process.env.NEXT_PUBLIC_APP_URL ?? "https://e-poojapath.vercel.app") + "/temples/" + temple.slug)}`} target="_blank" rel="noopener noreferrer"
-                    className="flex-1 bg-blue-50 border border-blue-200 text-blue-700 text-xs text-center py-2 rounded-lg hover:bg-blue-100 transition-colors">
-                    Facebook
+                    className="flex-1 bg-blue-50 border border-blue-200 text-blue-700 text-xs font-semibold py-2 px-3 rounded-lg hover:bg-blue-100 transition-colors flex items-center justify-center gap-1.5">
+                    <svg viewBox="0 0 24 24" className="w-4 h-4 fill-current" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                    </svg>
+                    <span>Facebook</span>
                   </a>
                 </div>
               </div>
