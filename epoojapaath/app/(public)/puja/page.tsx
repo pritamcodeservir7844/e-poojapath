@@ -17,7 +17,7 @@ async function getPujas(search?: string, templeSlug?: string) {
   await connectDB();
   const query: Record<string, any> = { isActive: true };
   if (templeSlug) {
-    const templeObj = await Temple.findOne({ slug: templeSlug }).select("_id").lean();
+    const templeObj = await Temple.findOne({ slug: templeSlug }).select("_id").lean() as { _id: any } | null;
     if (templeObj) {
       query.temple = templeObj._id;
     }
@@ -38,7 +38,7 @@ export default async function PujaPage({ searchParams }: PageProps) {
 
   let filteredTempleName = "";
   if (searchParams.temple) {
-    const templeObj = await Temple.findOne({ slug: searchParams.temple }).select("name").lean();
+    const templeObj = await Temple.findOne({ slug: searchParams.temple }).select("name").lean() as { name: string } | null;
     if (templeObj) {
       filteredTempleName = templeObj.name;
     }
