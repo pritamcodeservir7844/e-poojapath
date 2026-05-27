@@ -205,6 +205,7 @@ export default function ChadawaDetailPage({ params }: { params: { id: string } }
                 selectedItems: selectedItems.map((i) => ({ name: i.name, qty: i.qty, price: i.price })),
                 orderId: response.razorpay_order_id,
                 paymentId: response.razorpay_payment_id,
+                paymentStatus: "paid",
               }),
             });
             setOffered(true);

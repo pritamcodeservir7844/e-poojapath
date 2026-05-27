@@ -1,12 +1,16 @@
 import { SessionProvider } from "next-auth/react";
 import Link from "next/link";
+import Image from "next/image";
 
 export default function UserLayout({ children }: { children: React.ReactNode }) {
   return (
     <SessionProvider>
       <div className="min-h-screen bg-background">
         <nav className="bg-white border-b border-deep-gold/20 px-6 py-3 flex items-center gap-6">
-          <Link href="/" className="font-heading text-saffron text-lg">ePoojapaath</Link>
+          <Link href="/" className="flex items-center gap-2 hover:opacity-90 transition duration-200">
+            <Image src="/epoojalogo.png" alt="ePoojapaath" width={56} height={56} className="object-contain h-12 w-auto" priority />
+            <span className="font-heading text-xl md:text-2xl text-saffron leading-none">ePoojapaath</span>
+          </Link>
           <div className="flex gap-4 ml-auto">
             {[
               { href: "/user/dashboard", label: "Dashboard" },

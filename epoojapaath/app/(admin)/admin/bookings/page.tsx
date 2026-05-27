@@ -27,7 +27,30 @@ export default async function AdminBookingsPage({ searchParams }: PageProps) {
 
   const columns: any[] = [
     { key: "devoteeName", header: "Devotee" },
-    { key: "serviceName", header: "Service"  },
+    { 
+      key: "serviceName", 
+      header: "Service",
+      render: (b: BookingRow) => (
+        <div>
+          <div className="font-medium text-foreground">{b.serviceName}</div>
+          {b.selectedPackage && (
+            <div className="text-[11px] text-muted-foreground mt-0.5 font-medium">
+              📦 Pack: {b.selectedPackage}
+            </div>
+          )}
+          {b.selectedChadawa && b.selectedChadawa.length > 0 && (
+            <div className="text-[11px] text-saffron mt-0.5">
+              🌸 Chadawa: {b.selectedChadawa.map((c) => `${c.name} (x${c.qty})`).join(", ")}
+            </div>
+          )}
+          {b.selectedItems && b.selectedItems.length > 0 && (
+            <div className="text-[11px] text-purple-600 mt-0.5">
+              🌸 Items: {b.selectedItems.map((c) => `${c.name} (x${c.qty})`).join(", ")}
+            </div>
+          )}
+        </div>
+      )
+    },
     { key: "temple",      header: "Temple",   render: (b: BookingRow) => (b.temple as Partial<ITemple>)?.name || "—" },
     { key: "date",        header: "Date",     render: (b: BookingRow) => formatDateShort(b.date) },
     { key: "amount",      header: "Amount",   render: (b: BookingRow) => formatCurrency(b.amount) },

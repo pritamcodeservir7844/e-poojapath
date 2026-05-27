@@ -899,6 +899,8 @@ export default function AdminTempleDetailPage() {
                     </p>
                     <p className="text-xs text-muted-foreground mt-0.5">
                       Booked {formatDateShort(b.createdAt)} • Puja date: {formatDateShort(b.date)}
+                      <span className="mx-2">•</span>
+                      <Link href={`/user/bookings/${b._id}`} className="text-saffron hover:underline">Details →</Link>
                     </p>
                   </div>
                   <p className="font-heading text-saffron text-base shrink-0">{formatCurrency(b.amount)}</p>

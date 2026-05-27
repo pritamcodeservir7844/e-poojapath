@@ -8,14 +8,8 @@ import {
 import { TempleLogoutButton } from "@/components/temple/TempleLogoutButton";
 
 const templeNav = [
-  { href: "/temple/dashboard", label: "Dashboard",  icon: LayoutDashboard },
-  { href: "/temple/register",  label: "My Temples", icon: Landmark        },
-  { href: "/temple/pujas",     label: "Pujas",      icon: ScrollText      },
-  { href: "/temple/chadawa",   label: "Chadawa",    icon: Flower2         },
-  { href: "/temple/bookings",  label: "Bookings",   icon: BookOpen        },
-  { href: "/temple/blog",      label: "Blog",       icon: FileText        },
-  { href: "/temple/members",   label: "Members",    icon: Users           },
-  { href: "/temple/settings",  label: "Settings",   icon: Settings        },
+  { href: "/temple/dashboard", label: "Dashboard",       icon: LayoutDashboard },
+  { href: "/temple/register",  label: "Register Temple", icon: Landmark        },
 ];
 
 export default function TempleLayout({ children }: { children: React.ReactNode }) {

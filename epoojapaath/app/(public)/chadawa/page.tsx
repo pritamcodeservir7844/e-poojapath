@@ -1,7 +1,5 @@
 export const dynamic = "force-dynamic";
 
-import Image from "next/image";
-import Link from "next/link";
 import { PublicPage } from "@/components/shared/PublicPage";
 import { PageHero } from "@/components/ui/PageHero";
 import { MandalaDivider } from "@/components/shared/MandalaDivider";
@@ -10,6 +8,7 @@ import { connectDB } from "@/lib/db";
 import Chadawa from "@/models/Chadawa";
 import { serialize } from "@/lib/utils";
 import { Sparkles } from "lucide-react";
+import { TempleChadawaGroup } from "@/components/shared/TempleChadawaGroup";
 
 async function getSpecialChadawa() {
   await connectDB();
@@ -62,30 +61,12 @@ export default async function ChadawaPage() {
               return acc;
             }, {})
           ).map(([tId, group]) => (
-            <div key={tId} className="mb-12">
-              <div className="flex items-center gap-3 mb-6">
-                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-saffron to-deep-gold flex items-center justify-center text-white text-lg flex-shrink-0">
-                  🛕
-                </div>
-                <div>
-                  <h3 className="font-heading text-xl text-foreground">{group.templeName}</h3>
-                  <p className="text-xs text-muted-foreground">Special Chadawa</p>
-                </div>
-                {group.templeSlug && (
-                  <Link
-                    href={`/temples/${group.templeSlug}`}
-                    className="ml-auto text-xs text-saffron hover:underline font-medium"
-                  >
-                    View Temple →
-                  </Link>
-                )}
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-                {group.items.map((item) => (
-                  <SpecialChadawaCard key={item._id} item={item} />
-                ))}
-              </div>
-            </div>
+            <TempleChadawaGroup
+              key={tId}
+              templeName={group.templeName}
+              templeSlug={group.templeSlug}
+              items={group.items}
+            />
           ))}
         </section>
       ) : (
@@ -94,70 +75,6 @@ export default async function ChadawaPage() {
         </section>
       )}
     </PublicPage>
-  );
-}
-
-// ── Special Chadawa Card ──────────────────────────────────────────────────────
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function SpecialChadawaCard({ item }: { item: any }) {
-  return (
-    <div className="card-devotional group overflow-hidden p-0 flex flex-col">
-      {/* Image */}
-      <div className="relative h-44 overflow-hidden">
-        <Image
-          src={item.image || "/placeholder-puja.jpg"}
-          alt={item.name}
-          fill
-          className="object-cover group-hover:scale-105 transition-transform duration-500"
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
-        {/* Special badge */}
-        <div className="absolute top-3 left-3">
-          <span className="bg-gradient-to-r from-saffron to-deep-gold text-white text-xs font-bold px-2.5 py-1 rounded-full shadow-lg">
-            ✨ Special
-          </span>
-        </div>
-        {/* Temple badge */}
-        <div className="absolute top-3 right-3 bg-black/60 text-white text-xs px-2.5 py-1 rounded-full font-medium backdrop-blur-sm">
-          🛕 {typeof item.temple === "object" ? item.temple.name : "Temple"}
-        </div>
-        <div className="absolute bottom-3 left-3 right-3">
-          <p className="text-white font-heading text-base leading-tight line-clamp-2">{item.name}</p>
-          <p className="text-white/70 font-sanskrit text-xs mt-0.5">{item.nameHi}</p>
-        </div>
-      </div>
-
-      {/* Content */}
-      <div className="p-4 flex flex-col flex-1">
-        <p className="text-muted-foreground text-xs leading-relaxed line-clamp-3 mb-3 flex-1">
-          {item.description}
-        </p>
-        {item.items?.length > 0 && (
-          <div className="flex flex-wrap gap-1 mb-3">
-            {item.items.slice(0, 3).map((i: string) => (
-              <span key={i} className="bg-saffron/10 text-saffron text-xs px-2 py-0.5 rounded-full border border-saffron/20">
-                {i}
-              </span>
-            ))}
-            {item.items.length > 3 && (
-              <span className="text-xs text-muted-foreground px-1">+{item.items.length - 3} more</span>
-            )}
-          </div>
-        )}
-        <div className="flex items-center justify-between mt-auto pt-3 border-t border-border">
-          <div>
-            <p className="font-heading text-xl text-saffron">₹{item.price}</p>
-            <p className="text-xs text-muted-foreground">Special Offering</p>
-          </div>
-          <Link
-            href={`/chadawa/${item._id}`}
-            className="bg-gradient-to-r from-saffron to-deep-gold text-white text-xs font-semibold px-4 py-2 rounded-full hover:opacity-90 transition shadow"
-          >
-            Book Now →
-          </Link>
-        </div>
-      </div>
-    </div>
   );
 }
 

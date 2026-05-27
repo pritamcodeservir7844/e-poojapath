@@ -126,6 +126,18 @@ export interface IBooking {
   prasadDelivery: boolean;
   prasadAddress?: string;
   videoUrl?: string;
+  selectedPackage?: string;
+  selectedChadawa?: Array<{
+    name: string;
+    price: number;
+    qty: number;
+    total: number;
+  }>;
+  selectedItems?: Array<{
+    name: string;
+    qty: number;
+    price: number;
+  }>;
   createdAt: string;
 }
 

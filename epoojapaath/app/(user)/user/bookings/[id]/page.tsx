@@ -21,7 +21,11 @@ export default async function BookingDetailPage({ params }: { params: { id: stri
     ? (booking.user as any)._id?.toString()
     : booking.user?.toString();
 
-  if (bookingUserId !== session.user.id && session.user.role !== "admin") {
+  const templeOwnerId = typeof booking.temple === "object" && booking.temple !== null
+    ? (booking.temple as any).owner?.toString()
+    : null;
+
+  if (bookingUserId !== session.user.id && session.user.role !== "admin" && templeOwnerId !== session.user.id) {
     redirect("/user/bookings");
   }
 
@@ -29,11 +33,13 @@ export default async function BookingDetailPage({ params }: { params: { id: stri
   const reviewRaw = await Review.findOne({ booking: params.id }).lean();
   const review = reviewRaw ? JSON.parse(JSON.stringify(reviewRaw)) : null;
 
+  const backLink = session.user.role === "temple_owner" ? "/temple/bookings" : (session.user.role === "admin" ? "/admin/bookings" : "/user/bookings");
+
   return (
     <DashboardShell
       title="Booking Details"
       subtitle={`Booking #${booking._id.toString().slice(-8).toUpperCase()}`}
-      action={<Link href="/user/bookings" className="text-saffron text-sm hover:underline">← All Bookings</Link>}
+      action={<Link href={backLink} className="text-saffron text-sm hover:underline">← All Bookings</Link>}
     >
       <div className="max-w-2xl space-y-6">
         {/* Status Banner */}
@@ -96,26 +102,84 @@ export default async function BookingDetailPage({ params }: { params: { id: stri
               <dd className="font-medium text-foreground mt-0.5">{formatDate(booking.date)}</dd>
             </div>
             {booking.dakshina && booking.dakshina > 0 ? (
-              <>
-                <div>
-                  <dt className="text-muted-foreground">Pandit Ji Dakshina</dt>
-                  <dd className="font-medium text-foreground mt-0.5">{formatCurrency(booking.dakshina)}</dd>
-                </div>
-                <div>
-                  <dt className="text-muted-foreground">Total Amount Paid</dt>
-                  <dd className="font-heading text-saffron text-base mt-0.5">{formatCurrency(booking.amount)}</dd>
-                </div>
-              </>
-            ) : (
               <div>
-                <dt className="text-muted-foreground">Amount Paid</dt>
-                <dd className="font-heading text-saffron text-base mt-0.5">{formatCurrency(booking.amount)}</dd>
+                <dt className="text-muted-foreground">Pandit Ji Dakshina</dt>
+                <dd className="font-medium text-foreground mt-0.5">{formatCurrency(booking.dakshina)}</dd>
               </div>
-            )}
+            ) : null}
           </dl>
         </div>
 
-        {/* Prasad Delivery */}
+        {/* Price Breakdown & Items */}
+        <div className="card-devotional">
+          <h2 className="font-heading text-lg text-foreground mb-4">Price Breakdown & Items</h2>
+          <div className="space-y-4 text-sm">
+            {/* Selected Package */}
+            {booking.selectedPackage && (
+              <div className="flex justify-between border-b border-border/50 pb-2">
+                <div>
+                  <span className="font-medium text-foreground">Selected Package</span>
+                  <p className="text-xs text-muted-foreground mt-0.5">{booking.selectedPackage}</p>
+                </div>
+                <span className="text-xs bg-saffron/10 text-saffron font-bold px-2 py-0.5 rounded h-fit">Selected</span>
+              </div>
+            )}
+
+            {/* Puja Chadawa Offerings */}
+            {booking.selectedChadawa && booking.selectedChadawa.length > 0 && (
+              <div className="border-b border-border/50 pb-2 space-y-2">
+                <span className="font-medium text-foreground">Puja Chadawa Offerings</span>
+                <div className="pl-3 space-y-1.5">
+                  {booking.selectedChadawa.map((item: any, idx: number) => (
+                    <div key={idx} className="flex justify-between text-xs text-muted-foreground">
+                      <span>{item.name} <span className="text-saffron font-medium">×{item.qty}</span></span>
+                      <span>{formatCurrency(item.total || (item.price * item.qty))}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Chadawa Items (For Chadawa bookings) */}
+            {booking.selectedItems && booking.selectedItems.length > 0 && (
+              <div className="border-b border-border/50 pb-2 space-y-2">
+                <span className="font-medium text-foreground">Selected Chadawa Items</span>
+                <div className="pl-3 space-y-1.5">
+                  {booking.selectedItems.map((item: any, idx: number) => (
+                    <div key={idx} className="flex justify-between text-xs text-muted-foreground">
+                      <span>{item.name} <span className="text-saffron font-medium">×{item.qty}</span></span>
+                      <span>{formatCurrency(item.price * item.qty)}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Prasad Delivery Option */}
+            {booking.prasadDelivery && (
+              <div className="flex justify-between border-b border-border/50 pb-2">
+                <span className="text-muted-foreground">Prasad Delivery</span>
+                <span className="text-foreground font-medium">{booking.serviceType === "puja" ? "₹151" : "Requested"}</span>
+              </div>
+            )}
+
+            {/* Pandit Ji Dakshina */}
+            {booking.dakshina && booking.dakshina > 0 && (
+              <div className="flex justify-between border-b border-border/50 pb-2">
+                <span className="text-muted-foreground">Pandit Ji Dakshina</span>
+                <span className="text-foreground font-medium">{formatCurrency(booking.dakshina)}</span>
+              </div>
+            )}
+
+            {/* Total Paid */}
+            <div className="flex justify-between pt-2">
+              <span className="font-heading text-base text-foreground">Total Paid</span>
+              <span className="font-heading text-lg text-saffron">{formatCurrency(booking.amount)}</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Prasad Delivery Address */}
         {booking.prasadDelivery && (
           <div className="card-devotional">
             <h2 className="font-heading text-lg text-foreground mb-3">Prasad Delivery</h2>

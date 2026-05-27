@@ -25,7 +25,7 @@ export async function getBookingById(id: string) {
   await connectDB();
   return Booking.findById(id)
     .populate("user", "name email phone")
-    .populate("temple", "name slug coverImage contactPhone contactEmail location")
+    .populate("temple", "name slug coverImage contactPhone contactEmail location owner")
     .lean();
 }
 

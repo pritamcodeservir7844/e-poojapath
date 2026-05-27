@@ -211,6 +211,7 @@ export function PujaBookingClient({ puja, chadawaItems = [] }: Props) {
                 })),
                 orderId: response.razorpay_order_id,
                 paymentId: response.razorpay_payment_id,
+                paymentStatus: "paid",
               }),
             });
             setBooked(true);

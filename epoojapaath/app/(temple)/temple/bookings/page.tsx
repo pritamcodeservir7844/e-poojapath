@@ -7,6 +7,7 @@ import { getOwnerTemples } from "@/services/temple.service";
 import { getTempleBookings } from "@/services/booking.service";
 import { formatCurrency, formatDateShort } from "@/lib/utils";
 import type { IBooking, ITemple, IUser } from "@/types";
+import Link from "next/link";
 
 type BookingRow = IBooking & { _id: string; user: Partial<IUser> };
 
@@ -23,7 +24,30 @@ export default async function TempleBookingsPage() {
 
   const columns: any[] = [
     { key: "devoteeName", header: "Devotee" },
-    { key: "serviceName", header: "Service"  },
+    { 
+      key: "serviceName", 
+      header: "Service",
+      render: (b: BookingRow) => (
+        <div>
+          <div className="font-medium text-foreground">{b.serviceName}</div>
+          {b.selectedPackage && (
+            <div className="text-[11px] text-muted-foreground mt-0.5 font-medium">
+              📦 Pack: {b.selectedPackage}
+            </div>
+          )}
+          {b.selectedChadawa && b.selectedChadawa.length > 0 && (
+            <div className="text-[11px] text-saffron mt-0.5">
+              🌸 Chadawa: {b.selectedChadawa.map((c: any) => `${c.name} (x${c.qty})`).join(", ")}
+            </div>
+          )}
+          {b.selectedItems && b.selectedItems.length > 0 && (
+            <div className="text-[11px] text-purple-600 mt-0.5">
+              🌸 Items: {b.selectedItems.map((c: any) => `${c.name} (x${c.qty})`).join(", ")}
+            </div>
+          )}
+        </div>
+      )
+    },
     { key: "date",        header: "Date",    render: (b: BookingRow) => formatDateShort(b.date) },
     { key: "amount",      header: "Amount",  render: (b: BookingRow) => formatCurrency(b.amount) },
     { key: "status",      header: "Status",  render: (b: BookingRow) => {
@@ -31,6 +55,13 @@ export default async function TempleBookingsPage() {
       return <Badge variant={statusMap[b.status] || "pending"}>{b.status}</Badge>
     }},
     { key: "paymentStatus", header: "Payment", render: (b: BookingRow) => <Badge variant={b.paymentStatus as any}>{b.paymentStatus}</Badge> },
+    {
+      key: "_id",
+      header: "",
+      render: (b: BookingRow) => (
+        <Link href={`/user/bookings/${b._id}`} className="text-saffron text-xs hover:underline">Details →</Link>
+      ),
+    },
   ];
 
   return (

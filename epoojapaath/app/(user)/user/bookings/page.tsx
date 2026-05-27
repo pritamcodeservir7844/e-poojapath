@@ -24,6 +24,21 @@ export default async function UserBookingsPage() {
           <div className="text-xs text-saffron font-semibold mt-0.5">
             🛕 {typeof b.temple === "object" ? b.temple.name : "Temple"}
           </div>
+          {b.selectedPackage && (
+            <div className="text-xs text-muted-foreground mt-0.5">
+              📦 Package: {b.selectedPackage}
+            </div>
+          )}
+          {b.selectedChadawa && b.selectedChadawa.length > 0 && (
+            <div className="text-[11px] text-muted-foreground mt-0.5">
+              🌸 Offerings: {b.selectedChadawa.map((c: any) => `${c.name} (x${c.qty})`).join(", ")}
+            </div>
+          )}
+          {b.selectedItems && b.selectedItems.length > 0 && (
+            <div className="text-[11px] text-muted-foreground mt-0.5">
+              🌸 Offerings: {b.selectedItems.map((c: any) => `${c.name} (x${c.qty})`).join(", ")}
+            </div>
+          )}
         </div>
       ),
     },

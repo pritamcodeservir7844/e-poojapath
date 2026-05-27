@@ -50,7 +50,22 @@ export default async function UserDashboard() {
                   <p className="text-xs text-saffron font-semibold mb-0.5">
                     🛕 {typeof (b as any).temple === "object" ? (b as any).temple.name : "Temple"}
                   </p>
-                  <p className="text-xs text-muted-foreground">{formatDateShort(b.date)}</p>
+                  {b.selectedPackage && (
+                    <p className="text-[11px] text-muted-foreground mt-0.5">
+                      📦 Package: {b.selectedPackage}
+                    </p>
+                  )}
+                  {b.selectedChadawa && b.selectedChadawa.length > 0 && (
+                    <p className="text-[11px] text-muted-foreground mt-0.5">
+                      🌸 Offerings: {b.selectedChadawa.map((c: any) => `${c.name} (x${c.qty})`).join(", ")}
+                    </p>
+                  )}
+                  {b.selectedItems && b.selectedItems.length > 0 && (
+                    <p className="text-[11px] text-muted-foreground mt-0.5">
+                      🌸 Offerings: {b.selectedItems.map((c: any) => `${c.name} (x${c.qty})`).join(", ")}
+                    </p>
+                  )}
+                  <p className="text-xs text-muted-foreground mt-1">{formatDateShort(b.date)}</p>
                 </div>
                 <div className="flex items-center gap-3">
                   <span className="text-saffron font-medium text-sm">{formatCurrency(b.amount)}</span>

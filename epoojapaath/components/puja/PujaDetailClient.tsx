@@ -91,6 +91,19 @@ export function PujaDetailClient({
     document.body.appendChild(script);
   }, []);
 
+  const [stats, setStats] = useState({ temples: 0, bookings: 0, devotees: 0 });
+
+  useEffect(() => {
+    fetch("/api/public/stats")
+      .then((res) => res.json())
+      .then((d) => {
+        if (d.success && d.data) {
+          setStats(d.data);
+        }
+      })
+      .catch((err) => console.error("Error loading stats:", err));
+  }, []);
+
   // ── Price calculations ────────────────────────────────────────────────────
   const pujaPrice = selectedPkg ? selectedPkg.price : puja.price;
   const displayName = selectedPkg ? selectedPkg.label : puja.name;
@@ -223,6 +236,7 @@ export function PujaDetailClient({
                 })),
                 orderId: response.razorpay_order_id,
                 paymentId: response.razorpay_payment_id,
+                paymentStatus: "paid",
               }),
             });
             setBooked(true);
@@ -555,15 +569,21 @@ export function PujaDetailClient({
               </p>
               <div className="flex items-center justify-center gap-8 mt-6">
                 <div className="text-center">
-                  <p className="font-heading text-2xl text-saffron">50 Lakh+</p>
+                  <p className="font-heading text-2xl text-saffron">
+                    {stats.devotees > 0 ? `${stats.devotees.toLocaleString("en-IN")}+` : "50 Lakh+"}
+                  </p>
                   <p className="text-xs text-muted-foreground">Trusted Bhakts</p>
                 </div>
                 <div className="text-center">
-                  <p className="font-heading text-2xl text-saffron">500+</p>
+                  <p className="font-heading text-2xl text-saffron">
+                    {stats.temples > 0 ? `${stats.temples.toLocaleString("en-IN")}+` : "500+"}
+                  </p>
                   <p className="text-xs text-muted-foreground">Verified Temples</p>
                 </div>
                 <div className="text-center">
-                  <p className="font-heading text-2xl text-saffron">4.8★</p>
+                  <p className="font-heading text-2xl text-saffron">
+                    {displayRating > 0 ? `${displayRating.toFixed(1)}★` : "4.8★"}
+                  </p>
                   <p className="text-xs text-muted-foreground">Avg Rating</p>
                 </div>
               </div>

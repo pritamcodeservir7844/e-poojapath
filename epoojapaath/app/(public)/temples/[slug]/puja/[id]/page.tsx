@@ -119,7 +119,7 @@ export default function BookPujaPage({ params }: { params: { slug: string; id: s
             await fetch("/api/bookings", {
               method: "POST",
               headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ ...form, temple: puja?.temple, service: params.id, serviceType: "puja", serviceName: puja?.name, serviceNameHi: puja?.nameHi, amount: grandTotal, orderId: response.razorpay_order_id, paymentId: response.razorpay_payment_id }),
+              body: JSON.stringify({ ...form, temple: puja?.temple, service: params.id, serviceType: "puja", serviceName: puja?.name, serviceNameHi: puja?.nameHi, amount: grandTotal, orderId: response.razorpay_order_id, paymentId: response.razorpay_payment_id, paymentStatus: "paid" }),
             });
             setBooked(true);
             devToast.blessing("🙏 Puja Booked! Divine blessings incoming...");
@@ -254,7 +254,7 @@ export default function BookPujaPage({ params }: { params: { slug: string; id: s
                <div className="flex justify-between font-heading text-xl mt-2"><span className="text-foreground">Total</span><span className="text-saffron">{formatCurrency(grandTotal)}</span></div>
              </div>
              <Button type="submit" loading={loading} fullWidth size="lg">
-               {loading ? "Processing... 🪔" : `Proceed to Pay ${formatCurrency(grandTotal)}`}
+                {loading ? "Processing... 🪔" : `Proceed to Pay ${formatCurrency(grandTotal)}`}
              </Button>
           </form>
         </div>

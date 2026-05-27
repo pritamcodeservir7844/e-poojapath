@@ -56,6 +56,14 @@ export default auth((req) => {
     if (!user || (user.role !== "temple_owner" && user.role !== "admin")) {
       return NextResponse.redirect(new URL("/login", req.url));
     }
+    // Block temple owner from accessing management pages
+    if (user.role === "temple_owner") {
+      const allowedPaths = ["/temple/dashboard", "/temple/register"];
+      const isAllowed = allowedPaths.some(p => pathname === p || pathname.startsWith(p + "/"));
+      if (!isAllowed) {
+        return NextResponse.redirect(new URL("/temple/dashboard", req.url));
+      }
+    }
   }
 
   // User dashboard

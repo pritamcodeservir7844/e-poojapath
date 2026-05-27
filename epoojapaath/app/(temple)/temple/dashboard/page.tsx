@@ -56,9 +56,6 @@ export default async function TempleDashboard() {
                 </div>
                 <div className="flex flex-col items-end gap-2 shrink-0">
                   <Badge variant={t.status as any}>{t.status}</Badge>
-                  {t.status === "approved" && (
-                    <Link href={`/temple/pujas?temple=${t._id}`} className="text-saffron text-xs hover:underline">Manage →</Link>
-                  )}
                 </div>
               </div>
             ))}
