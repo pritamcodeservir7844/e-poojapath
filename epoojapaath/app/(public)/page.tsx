@@ -17,19 +17,19 @@ import { MandalaDivider } from "@/components/shared/MandalaDivider";
 import { AdBanner } from "@/components/ads/AdBanner";
 import { AIChat } from "@/components/ai-chat/AIChat";
 import { WhatsAppWidget } from "@/components/shared/WhatsAppWidget";
-import { getActiveAd } from "@/services/ad.service";
+import { getActiveAds } from "@/services/ad.service";
 import { serialize } from "@/lib/utils";
 
 export default async function HomePage() {
-  const heroAd = serialize(await getActiveAd("hero").catch(() => null)) as any;
-  const sectionAd = serialize(await getActiveAd("between-sections").catch(() => null)) as any;
+  const heroAds = serialize(await getActiveAds("hero").catch(() => [])) as any[];
+  const sectionAds = serialize(await getActiveAds("between-sections").catch(() => [])) as any[];
 
   return (
     <>
       <Navbar />
       <main>
         <Hero />
-        {heroAd && <AdBanner ad={heroAd} />}
+        {heroAds.length > 0 && <AdBanner ads={heroAds} />}
         <MarqueeStrip />
         <MandalaDivider />
         <FeaturedTemples />
@@ -37,7 +37,7 @@ export default async function HomePage() {
         <PopularPujas />
         <MandalaDivider />
         <ChadawaSection />
-        {sectionAd && <AdBanner ad={sectionAd} />}
+        {sectionAds.length > 0 && <AdBanner ads={sectionAds} />}
         <MandalaDivider />
         <HowItWorks />
         <Stats />

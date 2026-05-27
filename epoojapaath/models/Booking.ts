@@ -21,6 +21,7 @@ export interface IBookingDoc extends Document {
   prasadAddress?: string;
   videoUrl?: string;
   selectedPackage?: string;
+  selectedPackagePrice?: number;
   selectedChadawa?: Array<{
     name: string;
     price: number;
@@ -57,6 +58,7 @@ const BookingSchema = new Schema<IBookingDoc>(
     prasadAddress:  { type: String },
     videoUrl:       { type: String },
     selectedPackage: { type: String },
+    selectedPackagePrice: { type: Number },
     selectedChadawa: [
       {
         name: { type: String },

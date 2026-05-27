@@ -1,11 +1,12 @@
 import { SessionProvider } from "next-auth/react";
 import Link from "next/link";
 import Image from "next/image";
+import { Footer } from "@/components/shared/Footer";
 
 export default function UserLayout({ children }: { children: React.ReactNode }) {
   return (
     <SessionProvider>
-      <div className="min-h-screen bg-background">
+      <div className="min-h-screen bg-background flex flex-col">
         <nav className="bg-white border-b border-deep-gold/20 px-6 py-3 flex items-center gap-6">
           <Link href="/" className="flex items-center gap-2 hover:opacity-90 transition duration-200">
             <Image src="/epoojalogo.png" alt="ePoojapaath" width={56} height={56} className="object-contain h-12 w-auto" priority />
@@ -13,7 +14,8 @@ export default function UserLayout({ children }: { children: React.ReactNode }) 
           </Link>
           <div className="flex gap-4 ml-auto">
             {[
-              { href: "/user/dashboard", label: "Dashboard" },
+              { href: "/",               label: "Home"        },
+              { href: "/user/dashboard", label: "Dashboard"   },
               { href: "/user/bookings",  label: "My Bookings" },
               { href: "/user/profile",   label: "Profile"     },
             ].map(({ href, label }) => (
@@ -21,7 +23,8 @@ export default function UserLayout({ children }: { children: React.ReactNode }) 
             ))}
           </div>
         </nav>
-        <main className="max-w-5xl mx-auto px-4 py-8">{children}</main>
+        <main className="max-w-5xl mx-auto px-4 py-8 flex-grow w-full">{children}</main>
+        <Footer />
       </div>
     </SessionProvider>
   );

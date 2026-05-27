@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import { Input, Select } from "@/components/ui/Input";
 import { Card } from "@/components/ui/Card";
+import { ImageUpload } from "@/components/ui/ImageUpload";
 import { devToast } from "@/lib/toast";
 import { formatDateShort } from "@/lib/utils";
 import type { IAd } from "@/types";
@@ -20,13 +21,29 @@ const PLACEMENTS = [
   { value: "between-sections",   label: "Between Sections"    },
 ];
 
-const EMPTY = { title: "", imageUrl: "", linkUrl: "", placement: "hero", startDate: "", endDate: "" };
+const getTodayString = () => {
+  const d = new Date();
+  const year = d.getFullYear();
+  const month = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+};
+
+const getEmptyForm = () => ({
+  title: "",
+  imageUrl: "",
+  linkUrl: "",
+  placement: "hero",
+  startDate: getTodayString(),
+  endDate: "",
+});
 
 export default function AdminAdsPage() {
   const [ads,     setAds]     = useState<AdRow[]>([]);
-  const [form,    setForm]    = useState(EMPTY);
+  const [form,    setForm]    = useState(getEmptyForm);
   const [saving,  setSaving]  = useState(false);
   const [showForm,setShowForm]= useState(false);
+  const [imageSourceType, setImageSourceType] = useState<"upload" | "url">("upload");
 
   useEffect(() => {
     fetch("/api/admin/ads").then((r) => r.json()).then((d) => { if (d.success) setAds(d.data); });
@@ -37,6 +54,10 @@ export default function AdminAdsPage() {
 
   async function handleCreate(e: React.FormEvent) {
     e.preventDefault();
+    if (!form.imageUrl) {
+      devToast.error("Ad image is required");
+      return;
+    }
     setSaving(true);
     try {
       const res  = await fetch("/api/admin/ads", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(form) });
@@ -45,7 +66,7 @@ export default function AdminAdsPage() {
         devToast.success("Ad created 📢");
         setAds((p) => [...p, data.data]);
         setShowForm(false);
-        setForm(EMPTY);
+        setForm(getEmptyForm());
       } else devToast.error(data.error);
     } finally { setSaving(false); }
   }
@@ -94,7 +115,41 @@ export default function AdminAdsPage() {
           <form onSubmit={handleCreate} className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <Input label="Ad Title"       required value={form.title}    onChange={set("title")}    placeholder="Ad title" />
             <Select label="Placement"     options={PLACEMENTS} value={form.placement} onChange={set("placement") as (e: React.ChangeEvent<HTMLSelectElement>) => void} />
-            <Input label="Image URL"      required value={form.imageUrl} onChange={set("imageUrl")} placeholder="https://... (Cloudinary URL)" className="md:col-span-2" />
+            
+            <div className="md:col-span-2 space-y-2">
+              <label className="block text-xs font-semibold text-muted-foreground uppercase">Ad Image *</label>
+              <div className="flex gap-4 border-b border-border/50 pb-2">
+                <button
+                  type="button"
+                  onClick={() => setImageSourceType("upload")}
+                  className={`text-xs font-bold pb-1 transition-all ${imageSourceType === "upload" ? "border-b-2 border-saffron text-saffron" : "text-muted-foreground hover:text-foreground"}`}
+                >
+                  Upload Image File
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setImageSourceType("url")}
+                  className={`text-xs font-bold pb-1 transition-all ${imageSourceType === "url" ? "border-b-2 border-saffron text-saffron" : "text-muted-foreground hover:text-foreground"}`}
+                >
+                  Paste External URL
+                </button>
+              </div>
+              {imageSourceType === "upload" ? (
+                <ImageUpload
+                  value={form.imageUrl}
+                  onChange={(url) => setForm((p) => ({ ...p, imageUrl: url }))}
+                  folder="ads"
+                />
+              ) : (
+                <Input
+                  required
+                  value={form.imageUrl}
+                  onChange={set("imageUrl")}
+                  placeholder="https://... (External Image URL)"
+                />
+              )}
+            </div>
+
             <Input label="Link URL"       required value={form.linkUrl}  onChange={set("linkUrl")}  placeholder="https://..." className="md:col-span-2" />
             <Input label="Start Date"     required value={form.startDate} onChange={set("startDate")} type="date" />
             <Input label="End Date"       required value={form.endDate}   onChange={set("endDate")}   type="date" />

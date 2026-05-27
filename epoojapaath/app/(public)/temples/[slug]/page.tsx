@@ -13,6 +13,7 @@ import Review from "@/models/Review";
 import User from "@/models/User";
 import { formatCurrency, serialize } from "@/lib/utils";
 import { MapPin, Phone, Mail, Globe, Clock, Star } from "lucide-react";
+import { TempleImageSlider } from "@/components/temple/TempleImageSlider";
 
 export async function generateMetadata({ params }: { params: { slug: string } }) {
   const temple = serialize(await getTempleBySlug(params.slug).catch(() => null)) as any;
@@ -36,37 +37,37 @@ export default async function TempleDetailPage({ params }: { params: { slug: str
   const chadawaItems = serialize(chadawaItemsRaw);
   const reviews = serialize(reviewsRaw);
 
+  const sliderImages = [temple.coverImage, ...(temple.images || [])].filter(Boolean);
+
   return (
     <PublicPage showAIChat>
-      {/* Hero */}
-        <div className="relative h-72 md:h-96 w-full">
-          <Image src={temple.coverImage || "/placeholder-temple.jpg"} alt={temple.name} fill className="object-cover" />
-          <div className="absolute inset-0 bg-gradient-to-t from-dark/80 via-dark/30 to-transparent" />
-          <div className="absolute bottom-8 left-8 right-8 flex flex-col md:flex-row md:items-end md:justify-between gap-4">
-            <div>
-              <p className="font-sanskrit text-saffron mb-1">{temple.deity}</p>
-              <h1 className="font-heading text-4xl md:text-5xl text-white">{temple.name}</h1>
-              <div className="flex items-center gap-2 text-white/70 mt-2">
-                <MapPin size={16} className="text-saffron" />
-                <span>{temple.location.city}, {temple.location.state}</span>
-                {temple.rating > 0 && (
-                  <span className="flex items-center gap-1 ml-4">
-                    <Star size={14} className="text-saffron fill-saffron" />
-                    {temple.rating.toFixed(1)} ({temple.reviewCount} reviews)
-                  </span>
-                )}
-              </div>
-            </div>
-            <div className="shrink-0">
-              <Link
-                href={pujas.length > 0 ? "#pujas-section" : `/puja?temple=${temple.slug}`}
-                className="btn-saffron text-sm md:text-base py-2.5 px-6 shadow-lg inline-flex items-center gap-2 font-medium hover:scale-105 transition-all"
-              >
-                <span>Book a Puja 🪔</span>
-              </Link>
+      {/* Hero Slider */}
+      <TempleImageSlider images={sliderImages}>
+        <div className="w-full pb-8 px-6 md:px-8 flex flex-col md:flex-row md:items-end md:justify-between gap-4">
+          <div>
+            <p className="font-sanskrit text-saffron mb-1">{temple.deity}</p>
+            <h1 className="font-heading text-4xl md:text-5xl text-white">{temple.name}</h1>
+            <div className="flex items-center gap-2 text-white/70 mt-2">
+              <MapPin size={16} className="text-saffron" />
+              <span>{temple.location.city}, {temple.location.state}</span>
+              {temple.rating > 0 && (
+                <span className="flex items-center gap-1 ml-4">
+                  <Star size={14} className="text-saffron fill-saffron" />
+                  {temple.rating.toFixed(1)} ({temple.reviewCount} reviews)
+                </span>
+              )}
             </div>
           </div>
+          <div className="shrink-0">
+            <Link
+              href={pujas.length > 0 ? "#pujas-section" : `/puja?temple=${temple.slug}`}
+              className="btn-saffron text-sm md:text-base py-2.5 px-6 shadow-lg inline-flex items-center gap-2 font-medium hover:scale-105 transition-all"
+            >
+              <span>Book a Puja 🪔</span>
+            </Link>
+          </div>
         </div>
+      </TempleImageSlider>
 
         <MandalaDivider />
 
@@ -154,10 +155,13 @@ export default async function TempleDetailPage({ params }: { params: { slug: str
                       <div key={r._id.toString()} className="card-devotional">
                         <div className="flex items-center gap-3 mb-2">
                           <div className="w-8 h-8 rounded-full bg-saffron/10 flex items-center justify-center text-saffron font-bold text-sm">
-                            {r.user?.name?.[0] || "D"}
+                            {(r.reviewerName?.[0] || r.user?.name?.[0] || "D").toUpperCase()}
                           </div>
                           <div>
-                            <p className="font-medium text-foreground text-sm">{r.user?.name || "Devotee"}</p>
+                            <p className="font-medium text-foreground text-sm flex items-center gap-1.5">
+                              <span>{r.reviewerName || r.user?.name || "Devotee"}</span>
+                              {r.city && <span className="text-xs text-muted-foreground font-normal">({r.city})</span>}
+                            </p>
                             <div className="flex gap-0.5">{"★".repeat(r.rating).split("").map((_: string, i: number) => <span key={i} className="text-saffron text-xs">★</span>)}</div>
                           </div>
                         </div>

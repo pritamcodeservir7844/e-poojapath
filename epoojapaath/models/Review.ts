@@ -6,16 +6,20 @@ export interface IReviewDoc extends Document {
   booking?: mongoose.Types.ObjectId;
   rating: number;
   comment: string;
+  reviewerName?: string;
+  city?: string;
   createdAt: Date;
 }
 
 const ReviewSchema = new Schema<IReviewDoc>(
   {
-    user:    { type: Schema.Types.ObjectId, ref: "User", required: true },
-    temple:  { type: Schema.Types.ObjectId, ref: "Temple", required: true },
-    booking: { type: Schema.Types.ObjectId, ref: "Booking" },
-    rating:  { type: Number, required: true, min: 1, max: 5 },
-    comment: { type: String, required: true },
+    user:         { type: Schema.Types.ObjectId, ref: "User", required: true },
+    temple:       { type: Schema.Types.ObjectId, ref: "Temple", required: true },
+    booking:      { type: Schema.Types.ObjectId, ref: "Booking" },
+    rating:       { type: Number, required: true, min: 1, max: 5 },
+    comment:      { type: String, required: true },
+    reviewerName: { type: String },
+    city:         { type: String },
   },
   { timestamps: true }
 );

@@ -1,5 +1,7 @@
 import { auth } from "@/lib/auth";
 import { redirect, notFound } from "next/navigation";
+
+export const dynamic = "force-dynamic";
 import { DashboardShell } from "@/components/shared/DashboardShell";
 import { Badge } from "@/components/ui/Badge";
 import { getBookingById } from "@/services/booking.service";
@@ -9,6 +11,7 @@ import type { IBooking, ITemple } from "@/types";
 import Review from "@/models/Review";
 import { connectDB } from "@/lib/db";
 import { BookingReviewForm } from "@/components/bookings/BookingReviewForm";
+import { AdminBookingStatusChanger } from "@/components/admin/AdminBookingStatusChanger";
 
 export default async function BookingDetailPage({ params }: { params: { id: string } }) {
   const session = await auth();
@@ -43,17 +46,24 @@ export default async function BookingDetailPage({ params }: { params: { id: stri
     >
       <div className="max-w-2xl space-y-6">
         {/* Status Banner */}
-        <div className="card-devotional flex items-center justify-between">
-          <div>
-            <p className="font-heading text-xl text-foreground">{booking.serviceName}</p>
-            <p className="text-muted-foreground text-sm mt-0.5">{formatDate(booking.date)}</p>
+        <div className="card-devotional">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="font-heading text-xl text-foreground">{booking.serviceName}</p>
+              <p className="text-muted-foreground text-sm mt-0.5">{formatDate(booking.date)}</p>
+            </div>
+            <div className="flex flex-col items-end gap-2">
+              <Badge variant={({ pending: "pending", confirmed: "approved", completed: "completed", cancelled: "cancelled" } as any)[booking.status] || "pending"}>
+                {booking.status}
+              </Badge>
+              <Badge variant={booking.paymentStatus as any}>{booking.paymentStatus}</Badge>
+            </div>
           </div>
-          <div className="flex flex-col items-end gap-2">
-            <Badge variant={({ pending: "pending", confirmed: "approved", completed: "completed", cancelled: "cancelled" } as any)[booking.status] || "pending"}>
-              {booking.status}
-            </Badge>
-            <Badge variant={booking.paymentStatus as any}>{booking.paymentStatus}</Badge>
-          </div>
+          {session.user.role === "admin" && (
+            <div className="border-t border-border/50 mt-4 pt-3 flex justify-end">
+              <AdminBookingStatusChanger bookingId={booking._id.toString()} currentStatus={booking.status} />
+            </div>
+          )}
         </div>
 
         {/* Devotee Details */}
@@ -115,15 +125,25 @@ export default async function BookingDetailPage({ params }: { params: { id: stri
           <h2 className="font-heading text-lg text-foreground mb-4">Price Breakdown & Items</h2>
           <div className="space-y-4 text-sm">
             {/* Selected Package */}
-            {booking.selectedPackage && (
-              <div className="flex justify-between border-b border-border/50 pb-2">
-                <div>
-                  <span className="font-medium text-foreground">Selected Package</span>
-                  <p className="text-xs text-muted-foreground mt-0.5">{booking.selectedPackage}</p>
+            {booking.selectedPackage && (() => {
+              const chadawaTotal = booking.selectedChadawa?.reduce((sum: number, item: any) => sum + (item.total || (item.price * item.qty)), 0) || 0;
+              const prasadFee = booking.prasadDelivery ? (booking.serviceType === "puja" ? 151 : 0) : 0;
+              const dakshinaFee = booking.dakshina || 0;
+              const pkgPrice = booking.selectedPackagePrice ?? (booking.amount - chadawaTotal - prasadFee - dakshinaFee);
+
+              return (
+                <div className="flex justify-between border-b border-border/50 pb-2">
+                  <div>
+                    <span className="font-medium text-foreground">Selected Package</span>
+                    <div className="flex items-center gap-2 mt-0.5">
+                      <p className="text-xs text-muted-foreground mb-0">{booking.selectedPackage}</p>
+                      <span className="text-[10px] bg-saffron/10 text-saffron font-bold px-1.5 py-0.5 rounded">Selected</span>
+                    </div>
+                  </div>
+                  <span className="text-foreground font-medium">{formatCurrency(pkgPrice)}</span>
                 </div>
-                <span className="text-xs bg-saffron/10 text-saffron font-bold px-2 py-0.5 rounded h-fit">Selected</span>
-              </div>
-            )}
+              );
+            })()}
 
             {/* Puja Chadawa Offerings */}
             {booking.selectedChadawa && booking.selectedChadawa.length > 0 && (
@@ -220,6 +240,8 @@ export default async function BookingDetailPage({ params }: { params: { id: stri
             bookingId={booking._id.toString()}
             templeId={typeof booking.temple === "object" ? booking.temple._id.toString() : booking.temple}
             initialReview={review}
+            defaultReviewerName={booking.devoteeName || session?.user?.name || ""}
+            defaultCity={(session?.user as any)?.city || ""}
           />
         )}
       </div>

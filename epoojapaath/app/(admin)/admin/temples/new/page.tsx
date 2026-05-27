@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, X } from "lucide-react";
 import { Input, Textarea, Select } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
@@ -30,12 +30,14 @@ type FormData = {
   address: string; city: string; state: string; pincode: string; googleMapsUrl: string;
   contactPhone: string; contactEmail: string; website: string;
   coverImage: string;
+  images: string[];
 };
 
 const INITIAL: FormData = {
   name: "", deity: "", shortDescription: "", description: "", timings: "",
   established: "", tags: "", address: "", city: "", state: "", pincode: "",
   googleMapsUrl: "", contactPhone: "", contactEmail: "", website: "", coverImage: "",
+  images: [],
 };
 
 export default function AdminNewTemplePage() {
@@ -55,7 +57,7 @@ export default function AdminNewTemplePage() {
         ...form,
         tags: form.tags.split(",").map((t) => t.trim()).filter(Boolean),
         location: { address: form.address, city: form.city, state: form.state, pincode: form.pincode },
-        images: form.coverImage ? [form.coverImage] : [],
+        images: form.images || [],
       };
 
       // Admin route — auto approved, no approval needed
@@ -156,6 +158,43 @@ export default function AdminNewTemplePage() {
                   folder="temples"
                   previewHeight="h-52"
                 />
+
+                <div className="space-y-3 pt-3 border-t border-border">
+                  <label className="block text-xs font-medium text-muted-foreground">
+                    Gallery Images (Devotees ko slider me show karne ke liye)
+                  </label>
+                  
+                  {form.images && form.images.length > 0 && (
+                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                      {form.images.map((url, idx) => (
+                        <div key={idx} className="relative aspect-video rounded-xl overflow-hidden border border-border group h-24">
+                          {/* eslint-disable-next-line @next/next/no-img-element */}
+                          <img src={url} alt={`Gallery ${idx + 1}`} className="w-full h-full object-cover" />
+                          <button
+                            type="button"
+                            onClick={() => setForm(f => ({ ...f, images: f.images.filter((_, i) => i !== idx) }))}
+                            className="absolute top-1.5 right-1.5 p-1 rounded-full bg-red-500/80 hover:bg-red-500 text-white transition opacity-0 group-hover:opacity-100"
+                          >
+                            <X size={12} />
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+
+                  <ImageUpload
+                    value=""
+                    onChange={url => {
+                      if (url) {
+                        setForm(f => ({ ...f, images: [...(f.images || []), url] }));
+                      }
+                    }}
+                    folder="temples"
+                    previewHeight="h-24"
+                    className="mt-2"
+                  />
+                  <p className="text-xs text-muted-foreground">Nayi images add karne ke liye upar box me click ya drag-drop karein. Ek se zyada images add kar sakte hain.</p>
+                </div>
               </section>
             </div>
           )}

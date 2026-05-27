@@ -35,7 +35,7 @@ export async function POST(req: NextRequest) {
 
   try {
     await connectDB();
-    const { bookingId, templeId, rating, comment } = await req.json();
+    const { bookingId, templeId, rating, comment, reviewerName, city } = await req.json();
 
     if (!bookingId || !templeId || !rating || !comment) {
       return NextResponse.json({ success: false, error: "Missing required fields" }, { status: 400 });
@@ -63,6 +63,8 @@ export async function POST(req: NextRequest) {
       booking: bookingId,
       rating: Number(rating),
       comment,
+      reviewerName: reviewerName || booking.devoteeName || session.user.name || "Devotee",
+      city: city || "India",
     });
 
     // Recalculate temple average rating and count

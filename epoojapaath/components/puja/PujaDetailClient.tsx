@@ -228,6 +228,7 @@ export function PujaDetailClient({
                 serviceNameHi: puja.nameHi,
                 amount: grandTotal,
                 selectedPackage: selectedPkg?.label,
+                selectedPackagePrice: selectedPkg?.price,
                 selectedChadawa: selectedChadawa.map((sc) => ({
                   name: sc.item.name,
                   price: sc.item.price,

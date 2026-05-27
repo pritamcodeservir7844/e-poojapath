@@ -127,6 +127,7 @@ export interface IBooking {
   prasadAddress?: string;
   videoUrl?: string;
   selectedPackage?: string;
+  selectedPackagePrice?: number;
   selectedChadawa?: Array<{
     name: string;
     price: number;
@@ -184,6 +185,8 @@ export interface IReview {
   booking?: string | IBooking;
   rating: number;
   comment: string;
+  reviewerName?: string;
+  city?: string;
   createdAt: string;
 }
 

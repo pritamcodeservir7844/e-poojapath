@@ -8,7 +8,7 @@ import { BlogCard } from "@/components/blog/BlogCard";
 import { AdBanner } from "@/components/ads/AdBanner";
 import { CategoryTabs } from "@/components/blog/CategoryTabs";
 import { getPublishedBlogs, getFeaturedBlogs } from "@/services/blog.service";
-import { getActiveAd } from "@/services/ad.service";
+import { getActiveAds } from "@/services/ad.service";
 import { serialize } from "@/lib/utils";
 import type { IBlog, IAd } from "@/types";
 
@@ -20,12 +20,12 @@ export default async function BlogPage({ searchParams }: PageProps) {
   const [blogsRaw, featuredRaw, sidebarAdRaw] = await Promise.all([
     getPublishedBlogs({ category: searchParams.category, search: searchParams.q }).catch(() => []),
     getFeaturedBlogs().catch(() => []),
-    getActiveAd("sidebar").catch(() => null),
+    getActiveAds("sidebar").catch(() => []),
   ]);
 
   const blogs = serialize(blogsRaw) as any as (IBlog & { _id: string })[];
   const featured = serialize(featuredRaw) as any as (IBlog & { _id: string })[];
-  const sidebarAd = serialize(sidebarAdRaw) as any as (IAd & { _id: string }) | null;
+  const sidebarAds = serialize(sidebarAdRaw) as any as (IAd & { _id: string })[];
 
   return (
     <PublicPage>
@@ -48,7 +48,7 @@ export default async function BlogPage({ searchParams }: PageProps) {
             )}
           </div>
           <aside className="space-y-6">
-            {sidebarAd && <AdBanner ad={sidebarAd} />}
+            {sidebarAds.length > 0 && <AdBanner ads={sidebarAds} />}
             {featured.length > 0 && (
               <div className="card-devotional">
                 <h3 className="font-heading text-lg text-foreground mb-4">Featured Articles</h3>

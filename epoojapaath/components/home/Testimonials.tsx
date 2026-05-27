@@ -48,8 +48,8 @@ export function Testimonials() {
 
   const displayList = reviews.length > 0
     ? reviews.map((r, i) => ({
-        name: r.user?.name || "Devotee",
-        city: r.user?.city || "India",
+        name: r.reviewerName || r.user?.name || "Devotee",
+        city: r.city || r.user?.city || "India",
         avatar: AVATARS[i % AVATARS.length],
         rating: r.rating || 5,
         text: r.comment || "",

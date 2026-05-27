@@ -173,7 +173,7 @@ export default function AdminTempleDetailPage() {
   const [deleting, setDeleting] = useState(false);
 
   // Temple edit form
-  const [templeForm, setTempleForm] = useState<Record<string, string>>({});
+  const [templeForm, setTempleForm] = useState<Record<string, any>>({});
 
   // Puja form state
   const [pujaForm, setPujaForm] = useState(EMPTY_PUJA);
@@ -222,6 +222,7 @@ export default function AdminTempleDetailPage() {
       contactPhone: t.contactPhone, contactEmail: t.contactEmail,
       website: t.website || "", googleMapsUrl: t.googleMapsUrl || "",
       coverImage: t.coverImage,
+      images: t.images || [],
     });
     setEditTemple(true);
   }
@@ -428,7 +429,7 @@ export default function AdminTempleDetailPage() {
             <Field label="Contact Email" name="contactEmail" value={templeForm.contactEmail} onChange={(n, v) => setTempleForm(f => ({ ...f, [n]: v }))} type="email" />
             <Field label="Website" name="website" value={templeForm.website} onChange={(n, v) => setTempleForm(f => ({ ...f, [n]: v }))} />
             <Field label="Google Maps URL" name="googleMapsUrl" value={templeForm.googleMapsUrl} onChange={(n, v) => setTempleForm(f => ({ ...f, [n]: v }))} />
-            <div className="md:col-span-2">
+            <div className="md:col-span-2 space-y-4">
               <ImageUpload
                 label="Cover Image"
                 required
@@ -437,6 +438,43 @@ export default function AdminTempleDetailPage() {
                 folder="temples"
                 previewHeight="h-44"
               />
+
+              <div className="space-y-3 pt-3 border-t border-border">
+                <label className="block text-xs font-medium text-muted-foreground">
+                  Gallery Images (Devotees ko slider me show karne ke liye)
+                </label>
+                
+                {templeForm.images && templeForm.images.length > 0 && (
+                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                    {templeForm.images.map((url: string, idx: number) => (
+                      <div key={idx} className="relative aspect-video rounded-xl overflow-hidden border border-border group h-24">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img src={url} alt={`Gallery ${idx + 1}`} className="w-full h-full object-cover" />
+                        <button
+                          type="button"
+                          onClick={() => setTempleForm(f => ({ ...f, images: f.images.filter((_: any, i: number) => i !== idx) }))}
+                          className="absolute top-1.5 right-1.5 p-1 rounded-full bg-red-500/80 hover:bg-red-500 text-white transition opacity-0 group-hover:opacity-100"
+                        >
+                          <X size={12} />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                <ImageUpload
+                  value=""
+                  onChange={url => {
+                    if (url) {
+                      setTempleForm(f => ({ ...f, images: [...(f.images || []), url] }));
+                    }
+                  }}
+                  folder="temples"
+                  previewHeight="h-24"
+                  className="mt-2"
+                />
+                <p className="text-xs text-muted-foreground">Nayi images add karne ke liye upar box me click ya drag-drop karein. Ek se zyada images add kar sakte hain.</p>
+              </div>
             </div>
           </div>
           <div className="flex gap-3 mt-6">

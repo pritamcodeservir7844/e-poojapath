@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 import Image from "next/image";
 import { PublicPage } from "@/components/shared/PublicPage";
 import { getBlogBySlug, getPublishedBlogs } from "@/services/blog.service";
-import { getActiveAd } from "@/services/ad.service";
+import { getActiveAds } from "@/services/ad.service";
 import { AdBanner } from "@/components/ads/AdBanner";
 import { BlogCard } from "@/components/blog/BlogCard";
 import { formatDate, calculateReadTime, serialize } from "@/lib/utils";
@@ -19,12 +19,12 @@ export async function generateMetadata({ params }: { params: { slug: string } })
 export default async function BlogDetailPage({ params }: { params: { slug: string } }) {
   const [blogRaw, sidebarAdRaw] = await Promise.all([
     getBlogBySlug(params.slug).catch(() => null),
-    getActiveAd("sidebar").catch(() => null),
+    getActiveAds("sidebar").catch(() => []),
   ]);
   if (!blogRaw) notFound();
 
   const blog = serialize(blogRaw);
-  const sidebarAd = serialize(sidebarAdRaw);
+  const sidebarAds = serialize(sidebarAdRaw) as any[];
 
   const related = serialize(await getPublishedBlogs({ category: blog.category }).catch(() => []));
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -97,7 +97,7 @@ export default async function BlogDetailPage({ params }: { params: { slug: strin
             </article>
 
             <aside>
-              {sidebarAd && <AdBanner ad={sidebarAd as Parameters<typeof AdBanner>[0]["ad"]} />}
+              {sidebarAds.length > 0 && <AdBanner ads={sidebarAds} />}
               <div className="card-devotional mt-6">
                 <p className="font-heading text-lg text-foreground mb-2">About Author</p>
                 <p className="text-muted-foreground text-sm">{authorName}</p>

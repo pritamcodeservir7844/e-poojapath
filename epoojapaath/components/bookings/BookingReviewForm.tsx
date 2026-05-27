@@ -3,30 +3,50 @@
 import { useState } from "react";
 import { Star } from "lucide-react";
 import { Button } from "@/components/ui/Button";
-import { Textarea } from "@/components/ui/Input";
+import { Input, Textarea } from "@/components/ui/Input";
 import { devToast } from "@/lib/toast";
 
 interface ReviewData {
   _id: string;
   rating: number;
   comment: string;
+  reviewerName?: string;
+  city?: string;
 }
 
 interface BookingReviewFormProps {
   bookingId: string;
   templeId: string;
   initialReview: ReviewData | null;
+  defaultReviewerName?: string;
+  defaultCity?: string;
 }
 
-export function BookingReviewForm({ bookingId, templeId, initialReview }: BookingReviewFormProps) {
+export function BookingReviewForm({
+  bookingId,
+  templeId,
+  initialReview,
+  defaultReviewerName = "",
+  defaultCity = "",
+}: BookingReviewFormProps) {
   const [review, setReview] = useState<ReviewData | null>(initialReview);
   const [rating, setRating] = useState(5);
   const [hoverRating, setHoverRating] = useState<number | null>(null);
   const [comment, setComment] = useState("");
+  const [reviewerName, setReviewerName] = useState(defaultReviewerName);
+  const [city, setCity] = useState(defaultCity);
   const [submitting, setSubmitting] = useState(false);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    if (!reviewerName.trim()) {
+      devToast.error("Please enter your name");
+      return;
+    }
+    if (!city.trim()) {
+      devToast.error("Please enter your city");
+      return;
+    }
     if (!comment.trim()) {
       devToast.error("Please enter a comment");
       return;
@@ -42,6 +62,8 @@ export function BookingReviewForm({ bookingId, templeId, initialReview }: Bookin
           templeId,
           rating,
           comment,
+          reviewerName,
+          city,
         }),
       });
 
@@ -62,7 +84,17 @@ export function BookingReviewForm({ bookingId, templeId, initialReview }: Bookin
   if (review) {
     return (
       <div className="card-devotional border-green-500/20 bg-green-500/5">
-        <h2 className="font-heading text-lg text-foreground mb-3">Your Review</h2>
+        <div className="flex items-center justify-between mb-3">
+          <h2 className="font-heading text-lg text-foreground mb-0">Your Review</h2>
+          {review.city && (
+            <span className="text-xs text-muted-foreground bg-saffron/10 text-saffron px-2.5 py-0.5 rounded-full font-medium border border-saffron/20">
+              📍 {review.city}
+            </span>
+          )}
+        </div>
+        {review.reviewerName && (
+          <p className="text-xs text-saffron font-bold mb-1.5">Submitted as: {review.reviewerName}</p>
+        )}
         <div className="flex gap-1 mb-2">
           {Array.from({ length: 5 }).map((_, i) => (
             <Star
@@ -108,6 +140,24 @@ export function BookingReviewForm({ bookingId, templeId, initialReview }: Bookin
               );
             })}
           </div>
+        </div>
+
+        {/* Name & City Inputs */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <Input
+            label="Your Name (for testimonial)"
+            required
+            value={reviewerName}
+            onChange={(e) => setReviewerName(e.target.value)}
+            placeholder="E.g., Ramesh Patel"
+          />
+          <Input
+            label="Your City"
+            required
+            value={city}
+            onChange={(e) => setCity(e.target.value)}
+            placeholder="E.g., Mumbai, Delhi"
+          />
         </div>
 
         {/* Comment Textarea */}
