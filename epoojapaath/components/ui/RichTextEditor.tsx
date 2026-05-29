@@ -163,8 +163,8 @@ export function RichTextEditor({
             onInput={handleInput}
             onBlur={handleInput}
             onPaste={handlePaste}
-            placeholder={placeholder || "History, significance, and details..."}
-            className="px-3 py-2.5 min-h-[180px] text-sm text-foreground focus:outline-none overflow-y-auto prose prose-sm max-w-none prose-p:my-1 prose-headings:my-2 prose-ul:my-1 empty:before:content-[attr(placeholder)] empty:before:text-muted-foreground/50 empty:before:pointer-events-none empty:before:absolute"
+            data-placeholder={placeholder || "History, significance, and details..."}
+            className="px-3 py-2.5 min-h-[180px] text-sm text-foreground focus:outline-none overflow-y-auto prose prose-sm max-w-none prose-p:my-1 prose-headings:my-2 prose-ul:my-1 empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground/50 empty:before:pointer-events-none empty:before:absolute"
             style={{ outline: "none" }}
           />
         </div>
