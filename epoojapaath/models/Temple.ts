@@ -21,6 +21,7 @@ export interface ITempleDoc extends Document {
   contactPhone: string;
   contactEmail: string;
   website?: string;
+  instagramUrl?: string;
   googleMapsUrl?: string;
   createdAt: Date;
 }
