@@ -12,7 +12,7 @@ import Chadawa from "@/models/Chadawa";
 import Review from "@/models/Review";
 import User from "@/models/User";
 import { formatCurrency, serialize } from "@/lib/utils";
-import { MapPin, Phone, Mail, Globe, Clock, Star } from "lucide-react";
+import { MapPin, Phone, Mail, Globe, Clock, Star, Instagram } from "lucide-react";
 import { TempleImageSlider } from "@/components/temple/TempleImageSlider";
 
 export async function generateMetadata({ params }: { params: { slug: string } }) {
@@ -79,7 +79,16 @@ export default async function TempleDetailPage({ params }: { params: { slug: str
               <section className="card-devotional">
                 <h2 className="font-heading text-2xl text-foreground mb-4">About This Temple</h2>
                 <div className="mb-6">
-                  {renderDescription(temple.description)}
+                  {temple.description && (
+                    temple.description.startsWith("<") || /<[a-z][\s\S]*>/i.test(temple.description) ? (
+                      <div 
+                        className="prose prose-sm max-w-none text-muted-foreground prose-headings:text-foreground prose-headings:font-body prose-headings:font-semibold prose-strong:text-foreground prose-ul:list-disc prose-ul:pl-5 prose-ol:list-decimal prose-ol:pl-5" 
+                        dangerouslySetInnerHTML={{ __html: temple.description }} 
+                      />
+                    ) : (
+                      renderDescription(temple.description)
+                    )
+                  )}
                 </div>
                 <div className="grid grid-cols-2 gap-4 text-sm">
                   <div><span className="font-medium text-foreground">Deity:</span> <span className="text-muted-foreground">{temple.deity}</span></div>
@@ -193,14 +202,12 @@ export default async function TempleDetailPage({ params }: { params: { slug: str
               <div className="card-devotional">
                 <h3 className="font-heading text-lg text-foreground mb-4">Contact Temple</h3>
                 <ul className="space-y-3">
-                  <li className="flex items-center gap-3 text-sm">
-                    <Phone size={15} className="text-saffron shrink-0" />
-                    <a href={`tel:${temple.contactPhone}`} className="text-saffron hover:underline">{temple.contactPhone}</a>
-                  </li>
-                  <li className="flex items-center gap-3 text-sm">
-                    <Mail size={15} className="text-saffron shrink-0" />
-                    <a href={`mailto:${temple.contactEmail}`} className="text-saffron hover:underline">{temple.contactEmail}</a>
-                  </li>
+                  {temple.instagramUrl && (
+                    <li className="flex items-center gap-3 text-sm">
+                      <Instagram size={15} className="text-saffron shrink-0" />
+                      <a href={temple.instagramUrl} target="_blank" rel="noopener noreferrer" className="text-saffron hover:underline">Instagram</a>
+                    </li>
+                  )}
                   {temple.website && (
                     <li className="flex items-center gap-3 text-sm">
                       <Globe size={15} className="text-saffron shrink-0" />
@@ -214,14 +221,21 @@ export default async function TempleDetailPage({ params }: { params: { slug: str
                 </ul>
               </div>
 
-              {/* Map placeholder */}
+              {/* Live Interactive Map */}
               <div className="card-devotional">
                 <h3 className="font-heading text-lg text-foreground mb-3">Location</h3>
-                <div className="h-36 bg-background rounded-xl border border-deep-gold/20 flex items-center justify-center mb-3">
-                  <div className="text-center text-muted-foreground">
-                    <MapPin className="mx-auto mb-1 text-saffron" size={24} />
-                    <p className="text-xs">{temple.location.city}</p>
-                  </div>
+                <div className="h-44 w-full rounded-xl overflow-hidden border border-deep-gold/20 mb-3 relative bg-muted/20">
+                  <iframe
+                    width="100%"
+                    height="100%"
+                    frameBorder="0"
+                    style={{ border: 0 }}
+                    src={`https://maps.google.com/maps?q=${encodeURIComponent(
+                      `${temple.name}, ${temple.location.address}, ${temple.location.city}, ${temple.location.state}`
+                    )}&t=&z=14&ie=UTF8&iwloc=&output=embed`}
+                    allowFullScreen
+                    loading="lazy"
+                  />
                 </div>
                 {temple.googleMapsUrl && (
                   <a href={temple.googleMapsUrl} target="_blank" rel="noopener noreferrer"

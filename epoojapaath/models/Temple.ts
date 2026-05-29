@@ -51,9 +51,10 @@ const TempleSchema = new Schema<ITempleDoc>(
     rating: { type: Number, default: 0 },
     reviewCount: { type: Number, default: 0 },
     tags: [{ type: String }],
-    contactPhone: { type: String, required: true },
-    contactEmail: { type: String, required: true },
+    contactPhone: { type: String },
+    contactEmail: { type: String },
     website: { type: String },
+    instagramUrl: { type: String },
     googleMapsUrl: { type: String },
   },
   { timestamps: true }

@@ -38,9 +38,10 @@ export interface ITemple {
   rating: number;
   reviewCount: number;
   tags: string[];
-  contactPhone: string;
-  contactEmail: string;
+  contactPhone?: string;
+  contactEmail?: string;
   website?: string;
+  instagramUrl?: string;
   googleMapsUrl?: string;
   createdAt: string;
 }

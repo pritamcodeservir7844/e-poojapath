@@ -7,6 +7,7 @@ import { Input, Textarea, Select } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { ImageUpload } from "@/components/ui/ImageUpload";
+import { RichTextEditor } from "@/components/ui/RichTextEditor";
 import { devToast } from "@/lib/toast";
 
 const STEPS = ["Basic Info", "Location", "Contact", "Submit"];
@@ -28,7 +29,7 @@ type FormData = {
   name: string; deity: string; shortDescription: string; description: string;
   timings: string; established: string; tags: string;
   address: string; city: string; state: string; pincode: string; googleMapsUrl: string;
-  contactPhone: string; contactEmail: string; website: string;
+  contactPhone: string; contactEmail: string; website: string; instagramUrl: string;
   coverImage: string;
   images: string[];
 };
@@ -36,7 +37,7 @@ type FormData = {
 const INITIAL: FormData = {
   name: "", deity: "", shortDescription: "", description: "", timings: "",
   established: "", tags: "", address: "", city: "", state: "", pincode: "",
-  googleMapsUrl: "", contactPhone: "", contactEmail: "", website: "", coverImage: "",
+  googleMapsUrl: "", contactPhone: "", contactEmail: "", website: "", instagramUrl: "", coverImage: "",
   images: [],
 };
 
@@ -121,7 +122,13 @@ export default function AdminNewTemplePage() {
               <Input label="Temple Name"             required value={form.name}             onChange={set("name")}             placeholder="e.g. Shri Kashi Vishwanath Mandir" />
               <Select label="Presiding Deity"        required value={form.deity}            onChange={set("deity") as any}     options={DEITIES.map(d => ({ value: d, label: d }))} placeholder="Select deity" />
               <Input label="Short Description"       required value={form.shortDescription} onChange={set("shortDescription")} placeholder="One line about the temple" />
-              <Textarea label="Full Description"     required value={form.description}      onChange={set("description")}      rows={4} placeholder="History, significance, and details" />
+              <RichTextEditor
+                label="Full Description"
+                required
+                value={form.description}
+                onChange={html => setForm(f => ({ ...f, description: html }))}
+                placeholder="History, significance, and details..."
+              />
               <Input label="Timings"                 required value={form.timings}          onChange={set("timings")}          placeholder="e.g. 6:00 AM – 9:00 PM" />
               <Input label="Year Established"                 value={form.established}       onChange={set("established")}      placeholder="e.g. 1890 or Ancient" />
               <Input label="Tags (comma separated)"           value={form.tags}             onChange={set("tags")}             placeholder="shiva, varanasi, ancient" />
@@ -146,8 +153,12 @@ export default function AdminNewTemplePage() {
           {step === 2 && (
             <div className="space-y-5">
               <h2 className="font-heading text-xl text-foreground">Contact & Media</h2>
-              <Input label="Contact Phone" required value={form.contactPhone} onChange={set("contactPhone")} placeholder="+91 98765 43210" />
-              <Input label="Contact Email" required value={form.contactEmail} onChange={set("contactEmail")} placeholder="temple@example.com" type="email" />
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <Input label="Contact Phone (Optional)" value={form.contactPhone} onChange={set("contactPhone")} placeholder="+91 98765 43210" />
+                <Input label="Contact Email (Optional)" value={form.contactEmail} onChange={set("contactEmail")} placeholder="temple@example.com" type="email" />
+                <Input label="Website Link (Optional)" value={form.website} onChange={set("website")} placeholder="https://example.com" />
+                <Input label="Instagram Profile Link (Optional)" value={form.instagramUrl} onChange={set("instagramUrl")} placeholder="https://instagram.com/profile" />
+              </div>
               <section className="rounded-2xl border border-border bg-card p-6 space-y-4">
                 <h2 className="font-heading text-base text-foreground border-b border-border pb-3">🖼️ Images</h2>
                 <ImageUpload

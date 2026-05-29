@@ -66,9 +66,9 @@ export function TempleImageSlider({ images, children }: TempleImageSliderProps) 
     <div className="w-full bg-dark/95 border-b border-border/10">
       <div className="max-w-7xl mx-auto px-4 md:px-8 py-4 lg:py-6">
         <div className={`grid grid-cols-1 ${hasGallery ? "lg:grid-cols-3" : "grid-cols-1"} gap-4 h-[270px] md:h-[370px] lg:h-[420px]`}>
-          
+
           {/* LEFT SIDE: Active Image Slider */}
-          <div 
+          <div
             className={`relative h-full ${hasGallery ? "lg:col-span-2" : "col-span-1"} rounded-2xl overflow-hidden group/slider`}
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
@@ -78,9 +78,8 @@ export function TempleImageSlider({ images, children }: TempleImageSliderProps) 
               {images.map((img, idx) => (
                 <div
                   key={idx}
-                  className={`absolute inset-0 w-full h-full transition-opacity duration-1000 ease-in-out ${
-                    idx === currentIndex ? "opacity-100 z-0 animate-fade-in" : "opacity-0 -z-10"
-                  }`}
+                  className={`absolute inset-0 w-full h-full transition-opacity duration-1000 ease-in-out ${idx === currentIndex ? "opacity-100 z-0 animate-fade-in" : "opacity-0 -z-10"
+                    }`}
                 >
                   <Image
                     src={img || "/placeholder-temple.jpg"}
@@ -94,7 +93,7 @@ export function TempleImageSlider({ images, children }: TempleImageSliderProps) 
             </div>
 
             {/* Dark Gradient Overlay for active text legibility */}
-            <div className="absolute inset-0 bg-gradient-to-t from-dark/95 via-dark/30 to-transparent z-10 pointer-events-none" />
+            <div className="absolute inset-0 bg-gradient-to-t from-dark/60 via-dark/15 to-transparent z-10 pointer-events-none" />
 
             {/* Content Children Overlay (Deity, Name, Rating, Button) */}
             <div className="absolute inset-x-0 bottom-0 z-20 flex items-end">
@@ -128,11 +127,10 @@ export function TempleImageSlider({ images, children }: TempleImageSliderProps) 
                   <button
                     key={idx}
                     onClick={() => selectSlide(idx)}
-                    className={`w-2.5 h-2.5 rounded-full transition-all duration-300 ${
-                      idx === currentIndex 
-                        ? "bg-saffron w-6" 
+                    className={`w-2.5 h-2.5 rounded-full transition-all duration-300 ${idx === currentIndex
+                        ? "bg-saffron w-6"
                         : "bg-white/40 hover:bg-white/70"
-                    }`}
+                      }`}
                     aria-label={`Go to slide ${idx + 1}`}
                   />
                 ))}
@@ -146,11 +144,10 @@ export function TempleImageSlider({ images, children }: TempleImageSliderProps) 
               {/* Dynamic grid based on number of gallery images */}
               {galleryImages.length === 1 && (
                 <div className="h-full">
-                  <div 
+                  <div
                     onClick={() => selectSlide(1)}
-                    className={`relative h-full w-full rounded-2xl overflow-hidden cursor-pointer border-2 transition-all duration-300 group ${
-                      currentIndex === 1 ? "border-saffron scale-[0.99] shadow-lg shadow-saffron/20" : "border-transparent opacity-85 hover:opacity-100 hover:scale-[1.01]"
-                    }`}
+                    className={`relative h-full w-full rounded-2xl overflow-hidden cursor-pointer border-2 transition-all duration-300 group ${currentIndex === 1 ? "border-saffron scale-[0.99] shadow-lg shadow-saffron/20" : "border-transparent opacity-85 hover:opacity-100 hover:scale-[1.01]"
+                      }`}
                   >
                     <Image src={galleryImages[0]} alt="Gallery 1" fill className="object-cover transition duration-500 group-hover:scale-105" />
                   </div>
@@ -160,12 +157,11 @@ export function TempleImageSlider({ images, children }: TempleImageSliderProps) 
               {galleryImages.length === 2 && (
                 <div className="grid grid-rows-2 gap-3 h-full">
                   {galleryImages.map((img, idx) => (
-                    <div 
+                    <div
                       key={idx}
                       onClick={() => selectSlide(idx + 1)}
-                      className={`relative h-full w-full rounded-2xl overflow-hidden cursor-pointer border-2 transition-all duration-300 group ${
-                        currentIndex === idx + 1 ? "border-saffron scale-[0.99] shadow-lg shadow-saffron/20" : "border-transparent opacity-85 hover:opacity-100 hover:scale-[1.01]"
-                      }`}
+                      className={`relative h-full w-full rounded-2xl overflow-hidden cursor-pointer border-2 transition-all duration-300 group ${currentIndex === idx + 1 ? "border-saffron scale-[0.99] shadow-lg shadow-saffron/20" : "border-transparent opacity-85 hover:opacity-100 hover:scale-[1.01]"
+                        }`}
                     >
                       <Image src={img} alt={`Gallery ${idx + 1}`} fill className="object-cover transition duration-500 group-hover:scale-105" />
                     </div>
@@ -176,12 +172,11 @@ export function TempleImageSlider({ images, children }: TempleImageSliderProps) 
               {galleryImages.length === 3 && (
                 <div className="grid grid-rows-3 gap-3 h-full">
                   {galleryImages.map((img, idx) => (
-                    <div 
+                    <div
                       key={idx}
                       onClick={() => selectSlide(idx + 1)}
-                      className={`relative h-full w-full rounded-2xl overflow-hidden cursor-pointer border-2 transition-all duration-300 group ${
-                        currentIndex === idx + 1 ? "border-saffron scale-[0.99] shadow-lg shadow-saffron/20" : "border-transparent opacity-85 hover:opacity-100 hover:scale-[1.01]"
-                      }`}
+                      className={`relative h-full w-full rounded-2xl overflow-hidden cursor-pointer border-2 transition-all duration-300 group ${currentIndex === idx + 1 ? "border-saffron scale-[0.99] shadow-lg shadow-saffron/20" : "border-transparent opacity-85 hover:opacity-100 hover:scale-[1.01]"
+                        }`}
                     >
                       <Image src={img} alt={`Gallery ${idx + 1}`} fill className="object-cover transition duration-500 group-hover:scale-105" />
                     </div>
@@ -192,19 +187,18 @@ export function TempleImageSlider({ images, children }: TempleImageSliderProps) 
               {galleryImages.length >= 4 && (
                 <div className="grid grid-cols-2 grid-rows-2 gap-3 h-full">
                   {galleryImages.slice(0, 3).map((img, idx) => (
-                    <div 
+                    <div
                       key={idx}
                       onClick={() => selectSlide(idx + 1)}
-                      className={`relative h-full w-full rounded-2xl overflow-hidden cursor-pointer border-2 transition-all duration-300 group ${
-                        currentIndex === idx + 1 ? "border-saffron scale-[0.99] shadow-lg shadow-saffron/20" : "border-transparent opacity-85 hover:opacity-100 hover:scale-[1.01]"
-                      }`}
+                      className={`relative h-full w-full rounded-2xl overflow-hidden cursor-pointer border-2 transition-all duration-300 group ${currentIndex === idx + 1 ? "border-saffron scale-[0.99] shadow-lg shadow-saffron/20" : "border-transparent opacity-85 hover:opacity-100 hover:scale-[1.01]"
+                        }`}
                     >
                       <Image src={img} alt={`Gallery ${idx + 1}`} fill className="object-cover transition duration-500 group-hover:scale-105" />
                     </div>
                   ))}
-                  
+
                   {/* Fourth thumbnail handles "+More" overlay if images exceed 5 total */}
-                  <div 
+                  <div
                     onClick={() => {
                       if (galleryImages.length > 4) {
                         openLightbox(4);
@@ -212,9 +206,8 @@ export function TempleImageSlider({ images, children }: TempleImageSliderProps) 
                         selectSlide(4);
                       }
                     }}
-                    className={`relative h-full w-full rounded-2xl overflow-hidden cursor-pointer border-2 transition-all duration-300 group ${
-                      currentIndex === 4 ? "border-saffron scale-[0.99] shadow-lg shadow-saffron/20" : "border-transparent opacity-85 hover:opacity-100 hover:scale-[1.01]"
-                    }`}
+                    className={`relative h-full w-full rounded-2xl overflow-hidden cursor-pointer border-2 transition-all duration-300 group ${currentIndex === 4 ? "border-saffron scale-[0.99] shadow-lg shadow-saffron/20" : "border-transparent opacity-85 hover:opacity-100 hover:scale-[1.01]"
+                      }`}
                   >
                     <Image src={galleryImages[3]} alt="Gallery 4" fill className="object-cover transition duration-500 group-hover:scale-105" />
                     {galleryImages.length > 4 && (
@@ -238,25 +231,25 @@ export function TempleImageSlider({ images, children }: TempleImageSliderProps) 
       {showLightbox && (
         <div className="fixed inset-0 z-50 bg-black/95 backdrop-blur-md flex flex-col items-center justify-center p-4">
           {/* Close Button */}
-          <button 
+          <button
             onClick={() => setShowLightbox(false)}
             className="absolute top-6 right-6 p-2.5 rounded-full bg-white/10 text-white hover:bg-white/20 transition-all hover:scale-105"
             aria-label="Close Lightbox"
           >
             <X size={26} />
           </button>
-          
+
           {/* Main Lightbox View */}
           <div className="relative w-full max-w-5xl h-[70vh] flex items-center justify-center select-none">
             <div className="relative w-full h-full">
-              <Image 
-                src={images[lightboxIndex]} 
-                alt={`Temple Lightbox ${lightboxIndex + 1}`} 
+              <Image
+                src={images[lightboxIndex]}
+                alt={`Temple Lightbox ${lightboxIndex + 1}`}
                 fill
                 className="object-contain"
               />
             </div>
-            
+
             {/* Lightbox Navigation */}
             {images.length > 1 && (
               <>
@@ -277,16 +270,15 @@ export function TempleImageSlider({ images, children }: TempleImageSliderProps) 
               </>
             )}
           </div>
-          
+
           {/* Thumbnail Strip */}
           <div className="mt-6 flex gap-2.5 overflow-x-auto max-w-full pb-2 px-4 scrollbar-thin scrollbar-thumb-white/20">
             {images.map((img, idx) => (
               <button
                 key={idx}
                 onClick={() => setLightboxIndex(idx)}
-                className={`relative w-20 h-14 shrink-0 rounded-xl overflow-hidden border-2 transition-all duration-300 ${
-                  idx === lightboxIndex ? "border-saffron scale-105 shadow-md shadow-saffron/35" : "border-transparent opacity-50 hover:opacity-85"
-                }`}
+                className={`relative w-20 h-14 shrink-0 rounded-xl overflow-hidden border-2 transition-all duration-300 ${idx === lightboxIndex ? "border-saffron scale-105 shadow-md shadow-saffron/35" : "border-transparent opacity-50 hover:opacity-85"
+                  }`}
               >
                 <Image src={img} alt={`Thumb ${idx + 1}`} fill className="object-cover" />
               </button>

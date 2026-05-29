@@ -14,6 +14,7 @@ import { Input, Textarea, Select } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { ImageUpload } from "@/components/ui/ImageUpload";
+import { RichTextEditor } from "@/components/ui/RichTextEditor";
 import { formatCurrency, formatDateShort } from "@/lib/utils";
 import { devToast } from "@/lib/toast";
 import type { IPujaPackage, IPujaFaq, IChadawaOfferingItem } from "@/types";
@@ -219,8 +220,8 @@ export default function AdminTempleDetailPage() {
       established: t.established || "",
       "location.address": t.location.address, "location.city": t.location.city,
       "location.state": t.location.state, "location.pincode": t.location.pincode,
-      contactPhone: t.contactPhone, contactEmail: t.contactEmail,
-      website: t.website || "", googleMapsUrl: t.googleMapsUrl || "",
+      contactPhone: t.contactPhone || "", contactEmail: t.contactEmail || "",
+      website: t.website || "", instagramUrl: t.instagramUrl || "", googleMapsUrl: t.googleMapsUrl || "",
       coverImage: t.coverImage,
       images: t.images || [],
     });
@@ -420,14 +421,22 @@ export default function AdminTempleDetailPage() {
             <Field label="Timings" name="timings" value={templeForm.timings} onChange={(n, v) => setTempleForm(f => ({ ...f, [n]: v }))} />
             <Field label="Established" name="established" value={templeForm.established} onChange={(n, v) => setTempleForm(f => ({ ...f, [n]: v }))} />
             <div className="md:col-span-2"><Field label="Short Description" name="shortDescription" value={templeForm.shortDescription} onChange={(n, v) => setTempleForm(f => ({ ...f, [n]: v }))} rows={2} /></div>
-            <div className="md:col-span-2"><Field label="Full Description" name="description" value={templeForm.description} onChange={(n, v) => setTempleForm(f => ({ ...f, [n]: v }))} rows={4} /></div>
+            <div className="md:col-span-2">
+              <RichTextEditor
+                label="Full Description"
+                value={templeForm.description}
+                onChange={html => setTempleForm(f => ({ ...f, description: html }))}
+                placeholder="History, significance, and details..."
+              />
+            </div>
             <Field label="Address" name="location.address" value={templeForm["location.address"]} onChange={(n, v) => setTempleForm(f => ({ ...f, [n]: v }))} />
             <Field label="City" name="location.city" value={templeForm["location.city"]} onChange={(n, v) => setTempleForm(f => ({ ...f, [n]: v }))} />
             <Field label="State" name="location.state" value={templeForm["location.state"]} onChange={(n, v) => setTempleForm(f => ({ ...f, [n]: v }))} />
             <Field label="Pincode" name="location.pincode" value={templeForm["location.pincode"]} onChange={(n, v) => setTempleForm(f => ({ ...f, [n]: v }))} />
-            <Field label="Contact Phone" name="contactPhone" value={templeForm.contactPhone} onChange={(n, v) => setTempleForm(f => ({ ...f, [n]: v }))} />
-            <Field label="Contact Email" name="contactEmail" value={templeForm.contactEmail} onChange={(n, v) => setTempleForm(f => ({ ...f, [n]: v }))} type="email" />
-            <Field label="Website" name="website" value={templeForm.website} onChange={(n, v) => setTempleForm(f => ({ ...f, [n]: v }))} />
+            <Field label="Contact Phone (Optional)" name="contactPhone" value={templeForm.contactPhone} onChange={(n, v) => setTempleForm(f => ({ ...f, [n]: v }))} />
+            <Field label="Contact Email (Optional)" name="contactEmail" value={templeForm.contactEmail} onChange={(n, v) => setTempleForm(f => ({ ...f, [n]: v }))} type="email" />
+            <Field label="Website (Optional)" name="website" value={templeForm.website} onChange={(n, v) => setTempleForm(f => ({ ...f, [n]: v }))} />
+            <Field label="Instagram Profile Link (Optional)" name="instagramUrl" value={templeForm.instagramUrl} onChange={(n, v) => setTempleForm(f => ({ ...f, [n]: v }))} />
             <Field label="Google Maps URL" name="googleMapsUrl" value={templeForm.googleMapsUrl} onChange={(n, v) => setTempleForm(f => ({ ...f, [n]: v }))} />
             <div className="md:col-span-2 space-y-4">
               <ImageUpload
