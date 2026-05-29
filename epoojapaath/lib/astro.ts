@@ -1,34 +1,106 @@
-const TITHIS = ["Pratipada","Dwitiya","Tritiya","Chaturthi","Panchami","Shashthi","Saptami","Ashtami","Navami","Dashami","Ekadashi","Dwadashi","Trayodashi","Chaturdashi","Purnima/Amavasya"];
-const NAKSHATRAS = ["Ashwini","Bharani","Krittika","Rohini","Mrigashira","Ardra","Punarvasu","Pushya","Ashlesha","Magha","Purva Phalguni","Uttara Phalguni","Hasta","Chitra","Swati","Vishakha","Anuradha","Jyeshtha","Mula","Purva Ashadha","Uttara Ashadha","Shravana","Dhanishtha","Shatabhisha","Purva Bhadrapada","Uttara Bhadrapada","Revati"];
-const YOGAS = ["Vishkambha","Priti","Ayushman","Saubhagya","Shobhana","Atiganda","Sukarma","Dhriti","Shula","Ganda","Vriddhi","Dhruva","Vyaghata","Harshana","Vajra","Siddhi","Vyatipata","Variyan","Parigha","Shiva","Siddha","Sadhya","Shubha","Shukla","Brahma","Indra","Vaidhriti"];
-const KARANAS = ["Bava","Balava","Kaulava","Taitila","Garija","Vanija","Vishti","Bhadra","Shakuni","Chatushpada","Naga","Kimstughna"];
-const VARAS = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+const TITHIS = [
+  "Pratipada", "Dwitiya", "Tritiya", "Chaturthi", "Panchami",
+  "Shashthi", "Saptami", "Ashtami", "Navami", "Dashami",
+  "Ekadashi", "Dwadashi", "Trayodashi", "Chaturdashi", "Purnima/Amavasya"
+];
 
-const RAHU_KAAL: Record<number, string> = {
-  0: "4:30 PM – 6:00 PM",
-  1: "7:30 AM – 9:00 AM",
-  2: "3:00 PM – 4:30 PM",
-  3: "12:00 PM – 1:30 PM",
-  4: "1:30 PM – 3:00 PM",
-  5: "10:30 AM – 12:00 PM",
-  6: "9:00 AM – 10:30 AM",
-};
+const NAKSHATRAS = [
+  "Ashwini", "Bharani", "Krittika", "Rohini", "Mrigashira", "Ardra",
+  "Punarvasu", "Pushya", "Ashlesha", "Magha", "Purva Phalguni",
+  "Uttara Phalguni", "Hasta", "Chitra", "Swati", "Vishakha",
+  "Anuradha", "Jyeshtha", "Mula", "Purva Ashadha", "Uttara Ashadha",
+  "Shravana", "Dhanishtha", "Shatabhisha", "Purva Bhadrapada",
+  "Uttara Bhadrapada", "Revati"
+];
+
+const YOGAS = [
+  "Vishkambha", "Priti", "Ayushman", "Saubhagya", "Shobhana", "Atiganda",
+  "Sukarma", "Dhriti", "Shula", "Ganda", "Vriddhi", "Dhruva", "Vyaghata",
+  "Harshana", "Vajra", "Siddhi", "Vyatipata", "Variyan", "Parigha",
+  "Shiva", "Siddha", "Sadhya", "Shubha", "Shukla", "Brahma", "Indra", "Vaidhriti"
+];
+
+const KARANAS = [
+  "Bava", "Balava", "Kaulava", "Taitila", "Garija", "Vanija", "Vishti",
+  "Bhadra", "Shakuni", "Chatushpada", "Naga", "Kimstughna"
+];
+
+const VARAS = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+
+const MONTHS = [
+  "Chaitra", "Vaishakha", "Jyeshtha", "Ashadha", "Shravana", "Bhadrapada",
+  "Ashvina", "Kartika", "Margashirsha", "Pausha", "Magha", "Phalguna"
+];
+
+const RITUS = [
+  "Vasanta (Spring)", "Grishma (Summer)", "Varsha (Monsoon)",
+  "Sharad (Autumn)", "Hemanta (Pre-Winter)", "Shishira (Winter)"
+];
 
 function dayOfYear(date: Date): number {
   return Math.floor((date.getTime() - new Date(date.getFullYear(), 0, 0).getTime()) / 86400000);
 }
 
+// Custom parser to prevent timezone shifts
+export function parseLocalDate(dateStr: string): Date {
+  const parts = dateStr.split("-");
+  if (parts.length !== 3) return new Date(dateStr);
+  const y = parseInt(parts[0], 10);
+  const m = parseInt(parts[1], 10) - 1;
+  const d = parseInt(parts[2], 10);
+  return new Date(y, m, d, 12, 0, 0); // Noon to prevent offset shifts
+}
+
 export function getPanchang(date: Date) {
   const doy = dayOfYear(date);
   const dow = date.getDay();
+  const year = date.getFullYear();
+
+  // Vikram Samvat & Shaka Samvat
+  const vikramSamvat = year + 57;
+  const shakaSamvat = year - 78;
+
+  // Ayana (Uttarayana: Jan 14 - July 16, Dakshinayana: July 16 - Jan 14)
+  const monthDay = (date.getMonth() + 1) * 100 + date.getDate();
+  const ayana = (monthDay >= 114 && monthDay < 716) ? "Uttarayana" : "Dakshinayana";
+
+  // Paksha (Shukla Paksha is first 15 tithis, Krishna is next 15)
+  const lunarCycle = doy % 30;
+  const paksha = lunarCycle < 15 ? "Shukla Paksha" : "Krishna Paksha";
+  const tithiIndex = lunarCycle % 15;
+
+  // Hindu Month (approximate alignment with standard Chaitra start around mid-March)
+  const hinduMonthIndex = Math.floor((doy - 74 + 360) % 360 / 30) % 12;
+  const hinduMonth = MONTHS[hinduMonthIndex];
+
+  // Ritu (Season) aligned with Hindu months
+  const rituIndex = Math.floor(hinduMonthIndex / 2) % 6;
+  const ritu = RITUS[rituIndex];
+
+  // Muhurats (traditional fixed blocks depending on the day of the week)
+  const RAHU_KAAL = ["4:30 PM – 6:00 PM", "7:30 AM – 9:00 AM", "3:00 PM – 4:30 PM", "12:00 PM – 1:30 PM", "1:30 PM – 3:00 PM", "10:30 AM – 12:00 PM", "9:00 AM – 10:30 AM"];
+  const GULIKA_KAAL = ["3:00 PM – 4:30 PM", "1:30 PM – 3:00 PM", "12:00 PM – 1:30 PM", "10:30 AM – 12:00 PM", "9:00 AM – 10:30 AM", "7:30 AM – 9:00 AM", "6:00 AM – 7:30 AM"];
+  const YAMAGANDA = ["12:00 PM – 1:30 PM", "10:30 AM – 12:00 PM", "9:00 AM – 10:30 AM", "7:30 AM – 9:00 AM", "6:00 AM – 7:30 AM", "3:00 PM – 4:30 PM", "1:30 PM – 3:00 PM"];
+  const DUR_MUHURAT = ["4:30 PM – 5:18 PM", "12:36 PM – 1:24 PM", "8:15 AM – 9:03 AM", "11:47 AM – 12:36 PM", "10:10 AM – 10:58 AM", "8:58 AM – 9:46 AM", "6:24 AM – 7:12 AM"];
+
   return {
-    tithi:           TITHIS[doy % 15],
+    tithi:           TITHIS[tithiIndex],
+    paksha,
+    ritu,
+    hinduMonth,
+    vikramSamvat:    `${vikramSamvat} Pingala`,
+    shakaSamvat:     `${shakaSamvat} Durmukha`,
+    ayana,
     vara:            VARAS[dow],
     nakshatra:       NAKSHATRAS[doy % 27],
     yoga:            YOGAS[doy % 27],
     karana:          KARANAS[doy % 11],
     rahuKaal:        RAHU_KAAL[dow],
+    gulikaKaal:      GULIKA_KAAL[dow],
+    yamaganda:       YAMAGANDA[dow],
+    durMuhurat:      DUR_MUHURAT[dow],
     abhijitMuhurat:  "11:47 AM – 12:36 PM",
+    amritKaal:       "02:14 PM – 03:58 PM",
   };
 }
 
@@ -47,8 +119,8 @@ const RASHIFAL_READINGS: Record<string, string[]> = {
   pisces:      ["Intuition is powerful today. Trust your inner voice.", "Spiritual connections deepen. Engage in mantra chanting."],
 };
 
-const LUCKY_COLORS = ["Saffron","Golden","White","Red","Green","Blue","Yellow","Purple","Pink","Orange","Cream","Silver"];
-const TIMES = ["6:00 AM – 8:00 AM","8:30 AM – 10:00 AM","11:00 AM – 12:30 PM","2:00 PM – 3:30 PM","5:00 PM – 6:30 PM"];
+const LUCKY_COLORS = ["Saffron", "Golden", "White", "Red", "Green", "Blue", "Yellow", "Purple", "Pink", "Orange", "Cream", "Silver"];
+const TIMES = ["6:00 AM – 8:00 AM", "8:30 AM – 10:00 AM", "11:00 AM – 12:30 PM", "2:00 PM – 3:30 PM", "5:00 PM – 6:30 PM"];
 
 export function getRashifal(rashi: string) {
   const today = new Date();
@@ -86,11 +158,11 @@ export function getNumerology(name: string) {
 }
 
 const AUSPICIOUS_TITHIS: Record<string, number[]> = {
-  "marriage":        [2,3,5,7,10,11,13],
-  "griha-pravesh":   [2,3,5,10,11],
-  "naming-ceremony": [2,3,5,7,12],
-  "business":        [2,3,5,10,11,12],
-  "travel":          [2,3,5,7,10,12,13],
+  "marriage":        [2, 3, 5, 7, 10, 11, 13],
+  "griha-pravesh":   [2, 3, 5, 10, 11],
+  "naming-ceremony": [2, 3, 5, 7, 12],
+  "business":        [2, 3, 5, 10, 11, 12],
+  "travel":          [2, 3, 5, 7, 10, 12, 13],
 };
 
 export function getMuhurats(eventType: string, from: Date, to?: Date) {

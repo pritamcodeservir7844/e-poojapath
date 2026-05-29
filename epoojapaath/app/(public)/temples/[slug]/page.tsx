@@ -30,7 +30,7 @@ export default async function TempleDetailPage({ params }: { params: { slug: str
   const [pujasRaw, chadawaItemsRaw, reviewsRaw] = await Promise.all([
     Puja.find({ temple: temple._id, isActive: true, status: "approved" }).lean(),
     Chadawa.find({ temple: temple._id, isActive: true, status: "approved" }).lean(),
-    Review.find({ temple: temple._id }).populate("user", "name").sort({ createdAt: -1 }).limit(6).lean(),
+    Review.find({ temple: temple._id }).populate("user", "name").populate("booking", "devoteeName").sort({ createdAt: -1 }).limit(6).lean(),
   ]);
 
   const pujas = serialize(pujasRaw);
@@ -164,11 +164,11 @@ export default async function TempleDetailPage({ params }: { params: { slug: str
                       <div key={r._id.toString()} className="card-devotional">
                         <div className="flex items-center gap-3 mb-2">
                           <div className="w-8 h-8 rounded-full bg-saffron/10 flex items-center justify-center text-saffron font-bold text-sm">
-                            {(r.reviewerName?.[0] || r.user?.name?.[0] || "D").toUpperCase()}
+                            {(r.reviewerName?.[0] || r.booking?.devoteeName?.[0] || r.user?.name?.[0] || "D").toUpperCase()}
                           </div>
                           <div>
                             <p className="font-medium text-foreground text-sm flex items-center gap-1.5">
-                              <span>{r.reviewerName || r.user?.name || "Devotee"}</span>
+                              <span>{r.reviewerName || r.booking?.devoteeName || r.user?.name || "Devotee"}</span>
                               {r.city && <span className="text-xs text-muted-foreground font-normal">({r.city})</span>}
                             </p>
                             <div className="flex gap-0.5">{"★".repeat(r.rating).split("").map((_: string, i: number) => <span key={i} className="text-saffron text-xs">★</span>)}</div>

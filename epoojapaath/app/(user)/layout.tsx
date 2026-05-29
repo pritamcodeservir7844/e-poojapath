@@ -14,10 +14,10 @@ export default function UserLayout({ children }: { children: React.ReactNode }) 
           </Link>
           <div className="flex gap-4 ml-auto">
             {[
-              { href: "/",               label: "Home"        },
-              { href: "/user/dashboard", label: "Dashboard"   },
-              { href: "/user/bookings",  label: "My Bookings" },
-              { href: "/user/profile",   label: "Profile"     },
+              { href: "/", label: "Home" },
+              { href: "/user/dashboard", label: "Dashboard" },
+              { href: "/user/bookings", label: "My Bookings" },
+              { href: "/user/profile", label: "Profile" },
             ].map(({ href, label }) => (
               <Link key={href} href={href} className="text-sm text-foreground hover:text-saffron transition-colors">{label}</Link>
             ))}

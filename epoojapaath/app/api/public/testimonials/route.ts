@@ -14,8 +14,9 @@ export async function GET() {
     const reviews = await Review.find()
       .populate("user", "name city")
       .populate("temple", "name")
+      .populate("booking", "devoteeName")
       .sort({ createdAt: -1 })
-      .limit(6)
+      .limit(12)
       .lean();
 
     return NextResponse.json({

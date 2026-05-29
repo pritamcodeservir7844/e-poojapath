@@ -44,8 +44,8 @@ export default async function UserBookingsPage() {
         </div>
       ),
     },
-    { key: "date",        header: "Date",   render: (b: IBooking & { _id: string }) => formatDateShort(b.date) },
-    { key: "amount",      header: "Amount", render: (b: IBooking & { _id: string }) => formatCurrency(b.amount) },
+    { key: "date", header: "Date", render: (b: IBooking & { _id: string }) => formatDateShort(b.date) },
+    { key: "amount", header: "Amount", render: (b: IBooking & { _id: string }) => formatCurrency(b.amount) },
     {
       key: "status",
       header: "Status",

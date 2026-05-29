@@ -283,13 +283,12 @@ export function PujaBookingClient({ puja, chadawaItems = [] }: Props) {
             {steps.map((s, i) => (
               <div key={s.key} className="flex items-center gap-1">
                 <div
-                  className={`flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium transition-all ${
-                    step === s.key
+                  className={`flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium transition-all ${step === s.key
                       ? "bg-saffron text-white"
                       : steps.findIndex((x) => x.key === step) > i
-                      ? "bg-green-500/20 text-green-500"
-                      : "bg-muted text-muted-foreground"
-                  }`}
+                        ? "bg-green-500/20 text-green-500"
+                        : "bg-muted text-muted-foreground"
+                    }`}
                 >
                   <span>{s.icon}</span>
                   <span>{s.label}</span>
@@ -321,11 +320,10 @@ export function PujaBookingClient({ puja, chadawaItems = [] }: Props) {
                   <button
                     key={pkg.label}
                     onClick={() => setSelectedPkg(pkg)}
-                    className={`w-full flex items-center justify-between rounded-lg border px-3 py-2.5 text-sm transition-all ${
-                      selectedPkg?.label === pkg.label
+                    className={`w-full flex items-center justify-between rounded-lg border px-3 py-2.5 text-sm transition-all ${selectedPkg?.label === pkg.label
                         ? "border-saffron bg-saffron/5 text-foreground"
                         : "border-border text-muted-foreground hover:border-saffron/40"
-                    }`}
+                      }`}
                   >
                     <span className="font-medium flex items-center gap-2">
                       <Users size={13} className="text-saffron" />
@@ -388,11 +386,10 @@ export function PujaBookingClient({ puja, chadawaItems = [] }: Props) {
                 return (
                   <div
                     key={item._id}
-                    className={`rounded-xl border transition-all overflow-hidden ${
-                      selected
+                    className={`rounded-xl border transition-all overflow-hidden ${selected
                         ? "border-saffron bg-saffron/5"
                         : "border-border bg-background hover:border-saffron/40"
-                    }`}
+                      }`}
                   >
                     <div
                       className="flex items-center gap-3 p-2.5 cursor-pointer"
@@ -425,11 +422,10 @@ export function PujaBookingClient({ puja, chadawaItems = [] }: Props) {
                       <div className="flex flex-col items-end gap-1 flex-shrink-0">
                         <p className="font-heading text-sm text-saffron">₹{item.price}</p>
                         <div
-                          className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all ${
-                            selected
+                          className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all ${selected
                               ? "bg-saffron border-saffron"
                               : "border-border"
-                          }`}
+                            }`}
                         >
                           {selected && <CheckCircle2 size={12} className="text-white" />}
                         </div>
@@ -649,7 +645,7 @@ export function PujaBookingClient({ puja, chadawaItems = [] }: Props) {
                 onChange={(e) => setForm({ ...form, prasadDelivery: e.target.checked })}
               />
               <label htmlFor="prasad-d" className="text-sm text-foreground cursor-pointer">
-                      Prasad Delivery (+₹151)
+                Prasad Delivery (+₹151)
               </label>
             </div>
             {form.prasadDelivery && (

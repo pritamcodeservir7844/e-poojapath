@@ -405,9 +405,8 @@ export function PujaDetailClient({
                     return (
                       <div
                         key={item._id}
-                        className={`card-devotional overflow-hidden p-0 group transition-all duration-200 ${
-                          selected ? "ring-2 ring-saffron shadow-lg shadow-saffron/10" : ""
-                        }`}
+                        className={`card-devotional overflow-hidden p-0 group transition-all duration-200 ${selected ? "ring-2 ring-saffron shadow-lg shadow-saffron/10" : ""
+                          }`}
                       >
                         {/* Image */}
                         <div className="relative h-36 overflow-hidden">
@@ -616,11 +615,10 @@ export function PujaDetailClient({
                         <button
                           key={pkg.label}
                           onClick={() => setSelectedPkg(pkg)}
-                          className={`w-full flex items-center justify-between rounded-lg border px-3 py-2.5 text-sm transition-all ${
-                            selectedPkg?.label === pkg.label
+                          className={`w-full flex items-center justify-between rounded-lg border px-3 py-2.5 text-sm transition-all ${selectedPkg?.label === pkg.label
                               ? "border-saffron bg-saffron/5 text-foreground"
                               : "border-border text-muted-foreground hover:border-saffron/40"
-                          }`}
+                            }`}
                         >
                           <span className="font-medium flex items-center gap-1.5">
                             <Users size={13} className="text-saffron" />
