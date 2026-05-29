@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import type { IAd } from "@/types";
 
@@ -12,7 +12,7 @@ interface AdBannerProps {
 export function AdBanner({ ads }: AdBannerProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
 
-  const activeAds = ads || [];
+  const activeAds = useMemo(() => ads || [], [ads]);
 
   // Track impression for the current active ad
   useEffect(() => {

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import Image from "next/image";
 import { ChevronLeft, ChevronRight, X, Eye } from "lucide-react";
 
@@ -19,13 +19,13 @@ export function TempleImageSlider({ images, children }: TempleImageSliderProps) 
   const totalSlides = images.length;
   const galleryImages = images.slice(1); // Exclude the cover image from the right gallery grid
 
-  const nextSlide = () => {
+  const nextSlide = useCallback(() => {
     setCurrentIndex((prevIndex) => (prevIndex + 1) % totalSlides);
-  };
+  }, [totalSlides]);
 
-  const prevSlide = () => {
+  const prevSlide = useCallback(() => {
     setCurrentIndex((prevIndex) => (prevIndex - 1 + totalSlides) % totalSlides);
-  };
+  }, [totalSlides]);
 
   const selectSlide = (index: number) => {
     setCurrentIndex(index);
@@ -48,7 +48,7 @@ export function TempleImageSlider({ images, children }: TempleImageSliderProps) 
         clearInterval(timerRef.current);
       }
     };
-  }, [currentIndex, isHovered, showLightbox, totalSlides]);
+  }, [currentIndex, isHovered, showLightbox, totalSlides, nextSlide]);
 
   if (totalSlides === 0) {
     return (

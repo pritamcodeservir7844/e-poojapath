@@ -27,7 +27,7 @@ type Temple = {
   status: "pending" | "approved" | "rejected"; featured: boolean;
   rating: number; reviewCount: number; totalBookings: number; timings: string;
   established?: string; contactPhone: string; contactEmail: string;
-  website?: string; googleMapsUrl?: string;
+  website?: string; instagramUrl?: string; googleMapsUrl?: string;
   owner: { name: string; email: string; phone?: string };
   createdAt: string; tags: string[];
 };
