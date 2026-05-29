@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Sparkles, Heart, Briefcase, Activity, CalendarDays } from "lucide-react";
 import { getRashifal } from "@/lib/astro";
 
@@ -29,7 +29,7 @@ export function RashifalTool() {
   }, [selectedRashi]);
 
   // Generate deterministic life scores based on rashi and date
-  const metrics = useEffect ? (() => {
+  const metrics = useMemo(() => {
     const today = new Date();
     // Sum ASCII values of rashi + date values
     const rashiSum = selectedRashi.split("").reduce((acc, char) => acc + char.charCodeAt(0), 0);
@@ -40,7 +40,7 @@ export function RashifalTool() {
     const relations = ((seed * 17) % 31) + 65; // 65 to 95
     
     return { health, career, relations };
-  })() : { health: 80, career: 85, relations: 75 };
+  }, [selectedRashi]);
 
   return (
     <div className="flex flex-col lg:flex-row gap-6">

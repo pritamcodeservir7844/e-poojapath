@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Input } from "@/components/ui/Input";
 import { getPanchang, parseLocalDate } from "@/lib/astro";
 import { Sun, Sunrise, Sunset, Moon, ShieldAlert, Sparkles, Compass, Calendar, MoonStar, BookOpen } from "lucide-react";
@@ -15,7 +15,7 @@ export function PanchangTool() {
   }, [date]);
 
   // Generate deterministic sunrise/sunset based on day of year
-  const timings = useEffect ? (() => {
+  const timings = useMemo(() => {
     const d = parseLocalDate(date);
     const doy = Math.floor((d.getTime() - new Date(d.getFullYear(), 0, 0).getTime()) / 86400000);
     
@@ -37,7 +37,7 @@ export function PanchangTool() {
       sunset: `${setHr}:${setMin < 10 ? "0" : ""}${setMin} PM`,
       moonrise: moonriseStr,
     };
-  })() : { sunrise: "5:42 AM", sunset: "6:58 PM", moonrise: "6:14 PM" };
+  }, [date]);
 
   return (
     <div className="flex flex-col lg:flex-row gap-6">
