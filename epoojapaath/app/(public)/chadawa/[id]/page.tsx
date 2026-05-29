@@ -435,7 +435,11 @@ export default function ChadawaDetailPage({ params }: { params: { id: string } }
                         <MapPin size={13} /> {temple.location.city}, {temple.location.state}
                       </p>
                     )}
-                    <p className="text-sm text-muted-foreground leading-relaxed line-clamp-4">{temple.description}</p>
+                    <p className="text-sm text-muted-foreground leading-relaxed line-clamp-4">
+                      {temple.description?.startsWith("<") || /<[a-z][\s\S]*>/i.test(temple.description || "")
+                        ? temple.description.replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim()
+                        : temple.description}
+                    </p>
                     <Link href={`/temples/${temple.slug}`} className="inline-block mt-3 text-sm text-saffron hover:underline font-medium">
                       View Temple →
                     </Link>

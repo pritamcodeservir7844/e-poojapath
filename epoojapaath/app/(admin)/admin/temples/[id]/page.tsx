@@ -797,7 +797,14 @@ export default function AdminTempleDetailPage() {
             {temple.description && (
               <div className="md:col-span-2 rounded-2xl border border-border bg-card p-5">
                 <h3 className="font-heading text-base text-foreground mb-2">About</h3>
-                <p className="text-sm text-muted-foreground leading-relaxed">{temple.description}</p>
+                {temple.description.startsWith("<") || /<[a-z][\s\S]*>/i.test(temple.description) ? (
+                  <div 
+                    className="prose prose-sm max-w-none text-muted-foreground prose-headings:text-foreground prose-headings:font-body prose-headings:font-semibold prose-strong:text-foreground prose-ul:list-disc prose-ul:pl-5 prose-ol:list-decimal prose-ol:pl-5" 
+                    dangerouslySetInnerHTML={{ __html: temple.description }} 
+                  />
+                ) : (
+                  <p className="text-sm text-muted-foreground leading-relaxed whitespace-pre-wrap">{temple.description}</p>
+                )}
               </div>
             )}
             {/* Sync Images Banner */}
