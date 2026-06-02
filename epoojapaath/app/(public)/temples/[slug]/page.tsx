@@ -28,8 +28,8 @@ export default async function TempleDetailPage({ params }: { params: { slug: str
 
   await connectDB();
   const [pujasRaw, chadawaItemsRaw, reviewsRaw] = await Promise.all([
-    Puja.find({ temple: temple._id, isActive: true, status: "approved" }).lean(),
-    Chadawa.find({ temple: temple._id, isActive: true, status: "approved" }).lean(),
+    Puja.find({ temple: temple._id, isActive: true }).lean(),
+    Chadawa.find({ temple: temple._id, isActive: true }).lean(),
     Review.find({ temple: temple._id }).populate("user", "name").populate("booking", "devoteeName").sort({ createdAt: -1 }).limit(6).lean(),
   ]);
 

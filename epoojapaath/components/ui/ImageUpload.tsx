@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import { Upload, X, ImageIcon, Loader2 } from "lucide-react";
 
 interface ImageUploadProps {
@@ -27,6 +27,11 @@ export function ImageUpload({
   const [error, setError] = useState("");
   const [dragOver, setDragOver] = useState(false);
   const [showManualUrl, setShowManualUrl] = useState(false);
+  const [manualUrl, setManualUrl] = useState(value || "");
+
+  useEffect(() => {
+    setManualUrl(value || "");
+  }, [value]);
 
   async function handleFile(file: File) {
     setError("");
@@ -158,26 +163,63 @@ export function ImageUpload({
       )}
 
       {error && (
-        <p className="text-xs text-red-500 mt-1.5 flex items-center gap-1">
-          <X size={11} /> {error}
-        </p>
+        <div className="flex items-center justify-between gap-2 mt-1.5">
+          <p className="text-xs text-red-500 flex items-center gap-1">
+            <X size={11} /> {error}
+          </p>
+          {!showManualUrl && (
+            <button
+              type="button"
+              onClick={() => setShowManualUrl(true)}
+              className="text-[10px] font-bold text-saffron hover:underline"
+            >
+              Enter URL Manually
+            </button>
+          )}
+        </div>
       )}
 
       {/* Fallback: manual URL input jab upload fail ho */}
       {showManualUrl && (
-        <div className="mt-2 space-y-1">
-          <label className="block text-xs text-muted-foreground">Ya image URL manually daalo:</label>
+        <div className="mt-2.5 p-3 bg-muted/30 border border-border rounded-xl space-y-2">
+          <label className="block text-[10px] font-bold text-muted-foreground uppercase tracking-wider">Ya image URL manually daalo:</label>
           <div className="flex gap-2">
             <input
-              type="url"
-              placeholder="https://..."
-              defaultValue={value}
-              onBlur={e => { if (e.target.value) { onChange(e.target.value); setShowManualUrl(false); setError(""); } }}
+              type="text"
+              placeholder="e.g. /tripura-sundari.jpeg or https://..."
+              value={manualUrl}
+              onChange={e => setManualUrl(e.target.value)}
+              onKeyDown={e => {
+                if (e.key === "Enter") {
+                  e.preventDefault();
+                  if (manualUrl.trim()) {
+                    onChange(manualUrl.trim());
+                    setShowManualUrl(false);
+                    setError("");
+                  }
+                }
+              }}
               className="flex-1 bg-background border border-border rounded-xl px-3 py-2 text-sm text-foreground focus:outline-none focus:border-saffron transition"
             />
             <button
               type="button"
-              onClick={() => setShowManualUrl(false)}
+              onClick={() => {
+                if (manualUrl.trim()) {
+                  onChange(manualUrl.trim());
+                  setShowManualUrl(false);
+                  setError("");
+                }
+              }}
+              className="px-3.5 py-2 rounded-xl bg-saffron text-white text-xs font-semibold hover:bg-saffron/90 transition shadow-sm"
+            >
+              OK
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                setShowManualUrl(false);
+                setManualUrl(value || "");
+              }}
               className="px-3 py-2 rounded-xl bg-muted text-muted-foreground text-xs hover:bg-muted/80 transition"
             >
               Cancel
