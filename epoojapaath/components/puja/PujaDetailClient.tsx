@@ -108,7 +108,8 @@ export function PujaDetailClient({
 
   useEffect(() => {
     if (puja.availableDates && puja.availableDates.length > 0) {
-      setForm(f => ({ ...f, date: puja.availableDates[0] }));
+      const firstDate = puja.availableDates[0];
+      setForm(f => ({ ...f, date: firstDate }));
     }
   }, [puja.availableDates]);
 

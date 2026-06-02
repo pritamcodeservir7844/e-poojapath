@@ -53,7 +53,8 @@ export default function BookPujaPage({ params }: { params: { slug: string; id: s
           setPuja(d.data);
           setAds(d.ads || []);
           if (d.data.availableDates && d.data.availableDates.length > 0) {
-            setForm(f => ({ ...f, date: d.data.availableDates[0] }));
+            const firstDate = d.data.availableDates[0];
+            setForm(f => ({ ...f, date: firstDate }));
           }
         }
       });
