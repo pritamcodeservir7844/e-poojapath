@@ -13,13 +13,12 @@ type Member = { _id: string; name: string; email: string; role: string; createdA
 
 const ROLE_OPTIONS = [
   { value: "admin",        label: "Admin — full control" },
-  { value: "temple_owner", label: "Temple Owner — manage own temples" },
 ];
 
 export default function AdminSettingsPage() {
   const [members, setMembers] = useState<Member[]>([]);
   const [email,   setEmail]   = useState("");
-  const [role,    setRole]    = useState("temple_owner");
+  const [role,    setRole]    = useState("admin");
   const [adding,  setAdding]  = useState(false);
   const [removing, setRemoving] = useState<string | null>(null);
 
@@ -67,7 +66,6 @@ export default function AdminSettingsPage() {
   }
 
   const admins  = members.filter((m) => m.role === "admin");
-  const owners  = members.filter((m) => m.role === "temple_owner");
 
   return (
     <DashboardShell title="Settings" subtitle="Control platform access and member roles.">
@@ -113,15 +111,7 @@ export default function AdminSettingsPage() {
           onRemove={handleRemove}
         />
 
-        {/* Temple Owners */}
-        <MemberSection
-          title="Temple Owners"
-          subtitle="Can manage their own temples, pujas, chadawa, and view bookings."
-          members={owners}
-          roleBadge="purple"
-          removing={removing}
-          onRemove={handleRemove}
-        />
+
       </div>
     </DashboardShell>
   );

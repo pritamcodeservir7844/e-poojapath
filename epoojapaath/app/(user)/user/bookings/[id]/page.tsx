@@ -36,7 +36,7 @@ export default async function BookingDetailPage({ params }: { params: { id: stri
   const reviewRaw = await Review.findOne({ booking: params.id }).lean();
   const review = reviewRaw ? JSON.parse(JSON.stringify(reviewRaw)) : null;
 
-  const backLink = session.user.role === "temple_owner" ? "/temple/bookings" : (session.user.role === "admin" ? "/admin/bookings" : "/user/bookings");
+  const backLink = session.user.role === "admin" ? "/admin/bookings" : "/user/bookings";
 
   return (
     <DashboardShell

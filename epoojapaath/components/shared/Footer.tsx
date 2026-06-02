@@ -142,9 +142,6 @@ export function Footer() {
             <Link href="/terms" className="hover:text-saffron transition-colors">Terms of Service</Link>
             <Link href="/sitemap.xml" className="hover:text-saffron transition-colors">Sitemap</Link>
           </div>
-          <Link href="/register-temple" className="hover:text-saffron transition-colors">
-            Register Your Temple
-          </Link>
         </div>
       </div>
     </footer>

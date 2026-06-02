@@ -119,13 +119,10 @@ export default function AboutPage() {
           <div className="relative z-10">
             <h2 className="font-heading text-4xl text-foreground mb-4">Partner With Us</h2>
             <p className="text-muted-foreground mb-8 max-w-xl mx-auto">
-              Are you a temple trustee, pandit, or spiritual organization? Join ePoojapaath and bring your temple to thousands of devotees.
+              Are you a temple trustee, pandit, or spiritual organization? Contact us to register your temple and bring your temple to thousands of devotees.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link href="/temple/register" className="btn-saffron px-10 py-4 text-base">
-                Register Your Temple
-              </Link>
-              <Link href="/contact" className="btn-outline-lotus px-10 py-4 text-base">
+              <Link href="/contact" className="btn-saffron px-10 py-4 text-base">
                 Contact Us
               </Link>
             </div>

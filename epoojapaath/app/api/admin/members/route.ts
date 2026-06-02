@@ -10,7 +10,7 @@ export async function GET() {
 
   try {
     await connectDB();
-    const members = await User.find({ role: { $in: ["admin", "temple_owner"] } })
+    const members = await User.find({ role: "admin" })
       .select("name email role createdAt isBlocked")
       .sort({ role: 1, createdAt: -1 })
       .lean();
@@ -28,7 +28,7 @@ export async function POST(req: NextRequest) {
   try {
     await connectDB();
     const { email, role } = await req.json();
-    if (!email || !["admin", "temple_owner"].includes(role))
+    if (!email || role !== "admin")
       return NextResponse.json({ success: false, error: "Invalid email or role" }, { status: 400 });
 
     const user = await User.findOneAndUpdate(

@@ -194,9 +194,25 @@ export interface IReview {
   createdAt: string;
 }
 
+export interface ITempleRequest {
+  _id: string;
+  templeName: string;
+  deity?: string;
+  city: string;
+  state: string;
+  contactName: string;
+  phone: string;
+  email?: string;
+  notes?: string;
+  status: "pending" | "contacted" | "completed" | "rejected";
+  createdAt: string;
+  updatedAt: string;
+}
+
 export interface ApiResponse<T = unknown> {
   success: boolean;
   data?: T;
   error?: string;
   message?: string;
 }
+

@@ -8,6 +8,7 @@ import Chadawa from "@/models/Chadawa";
 import Blog from "@/models/Blog";
 import Ad from "@/models/Ad";
 import TempleMember from "@/models/TempleMember";
+import TempleRequest from "@/models/TempleRequest";
 
 const MONGODB_URI = process.env.MONGODB_URI!;
 
@@ -33,7 +34,7 @@ if (!global.mongoose) {
 
 export async function connectDB() {
   // Ensure all Mongoose models are registered and not tree-shaken
-  const _modelRefs = [User, Temple, Puja, Booking, Review, Chadawa, Blog, Ad, TempleMember];
+  const _modelRefs = [User, Temple, Puja, Booking, Review, Chadawa, Blog, Ad, TempleMember, TempleRequest];
 
   // 1. Return cached connection if available
   if (cached.conn) {

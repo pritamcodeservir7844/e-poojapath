@@ -47,6 +47,7 @@ export default async function HomePage() {
         <BlogPreview />
         <MandalaDivider />
         <Testimonials />
+        <MandalaDivider />
         <TempleRegisterCTA />
       </main>
       <Footer />
