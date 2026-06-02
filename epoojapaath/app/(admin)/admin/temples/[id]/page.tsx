@@ -36,6 +36,9 @@ type Puja = {
   descriptionHi: string; price: number; duration: string;
   image: string; isActive: boolean; totalBooked: number; rating: number;
   benefits: string[]; includes: string[];
+  packages?: IPujaPackage[];
+  faqs?: IPujaFaq[];
+  availableDates?: string[];
 };
 type Chadawa = {
   _id: string; name: string; nameHi: string; description: string;
@@ -62,6 +65,7 @@ const DEFAULT_PACKAGES: IPujaPackage[] = [
 const EMPTY_PUJA = {
   name: "", nameHi: "", description: "", descriptionHi: "",
   price: "", duration: "", image: "", benefits: "", includes: "", scheduledAt: "",
+  availableDates: [] as string[],
 };
 const EMPTY_CHADAWA = {
   name: "", nameHi: "", description: "", descriptionHi: "",
@@ -181,6 +185,8 @@ export default function AdminTempleDetailPage() {
   const [packages, setPackages] = useState<IPujaPackage[]>(DEFAULT_PACKAGES);
   const [faqs, setFaqs] = useState<IPujaFaq[]>([{ question: "", answer: "" }]);
   const [pujaTab, setPujaTab] = useState<"basic" | "packages" | "faqs">("basic");
+  const [pujaDateMode, setPujaDateMode] = useState<"any" | "specific">("any");
+  const [pujaNewDateInput, setPujaNewDateInput] = useState("");
 
   // Chadawa form state
   const [chadawaForm, setChadawaForm] = useState(EMPTY_CHADAWA);
@@ -248,11 +254,13 @@ export default function AdminTempleDetailPage() {
   // ── Puja Form ─────────────────────────────────────────────────────────────
   function openAddPuja() {
     // Temple ki cover image default rakhte hain — admin baad mein change kar sakta hai
-    setPujaForm({ ...EMPTY_PUJA, image: temple.coverImage || "" });
+    setPujaForm({ ...EMPTY_PUJA, image: temple.coverImage || "", availableDates: [] });
     setPackages(DEFAULT_PACKAGES);
     setFaqs([{ question: "", answer: "" }]);
     setPujaTab("basic");
     setEditPujaData(null);
+    setPujaDateMode("any");
+    setPujaNewDateInput("");
     setShowPujaForm(true);
   }
 
@@ -264,13 +272,28 @@ export default function AdminTempleDetailPage() {
       benefits: p.benefits?.join(", ") || "",
       includes: p.includes?.join(", ") || "",
       scheduledAt: "",
+      availableDates: p.availableDates || [],
     });
-    setPackages(DEFAULT_PACKAGES);
-    setFaqs([{ question: "", answer: "" }]);
+    setPackages(p.packages?.length ? p.packages : DEFAULT_PACKAGES);
+    setFaqs(p.faqs?.length ? p.faqs : [{ question: "", answer: "" }]);
     setPujaTab("basic");
     setEditPujaData(p);
+    setPujaDateMode(p.availableDates && p.availableDates.length > 0 ? "specific" : "any");
+    setPujaNewDateInput("");
     setShowPujaForm(true);
   }
+
+  const handleAddPujaDate = () => {
+    if (!pujaNewDateInput) return;
+    if (pujaForm.availableDates.includes(pujaNewDateInput)) return;
+    const updated = [...pujaForm.availableDates, pujaNewDateInput].sort();
+    setPujaForm(p => ({ ...p, availableDates: updated }));
+    setPujaNewDateInput("");
+  };
+
+  const handleRemovePujaDate = (d: string) => {
+    setPujaForm(p => ({ ...p, availableDates: p.availableDates.filter(date => date !== d) }));
+  };
 
   const setPujaField = (k: keyof typeof EMPTY_PUJA) =>
     (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) =>
@@ -294,6 +317,7 @@ export default function AdminTempleDetailPage() {
         packages: validPackages,
         scheduledAt: pujaForm.scheduledAt ? new Date(pujaForm.scheduledAt).toISOString() : undefined,
         faqs: validFaqs,
+        availableDates: pujaDateMode === "specific" ? pujaForm.availableDates : [],
       };
 
       const url = editPujaData ? `/api/admin/pujas/${editPujaData._id}` : `/api/admin/temples/${id}/pujas`;
@@ -526,6 +550,78 @@ export default function AdminTempleDetailPage() {
                   />
                 </div>
                 <Input label="Schedule Date & Time (optional)" type="datetime-local" value={pujaForm.scheduledAt} onChange={setPujaField("scheduledAt")} min={new Date().toISOString().slice(0, 16)} />
+                
+                {/* Booking Dates Selection */}
+                <div className="md:col-span-2 border-t border-border pt-4 mt-2">
+                  <label className="block text-sm font-medium text-foreground mb-1.5">Booking Dates Options</label>
+                  <div className="flex gap-4 mb-3">
+                    <label className="flex items-center gap-2 text-sm text-foreground cursor-pointer">
+                      <input
+                        type="radio"
+                        name="pujaDateMode"
+                        value="any"
+                        checked={pujaDateMode === "any"}
+                        onChange={() => setPujaDateMode("any")}
+                        className="text-saffron focus:ring-saffron"
+                      />
+                      Any Future Date
+                    </label>
+                    <label className="flex items-center gap-2 text-sm text-foreground cursor-pointer">
+                      <input
+                        type="radio"
+                        name="pujaDateMode"
+                        value="specific"
+                        checked={pujaDateMode === "specific"}
+                        onChange={() => setPujaDateMode("specific")}
+                        className="text-saffron focus:ring-saffron"
+                      />
+                      Specific Dates Only
+                    </label>
+                  </div>
+
+                  {pujaDateMode === "specific" && (
+                    <div className="space-y-3 bg-muted/40 p-3.5 rounded-xl border border-border">
+                      <div className="flex gap-2">
+                        <input
+                          type="date"
+                          value={pujaNewDateInput}
+                          onChange={e => setPujaNewDateInput(e.target.value)}
+                          className="flex-1 border border-border bg-card rounded-xl px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-saffron transition"
+                        />
+                        <Button
+                          type="button"
+                          size="sm"
+                          onClick={handleAddPujaDate}
+                        >
+                          Add Date
+                        </Button>
+                      </div>
+
+                      {pujaForm.availableDates && pujaForm.availableDates.length > 0 ? (
+                        <div className="flex flex-wrap gap-1.5 pt-1">
+                          {pujaForm.availableDates.map(d => (
+                            <span
+                              key={d}
+                              className="inline-flex items-center gap-1 bg-saffron/10 border border-saffron/20 text-saffron text-xs px-2.5 py-1 rounded-full font-medium"
+                            >
+                              {d}
+                              <button
+                                type="button"
+                                onClick={() => handleRemovePujaDate(d)}
+                                className="text-saffron/70 hover:text-saffron transition ml-1"
+                              >
+                                <X size={12} />
+                              </button>
+                            </span>
+                          ))}
+                        </div>
+                      ) : (
+                        <p className="text-xs text-muted-foreground italic">No dates added yet. Please select and add available dates.</p>
+                      )}
+                    </div>
+                  )}
+                </div>
+
                 <Input label="Benefits (comma separated)" value={pujaForm.benefits} onChange={setPujaField("benefits")} placeholder="Health, Prosperity, Protection" />
                 <Input label="Includes (comma separated)" value={pujaForm.includes} onChange={setPujaField("includes")} placeholder="Abhishek, Aarti, Prasad" />
                 <Textarea label="Description (English)" required value={pujaForm.description} onChange={setPujaField("description")} rows={3} className="md:col-span-2" />

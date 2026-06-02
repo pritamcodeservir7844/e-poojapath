@@ -25,6 +25,7 @@ export interface IPujaDoc extends Document {
   includes: string[];
   packages: IPujaPackage[];
   scheduledAt?: Date;
+  availableDates?: string[];
   rating: number;
   reviewCount: number;
   faqs: IPujaFaq[];
@@ -62,6 +63,7 @@ const PujaSchema = new Schema<IPujaDoc>(
     includes:      [{ type: String }],
     packages:      [PackageSchema],
     scheduledAt:   { type: Date },
+    availableDates: [{ type: String }],
     rating:        { type: Number, default: 0 },
     reviewCount:   { type: Number, default: 0 },
     faqs:          [FaqSchema],
@@ -73,5 +75,9 @@ const PujaSchema = new Schema<IPujaDoc>(
   { timestamps: true }
 
 );
+
+if (process.env.NODE_ENV === "development") {
+  delete models.Puja;
+}
 
 export default models.Puja || mongoose.model<IPujaDoc>("Puja", PujaSchema);

@@ -72,6 +72,7 @@ export interface IPuja {
   includes: string[];
   packages: IPujaPackage[];
   scheduledAt?: string;
+  availableDates?: string[];
   rating: number;
   reviewCount: number;
   faqs: IPujaFaq[];
@@ -176,6 +177,8 @@ export interface IAd {
   clicks: number;
   impressions: number;
   createdBy: string | IUser;
+  targetType?: "all" | "selected_pujas";
+  targetPujas?: string[];
   createdAt: string;
 }
 

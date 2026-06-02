@@ -11,6 +11,8 @@ export interface IAdDoc extends Document {
   clicks: number;
   impressions: number;
   createdBy: mongoose.Types.ObjectId;
+  targetType: "all" | "selected_pujas";
+  targetPujas: mongoose.Types.ObjectId[];
   createdAt: Date;
 }
 
@@ -26,6 +28,8 @@ const AdSchema = new Schema<IAdDoc>(
     clicks:      { type: Number, default: 0 },
     impressions: { type: Number, default: 0 },
     createdBy:   { type: Schema.Types.ObjectId, ref: "User", required: true },
+    targetType:  { type: String, enum: ["all", "selected_pujas"], default: "all" },
+    targetPujas: [{ type: Schema.Types.ObjectId, ref: "Puja" }],
   },
   { timestamps: true }
 );

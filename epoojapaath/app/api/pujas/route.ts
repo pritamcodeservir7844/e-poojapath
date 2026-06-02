@@ -9,9 +9,16 @@ export async function GET(req: NextRequest) {
     const { searchParams } = new URL(req.url);
     const search = searchParams.get("q");
     const templeId = searchParams.get("temple");
+    const ids = searchParams.get("ids");
 
     // Sirf approved temples ki pujas dikhao
     const query: Record<string, unknown> = { isActive: true };
+    if (ids) {
+      const idsArray = ids.split(",").map(id => id.trim()).filter(Boolean);
+      if (idsArray.length > 0) {
+        query._id = { $in: idsArray };
+      }
+    }
     if (search) query.name = new RegExp(search, "i");
 
     if (templeId) {

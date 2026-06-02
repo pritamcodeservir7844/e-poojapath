@@ -235,7 +235,7 @@ export default async function BookingDetailPage({ params }: { params: { id: stri
         )}
 
         {/* Review Form */}
-        {(booking.status === "completed" || booking.status === "confirmed") && (
+        {(booking.status === "completed" || booking.status === "confirmed") && bookingUserId === session.user.id && (
           <BookingReviewForm
             bookingId={booking._id.toString()}
             templeId={typeof booking.temple === "object" ? booking.temple._id.toString() : booking.temple}

@@ -10,6 +10,23 @@ import { formatCurrency } from "@/lib/utils";
 import { Input, Textarea, Select } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
 import { Clock, CheckCircle2, Sparkles } from "lucide-react";
+import { AdBanner } from "@/components/ads/AdBanner";
+import type { IPuja } from "@/types";
+
+function formatDisplayDate(dateStr: string): string {
+  try {
+    const [year, month, day] = dateStr.split("-").map(Number);
+    const dateObj = new Date(year, month - 1, day);
+    return dateObj.toLocaleDateString("en-US", {
+      weekday: "long",
+      year: "numeric",
+      month: "long",
+      day: "numeric"
+    });
+  } catch {
+    return dateStr;
+  }
+}
 
 const ReactConfetti = dynamic(() => import("react-confetti"), { ssr: false });
 
@@ -22,13 +39,24 @@ declare global {
 export default function BookPujaPage({ params }: { params: { slug: string; id: string } }) {
   const { data: session } = useSession();
   const router = useRouter();
-  const [puja, setPuja] = useState<Record<string, unknown> | null>(null);
+  const [puja, setPuja] = useState<IPuja | null>(null);
+  const [ads, setAds] = useState<any[]>([]);
   const [form, setForm] = useState({ devoteeName: "", whatsappPhone: "", gotra: "", sankalp: "", date: "", prasadDelivery: false, prasadAddress: "", dakshina: 0 });
   const [loading, setLoading] = useState(false);
   const [booked, setBooked] = useState(false);
 
   useEffect(() => {
-    fetch(`/api/pujas/${params.id}`).then((r) => r.json()).then((d) => setPuja(d.data));
+    fetch(`/api/pujas/${params.id}`)
+      .then((r) => r.json())
+      .then((d) => {
+        if (d.success) {
+          setPuja(d.data);
+          setAds(d.ads || []);
+          if (d.data.availableDates && d.data.availableDates.length > 0) {
+            setForm(f => ({ ...f, date: d.data.availableDates[0] }));
+          }
+        }
+      });
   }, [params.id]);
 
   const pujaPrice = puja?.price ? Number(puja.price) : 0;
@@ -208,14 +236,27 @@ export default function BookPujaPage({ params }: { params: { slug: string; id: s
               value={form.sankalp}
               onChange={(e) => setForm({ ...form, sankalp: e.target.value })}
             />
-            <Input
-              label="Puja Date"
-              type="date"
-              required
-              min={new Date().toISOString().split("T")[0]}
-              value={form.date}
-              onChange={(e) => setForm({ ...form, date: e.target.value })}
-            />
+            {puja.availableDates && puja.availableDates.length > 0 ? (
+              <Select
+                label="Puja Date"
+                required
+                value={form.date}
+                onChange={(e) => setForm({ ...form, date: e.target.value })}
+                options={puja.availableDates.map(d => ({
+                  value: d,
+                  label: formatDisplayDate(d)
+                }))}
+              />
+            ) : (
+              <Input
+                label="Puja Date"
+                type="date"
+                required
+                min={new Date().toISOString().split("T")[0]}
+                value={form.date}
+                onChange={(e) => setForm({ ...form, date: e.target.value })}
+              />
+            )}
             <Select
               label="Dakshina to Pandit Ji (Optional)"
               value={form.dakshina.toString()}
@@ -258,6 +299,13 @@ export default function BookPujaPage({ params }: { params: { slug: string; id: s
              </Button>
           </form>
         </div>
+
+        {/* Dynamic Target Ad Banner */}
+        {ads.length > 0 && (
+          <div className="mt-12 border-t border-deep-gold/15 pt-8">
+            <AdBanner ads={ads} />
+          </div>
+        )}
       </div>
     </div>
   );

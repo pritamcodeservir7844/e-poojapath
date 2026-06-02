@@ -36,10 +36,13 @@ const getEmptyForm = () => ({
   placement: "hero",
   startDate: getTodayString(),
   endDate: "",
+  targetType: "all" as "all" | "selected_pujas",
+  targetPujas: [] as string[],
 });
 
 export default function AdminAdsPage() {
   const [ads,     setAds]     = useState<AdRow[]>([]);
+  const [pujas,   setPujas]   = useState<any[]>([]);
   const [form,    setForm]    = useState(getEmptyForm);
   const [saving,  setSaving]  = useState(false);
   const [showForm,setShowForm]= useState(false);
@@ -47,6 +50,7 @@ export default function AdminAdsPage() {
 
   useEffect(() => {
     fetch("/api/admin/ads").then((r) => r.json()).then((d) => { if (d.success) setAds(d.data); });
+    fetch("/api/admin/pujas").then((r) => r.json()).then((d) => { if (d.success) setPujas(d.data); });
   }, []);
 
   const set = (k: keyof typeof form) => (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) =>
@@ -58,9 +62,18 @@ export default function AdminAdsPage() {
       devToast.error("Ad image is required");
       return;
     }
+    if (form.targetType === "selected_pujas" && form.targetPujas.length === 0) {
+      devToast.error("Please select at least one target puja");
+      return;
+    }
     setSaving(true);
     try {
-      const res  = await fetch("/api/admin/ads", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(form) });
+      let linkUrl = form.linkUrl;
+      if (form.targetType === "selected_pujas" && !linkUrl.trim()) {
+        linkUrl = `/puja?ids=${form.targetPujas.join(",")}`;
+      }
+      const payload = { ...form, linkUrl };
+      const res  = await fetch("/api/admin/ads", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) });
       const data = await res.json();
       if (data.success) {
         devToast.success("Ad created 📢");
@@ -150,9 +163,77 @@ export default function AdminAdsPage() {
               )}
             </div>
 
-            <Input label="Link URL"       required value={form.linkUrl}  onChange={set("linkUrl")}  placeholder="https://..." className="md:col-span-2" />
+            <Input label="Link URL" value={form.linkUrl}  onChange={set("linkUrl")}  placeholder="https://... (Optional if targeting specific pujas)" className="md:col-span-2" />
             <Input label="Start Date"     required value={form.startDate} onChange={set("startDate")} type="date" />
             <Input label="End Date"       required value={form.endDate}   onChange={set("endDate")}   type="date" />
+
+            {/* Target Placement selection */}
+            <div className="md:col-span-2 space-y-3 bg-muted/20 p-4 rounded-xl border border-border/50">
+              <div>
+                <label className="block text-xs font-semibold text-muted-foreground uppercase mb-2">Targeting Type</label>
+                <div className="flex gap-4">
+                  <label className="flex items-center gap-2 text-sm text-foreground cursor-pointer select-none">
+                    <input
+                      type="radio"
+                      name="targetType"
+                      value="all"
+                      checked={form.targetType === "all"}
+                      onChange={() => setForm(p => ({ ...p, targetType: "all", targetPujas: [] }))}
+                      className="w-4 h-4 accent-saffron"
+                    />
+                    Show Everywhere (All Pages)
+                  </label>
+                  <label className="flex items-center gap-2 text-sm text-foreground cursor-pointer select-none">
+                    <input
+                      type="radio"
+                      name="targetType"
+                      value="selected_pujas"
+                      checked={form.targetType === "selected_pujas"}
+                      onChange={() => setForm(p => ({ ...p, targetType: "selected_pujas" }))}
+                      className="w-4 h-4 accent-saffron"
+                    />
+                    Selected Pujas Only
+                  </label>
+                </div>
+              </div>
+
+              {form.targetType === "selected_pujas" && (
+                <div className="space-y-2">
+                  <label className="block text-xs font-semibold text-muted-foreground uppercase">Select Target Pujas *</label>
+                  <div className="max-h-48 overflow-y-auto border border-border rounded-xl p-3 bg-card space-y-2">
+                    {pujas.length === 0 ? (
+                      <p className="text-xs text-muted-foreground">No pujas found to link.</p>
+                    ) : (
+                      pujas.map((p) => {
+                        const isChecked = form.targetPujas.includes(p._id);
+                        return (
+                          <label key={p._id} className="flex items-start gap-2.5 text-xs text-foreground cursor-pointer select-none py-1 hover:bg-muted/40 rounded px-1.5 transition">
+                            <input
+                              type="checkbox"
+                              checked={isChecked}
+                              onChange={() => {
+                                setForm((prev) => {
+                                  const targetPujas = isChecked
+                                    ? prev.targetPujas.filter((id) => id !== p._id)
+                                    : [...prev.targetPujas, p._id];
+                                  return { ...prev, targetPujas };
+                                });
+                              }}
+                              className="w-3.5 h-3.5 accent-saffron mt-0.5"
+                            />
+                            <div>
+                              <span className="font-semibold text-foreground">{p.name}</span>
+                              <span className="text-muted-foreground text-[10px] block">🛕 {p.temple?.name}</span>
+                            </div>
+                          </label>
+                        );
+                      })
+                    )}
+                  </div>
+                </div>
+              )}
+            </div>
+
             <div className="md:col-span-2"><Button type="submit" loading={saving} fullWidth>Create Ad</Button></div>
           </form>
         </Card>

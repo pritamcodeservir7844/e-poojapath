@@ -59,6 +59,21 @@ const HOW_IT_WORKS = [
   { icon: "📺", title: "Receive Photos & Videos + Prasad", description: "Watch the recording and receive prasad at your doorstep." },
 ];
 
+function formatDisplayDate(dateStr: string): string {
+  try {
+    const [year, month, day] = dateStr.split("-").map(Number);
+    const dateObj = new Date(year, month - 1, day);
+    return dateObj.toLocaleDateString("en-US", {
+      weekday: "long",
+      year: "numeric",
+      month: "long",
+      day: "numeric"
+    });
+  } catch {
+    return dateStr;
+  }
+}
+
 export function PujaDetailClient({
   puja,
   temple,
@@ -90,6 +105,12 @@ export function PujaDetailClient({
     script.src = "https://checkout.razorpay.com/v1/checkout.js";
     document.body.appendChild(script);
   }, []);
+
+  useEffect(() => {
+    if (puja.availableDates && puja.availableDates.length > 0) {
+      setForm(f => ({ ...f, date: puja.availableDates[0] }));
+    }
+  }, [puja.availableDates]);
 
   const [stats, setStats] = useState({ temples: 0, bookings: 0, devotees: 0 });
 
@@ -747,8 +768,21 @@ export function PujaDetailClient({
                     value={form.gotra} onChange={(e) => setForm({ ...form, gotra: e.target.value })} />
                   <Textarea label="Sankalp / Intention" rows={2} placeholder="Your wish or prayer..."
                     value={form.sankalp} onChange={(e) => setForm({ ...form, sankalp: e.target.value })} />
-                  <Input label="Puja Date" type="date" required min={new Date().toISOString().split("T")[0]}
-                    value={form.date} onChange={(e) => setForm({ ...form, date: e.target.value })} />
+                  {puja.availableDates && puja.availableDates.length > 0 ? (
+                    <Select
+                      label="Puja Date"
+                      required
+                      value={form.date}
+                      onChange={(e) => setForm({ ...form, date: e.target.value })}
+                      options={puja.availableDates.map(d => ({
+                        value: d,
+                        label: formatDisplayDate(d)
+                      }))}
+                    />
+                  ) : (
+                    <Input label="Puja Date" type="date" required min={new Date().toISOString().split("T")[0]}
+                      value={form.date} onChange={(e) => setForm({ ...form, date: e.target.value })} />
+                  )}
                   <Select
                     label="Dakshina to Pandit Ji (Optional)"
                     value={form.dakshina.toString()}

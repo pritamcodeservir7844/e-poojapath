@@ -13,9 +13,15 @@ import Puja from "@/models/Puja";
 import Temple from "@/models/Temple";
 import { serialize } from "@/lib/utils";
 
-async function getPujas(search?: string, templeSlug?: string) {
+async function getPujas(search?: string, templeSlug?: string, ids?: string) {
   await connectDB();
   const query: Record<string, any> = { isActive: true };
+  if (ids) {
+    const idsArray = ids.split(",").map(id => id.trim()).filter(Boolean);
+    if (idsArray.length > 0) {
+      query._id = { $in: idsArray };
+    }
+  }
   if (templeSlug) {
     const templeObj = await Temple.findOne({ slug: templeSlug }).select("_id").lean() as { _id: any } | null;
     if (templeObj) {
@@ -29,12 +35,12 @@ async function getPujas(search?: string, templeSlug?: string) {
 }
 
 interface PageProps {
-  searchParams: { q?: string; temple?: string };
+  searchParams: { q?: string; temple?: string; ids?: string };
 }
 
 export default async function PujaPage({ searchParams }: PageProps) {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const pujas = serialize(await getPujas(searchParams.q, searchParams.temple).catch(() => [])) as any[];
+  const pujas = serialize(await getPujas(searchParams.q, searchParams.temple, searchParams.ids).catch(() => [])) as any[];
 
   let filteredTempleName = "";
   if (searchParams.temple) {
