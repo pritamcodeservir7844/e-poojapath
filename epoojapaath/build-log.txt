@@ -1,0 +1,27 @@
+[2026-06-03T12:03:59.428Z] BUILD_START
+[ERROR]  ⚠ You are using a non-standard "NODE_ENV" value in your environment. This creates inconsistencies in the project and is strongly advised against. Read more: https://nextjs.org/docs/messages/non-standard-node-env
+  ▲ Next.js 14.2.35
+  - Environments: .env.local
+
+   Creating an optimized production build ...
+ ✓ Compiled successfully
+   Linting and checking validity of types ...
+
+./components/shared/Footer.tsx
+149:15  Warning: Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+
+info  - Need to disable some ESLint rules? Learn more here: https://nextjs.org/docs/basic-features/eslint#disabling-rules
+   Collecting page data ...
+[ERROR] unhandledRejection Error [PageNotFoundError]: Cannot find module for page: /_document
+    at getPagePath (C:\Users\UPL\e-poojapath\epoojapaath\node_modules\next\dist\server\require.js:94:15)
+    at requirePage (C:\Users\UPL\e-poojapath\epoojapaath\node_modules\next\dist\server\require.js:99:22)
+    at C:\Users\UPL\e-poojapath\epoojapaath\node_modules\next\dist\server\load-components.js:72:65
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at async Promise.all (index 0)
+    at async loadComponentsImpl (C:\Users\UPL\e-poojapath\epoojapaath\node_modules\next\dist\server\load-components.js:71:33)
+    at async Object.hasCustomGetInitialProps (C:\Users\UPL\e-poojapath\epoojapaath\node_modules\next\dist\build\utils.js:1274:24) {
+  type: 'PageNotFoundError',
+  code: 'ENOENT'
+}
+
+[2026-06-03T12:05:43.961Z] BUILD_END with code 1
