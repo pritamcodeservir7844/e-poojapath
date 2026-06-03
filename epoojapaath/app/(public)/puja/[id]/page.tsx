@@ -117,7 +117,7 @@ export default async function PujaDetailPage({ params }: { params: { id: string 
             <span>{puja.duration}</span>
           </div>
           <span className="text-border">|</span>
-          <PujaCountdownTimer scheduledAt={puja.scheduledAt} />
+          <PujaCountdownTimer scheduledAt={puja.scheduledAt} availableDates={puja.availableDates} />
         </div>
       </div>
 

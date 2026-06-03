@@ -30,12 +30,56 @@ function getDefaultTarget(): Date {
   return t;
 }
 
-export function PujaCountdownTimer({ scheduledAt }: { scheduledAt?: string }) {
+function getNextTargetDate(availableDates?: string[], scheduledAt?: string): Date {
+  const pad = (n: number) => String(n).padStart(2, "0");
+
+  if (!availableDates || availableDates.length === 0) {
+    return scheduledAt ? new Date(scheduledAt) : getDefaultTarget();
+  }
+
+  // Get UTC time components from scheduledAt if available
+  let hours = 6;
+  let minutes = 0;
+  let seconds = 0;
+  if (scheduledAt) {
+    const schedDate = new Date(scheduledAt);
+    if (!isNaN(schedDate.getTime())) {
+      hours = schedDate.getUTCHours();
+      minutes = schedDate.getUTCMinutes();
+      seconds = schedDate.getUTCSeconds();
+    }
+  }
+
+  const now = new Date();
+
+  // Find the first available date in the future or today
+  for (const dateStr of availableDates) {
+    const targetStr = `${dateStr}T${pad(hours)}:${pad(minutes)}:${pad(seconds)}.000Z`;
+    const dateObj = new Date(targetStr);
+    
+    if (dateObj.getTime() > now.getTime()) {
+      return dateObj;
+    }
+  }
+
+  // Fallback to the last available date if all are in the past
+  const lastDateStr = availableDates[availableDates.length - 1];
+  const targetStr = `${lastDateStr}T${pad(hours)}:${pad(minutes)}:${pad(seconds)}.000Z`;
+  return new Date(targetStr);
+}
+
+export function PujaCountdownTimer({
+  scheduledAt,
+  availableDates,
+}: {
+  scheduledAt?: string;
+  availableDates?: string[];
+}) {
   // Start as null to avoid SSR/client mismatch (hydration error)
   const [timeLeft, setTimeLeft] = useState<TimeLeft | null>(null);
 
   useEffect(() => {
-    const target = scheduledAt ? new Date(scheduledAt) : getDefaultTarget();
+    const target = getNextTargetDate(availableDates, scheduledAt);
     // Set immediately on mount (client only)
     setTimeLeft(getTimeLeft(target));
 
@@ -43,7 +87,7 @@ export function PujaCountdownTimer({ scheduledAt }: { scheduledAt?: string }) {
       setTimeLeft(getTimeLeft(target));
     }, 1000);
     return () => clearInterval(interval);
-  }, [scheduledAt]);
+  }, [scheduledAt, availableDates]);
 
   // Don't render anything until client has mounted
   if (timeLeft === null) return null;
