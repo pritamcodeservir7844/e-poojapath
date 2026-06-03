@@ -11,7 +11,7 @@ You help devotees with:
 - Astrology basics (rashifal, panchang, muhurat)
 
 Keep responses concise, warm, and devotional. Use 🙏 emoji occasionally. Respond in English or Hindi based on user's query language.
-Business contact: +91 98765 43210 | support@epoojapaath.com | 12, Assi Ghat Road, Varanasi, UP 221005`;
+Business contact: +91 91650 57755 | support@epoojapaath.com | Dhaleswar, Agartala, West Tripura, Pin – 799007`;
 
 const FALLBACK_RESPONSES: Record<string, string> = {
   puja:       "🙏 ePoojapaath offers 100+ sacred pujas including Rudrabhishek, Satyanarayan Katha, Navgrah Puja, Lakshmi Puja, and more. Visit /puja to browse all available rituals.",
@@ -19,7 +19,7 @@ const FALLBACK_RESPONSES: Record<string, string> = {
   book:       "📿 To book a puja: 1) Browse temples at /temples, 2) Select a puja, 3) Fill your Sankalp and devotee details, 4) Pay securely via Razorpay, 5) Receive confirmation and live stream link.",
   temple:     "🛕 We have 500+ temples registered across 50+ cities in India. Visit /temples to search by city, deity, or puja type.",
   panchang:   "🔮 Use our free Panchang Calculator at /astro to check today's Tithi, Nakshatra, Rahu Kaal, and Abhijit Muhurat.",
-  contact:    "📞 You can reach us at +91 98765 43210 or support@epoojapaath.com | Office: 12, Assi Ghat Road, Varanasi, UP 221005 | Mon–Sat, 9 AM – 6 PM IST",
+  contact:    "📞 You can reach us at +91 91650 57755 or support@epoojapaath.com | Office: Dhaleswar, Agartala, West Tripura, Pin – 799007 | Mon–Sat, 10 AM – 6 PM",
   default:    "🙏 I'm your spiritual guide on ePoojapaath. You can ask me about temples, pujas, chadawa, astrology tools, booking process, or Hindu festivals. How may I assist you?",
 };
 

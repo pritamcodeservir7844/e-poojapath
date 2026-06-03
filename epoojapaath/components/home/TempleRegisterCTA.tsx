@@ -118,7 +118,7 @@ export function TempleRegisterCTA() {
             </div>
 
             <p className="text-muted-foreground/60 text-sm mt-6 flex items-center justify-center gap-4">
-              <span className="flex items-center gap-1">📞 +91 98765 43210</span>
+              <span className="flex items-center gap-1">📞 +91 91650 57755</span>
               <span>•</span>
               <span className="flex items-center gap-1">📧 support@epoojapaath.com</span>
             </p>

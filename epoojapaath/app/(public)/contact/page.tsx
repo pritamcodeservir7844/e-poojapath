@@ -69,10 +69,10 @@ export default function ContactPage() {
                 <h2 className="font-heading text-2xl text-foreground mb-6">Get in Touch</h2>
                 <ul className="space-y-6">
                   {[
-                    { icon: <MapPin size={18} />, label: "Address",  content: <p className="text-muted-foreground text-sm">12, Assi Ghat Road<br />Varanasi, Uttar Pradesh – 221005</p> },
-                    { icon: <Phone size={18} />,  label: "Phone",    content: <a href="tel:+919876543210" className="text-saffron hover:underline">+91 98765 43210</a> },
+                    { icon: <MapPin size={18} />, label: "Address",  content: <p className="text-muted-foreground text-sm">Dhaleswar, Agartala<br />West Tripura, Pin – 799007</p> },
+                    { icon: <Phone size={18} />,  label: "Phone / WhatsApp", content: <a href="https://wa.me/919165057755" target="_blank" rel="noopener noreferrer" className="text-saffron hover:underline">+91 91650 57755</a> },
                     { icon: <Mail size={18} />,   label: "Email",    content: <a href="mailto:support@epoojapaath.com" className="text-saffron hover:underline">support@epoojapaath.com</a> },
-                    { icon: <Clock size={18} />,  label: "Hours",    content: <p className="text-muted-foreground text-sm">Monday – Saturday<br />9:00 AM – 6:00 PM IST</p> },
+                    { icon: <Clock size={18} />,  label: "Hours",    content: <p className="text-muted-foreground text-sm">Monday – Saturday<br />10:00 AM – 6:00 PM</p> },
                   ].map(({ icon, label, content }) => (
                     <li key={label} className="flex items-start gap-4">
                       <div className="w-10 h-10 rounded-full bg-saffron/10 flex items-center justify-center shrink-0 text-saffron">
@@ -86,13 +86,18 @@ export default function ContactPage() {
                   ))}
                 </ul>
 
-                <div className="mt-6 h-40 bg-background rounded-xl border border-deep-gold/20 flex items-center justify-center">
-                  <div className="text-center text-muted-foreground">
-                    <MapPin className="mx-auto mb-2 text-saffron" size={28} />
-                    <p className="text-sm">Assi Ghat, Varanasi</p>
-                    <a href="https://maps.google.com" target="_blank" rel="noopener noreferrer"
-                      className="text-saffron text-xs hover:underline">View on Google Maps →</a>
-                  </div>
+                <div className="mt-6 h-48 bg-background rounded-xl border border-deep-gold/20 overflow-hidden relative">
+                  <iframe 
+                    src="https://maps.google.com/maps?q=Dhaleswar,%20Agartala,%20West%20Tripura,%20Pin%20799007&t=&z=14&ie=UTF8&iwloc=&output=embed" 
+                    width="100%" 
+                    height="100%" 
+                    style={{ border: 0 }} 
+                    allowFullScreen={true} 
+                    loading="lazy" 
+                    referrerPolicy="no-referrer-when-downgrade"
+                    title="ePoojapaath Location Map"
+                    className="absolute inset-0"
+                  ></iframe>
                 </div>
               </div>
             </div>
@@ -104,12 +109,12 @@ export default function ContactPage() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <Input label="Name" required placeholder="Your full name"
                   value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} />
-                <Input label="Email" type="email" required placeholder="your@email.com"
+                <Input label="Email (Optional)" type="email" placeholder="your@email.com"
                   value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} />
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <Input label="Phone (Optional)" placeholder="+91 XXXXX XXXXX"
+                <Input label="Phone" required placeholder="+91 XXXXX XXXXX"
                   value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} />
                 <Select
                   label="Subject"

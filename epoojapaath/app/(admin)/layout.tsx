@@ -3,7 +3,7 @@ import Link from "next/link";
 import Image from "next/image";
 import {
   LayoutDashboard, Landmark, Users, BookOpen,
-  FileText, Megaphone, Settings, Flower2, ScrollText, ClipboardList,
+  FileText, Megaphone, Settings, Flower2, ScrollText, ClipboardList, Mail,
 } from "lucide-react";
 import { AdminLogoutButton } from "@/components/admin/AdminLogoutButton";
 
@@ -17,6 +17,7 @@ const adminNav = [
   { href: "/admin/bookings",        label: "Bookings",         icon: BookOpen        },
   { href: "/admin/blog",            label: "Blog Manager",     icon: FileText        },
   { href: "/admin/ads",             label: "Ads Manager",      icon: Megaphone       },
+  { href: "/admin/enquiries",       label: "Enquiries",        icon: Mail            },
   { href: "/admin/settings",        label: "Settings",         icon: Settings        },
 ];
 
