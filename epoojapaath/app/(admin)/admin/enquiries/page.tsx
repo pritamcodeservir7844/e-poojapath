@@ -65,7 +65,7 @@ export default function AdminEnquiriesPage() {
     }
   }
 
-  const columns = [
+  const columns: any[] = [
     {
       key: "createdAt",
       header: "Date",
