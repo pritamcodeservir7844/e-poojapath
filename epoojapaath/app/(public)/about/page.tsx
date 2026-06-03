@@ -57,7 +57,7 @@ export default function AboutPage() {
               <div className="text-4xl mb-4">🔭</div>
               <h2 className="font-heading text-2xl text-foreground mb-3">Vision Statement</h2>
               <p className="text-muted-foreground leading-relaxed">
-                To become the world's most trusted digital platform for spiritual and religious services, connecting millions of devotees with sacred temples, authentic rituals, and timeless traditions while preserving India's rich spiritual heritage for future generations.
+                To become the world&apos;s most trusted digital platform for spiritual and religious services, connecting millions of devotees with sacred temples, authentic rituals, and timeless traditions while preserving India&apos;s rich spiritual heritage for future generations.
               </p>
             </div>
           </div>
