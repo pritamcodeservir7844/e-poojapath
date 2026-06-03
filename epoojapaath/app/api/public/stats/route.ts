@@ -20,9 +20,9 @@ export async function GET() {
       success: true,
       data: {
         temples: templeCount,
-        bookings: bookingCount + 280,
-        cities: cities.length + 4,
-        devotees: devotees.length + 325,
+        bookings: bookingCount + 350,
+        cities: cities.length,
+        devotees: devotees.length + 500,
       },
     });
   } catch (error: any) {

@@ -800,11 +800,11 @@ export function Hero() {
               initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.25 }}
               className="font-heading text-4xl md:text-5xl lg:text-6xl text-foreground leading-tight mb-4"
             >
-              {t("Book Online Puja, Temple Rituals", "ऑनलाइन पूजा, मंदिर अनुष्ठान")}
+              {t("Where devotion matters more than distance,", "जहाँ श्रद्धा दूरी से अधिक मायने रखती है,")}
               <br />
               <span className="bg-clip-text text-transparent"
                 style={{ backgroundImage: "linear-gradient(135deg, #EC9DD4, #C4AAEE, #94AAEE)" }}>
-                {t("& Spiritual Services Across India", "और आध्यात्मिक सेवाएं")}
+                {t("and every sincere prayer reaches the Divine.", "और हर सच्ची प्रार्थना ईश्वर तक पहुँचती है।")}
               </span>
             </motion.h1>
 
@@ -816,10 +816,10 @@ export function Hero() {
             </motion.p>
 
             <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.45 }}
-              className="text-muted-foreground text-base md:text-lg mb-8 max-w-lg leading-relaxed font-medium">
+              className="text-muted-foreground text-base md:text-lg mb-8 max-w-xl leading-relaxed font-medium">
               {t(
-                "Get Divine Blessings from the Comfort of Your Home",
-                "अपने घर बैठे प्राप्त करें दिव्य आशीर्वाद"
+                "Book authentic temple pujas, sacred offerings, and prasadam from trusted temples across India. Experience divine blessings wherever you are with ePoojapaath.",
+                "भारत के विश्वसनीय मंदिरों से प्रामाणिक पूजा, पवित्र चढ़ावा और प्रसाद बुक करें। ePoojapaath के साथ आप जहाँ भी हों, दिव्य आशीर्वाद का अनुभव करें।"
               )}
             </motion.p>
 
@@ -837,9 +837,9 @@ export function Hero() {
               className="relative w-full max-w-lg overflow-hidden py-3 px-4 rounded-2xl bg-saffron/5 border border-saffron/10 mb-10 shadow-[0_0_15px_rgba(212,130,10,0.02)]"
             >
               <div className="flex whitespace-nowrap animate-marquee gap-8 text-sm font-semibold text-saffron font-sanskrit tracking-wider">
-                <span>ॐ नमः शिवाय • जय माता दी • हर हर महादेव • जय श्री राम • राधे राधे • जय जिनेन्द्र • वाहेगुरु • </span>
-                <span>ॐ नमः शिवाय • जय माता दी • हर हर महादेव • जय श्री राम • राधे राधे • जय जिनेन्द्र • वाहेगुरु • </span>
-                <span>ॐ नमः शिवाय • जय माता दी • हर हर महादेव • जय श्री राम • राधे राधे • जय जिनेन्द्र • वाहेगुरु • </span>
+                <span>ॐ गं गणपतये नमः॥ • वक्रतुण्ड महाकाय सूर्यकोटि समप्रभ। निर्विघ्नं कुरु मे देव सर्वकार्येषु सर्वदा॥ • ॐ ह्रीं श्रीं लक्ष्मीभ्यो नमः॥ • ॐ यक्षाय कुबेराय वैश्रवणाय धनधान्याधिपतये। धनधान्यसमृद्धिं मे देहि दापय स्वाहा॥ • ॐ सर्वकार्यसिद्धिं कुरु कुरु स्वाहा॥ • ॐ नमः शिवाय॥ • ॐ त्र्यम्बकं यजामहे सुगन्धिं पुष्टिवर्धनम्। उर्वारुकमिव बन्धनान्मृत्योर्मुक्षीय मामृतात्॥ • </span>
+                <span>ॐ गं गणपतये नमः॥ • वक्रतुण्ड महाकाय सूर्यकोटि समप्रभ। निर्विघ्नं कुरु मे देव सर्वकार्येषु सर्वदा॥ • ॐ ह्रीं श्रीं लक्ष्मीभ्यो नमः॥ • ॐ यक्षाय कुबेराय वैश्रवणाय धनधान्याधिपतये। धनधान्यसमृद्धिं मे देहि दापय स्वाहा॥ • ॐ सर्वकार्यसिद्धिं कुरु कुरु स्वाहा॥ • ॐ नमः शिवाय॥ • ॐ त्र्यम्बकं यजामहे सुगन्धिं पुष्टिवर्धनम्। उर्वारुकमिव बन्धनान्मृत्योर्मुक्षीय मामृतात्॥ • </span>
+                <span>ॐ गं गणपतये नमः॥ • वक्रतुण्ड महाकाय सूर्यकोटि समप्रभ। निर्विघ्नं कुरु मे देव सर्वकार्येषु सर्वदा॥ • ॐ ह्रीं श्रीं लक्ष्मीभ्यो नमः॥ • ॐ यक्षाय कुबेराय वैश्रवणाय धनधान्याधिपतये। धनधान्यसमृद्धिं मे देहि दापय स्वाहा॥ • ॐ सर्वकार्यसिद्धिं कुरु कुरु स्वाहा॥ • ॐ नमः शिवाय॥ • ॐ त्र्यम्बकं यजामहे सुगन्धिं पुष्टिवर्धनम्। उर्वारुकमिव बन्धनान्मृत्योर्मुक्षीय मामृतात्॥ • </span>
               </div>
             </motion.div>
 

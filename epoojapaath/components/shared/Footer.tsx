@@ -53,14 +53,15 @@ export function Footer() {
             </p>
             <div className="flex gap-3 mt-6">
               {[
-                { Icon: SocialIcons.Instagram, href: "#", label: "Instagram" },
-                { Icon: SocialIcons.X,         href: "#", label: "X (Twitter)" },
-                { Icon: SocialIcons.YouTube,   href: "#", label: "YouTube" },
-                { Icon: SocialIcons.Facebook,  href: "#", label: "Facebook" },
+                { Icon: SocialIcons.Instagram, href: "https://www.instagram.com/epoojapaath", label: "Instagram" },
+                { Icon: SocialIcons.Facebook,  href: "https://www.facebook.com/epoojapaath", label: "Facebook" },
+                { Icon: SocialIcons.YouTube,   href: "https://www.youtube.com/@epoojapaath", label: "YouTube" },
               ].map(({ Icon, href, label }) => (
                 <a
                   key={label}
                   href={href}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   aria-label={label}
                   className="w-9 h-9 rounded-full border border-saffron/25 flex items-center justify-center hover:bg-saffron hover:border-saffron transition-all duration-200"
                 >
@@ -112,12 +113,12 @@ export function Footer() {
             <ul className="space-y-3">
               <li className="flex items-start gap-3 text-sm">
                 <MapPin size={20} className="text-saffron mt-0.5 shrink-0" />
-                <span>12, Assi Ghat Road, Varanasi, Uttar Pradesh – 221005</span>
+                <span>Dhaleswar, Agartala, West Tripura, Pin – 799007</span>
               </li>
               <li className="flex items-center gap-3 text-sm">
                 <Phone size={20} className="text-saffron shrink-0" />
-                <a href="tel:+919876543210" className="hover:text-saffron transition-colors">
-                  +91 98765 43210
+                <a href="https://wa.me/919165057755" target="_blank" rel="noopener noreferrer" className="hover:text-saffron transition-colors">
+                  +91 91650 57755 (Call / WhatsApp)
                 </a>
               </li>
               <li className="flex items-center gap-3 text-sm">
@@ -128,7 +129,7 @@ export function Footer() {
               </li>
               <li className="flex items-center gap-3 text-sm">
                 <Clock size={20} className="text-saffron shrink-0" />
-                <span>Mon–Sat, 9 AM – 6 PM IST</span>
+                <span>Mon – Sat, 10 AM – 6 PM</span>
               </li>
             </ul>
           </div>
@@ -136,7 +137,18 @@ export function Footer() {
 
         {/* Bottom Bar */}
         <div className="mt-12 pt-6 border-t border-white/10 flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-white/35">
-          <p>© 2025 ePoojapaath. Made with 🙏 in India.</p>
+          <div className="flex flex-col sm:flex-row items-center gap-4">
+            <p>© 2025 ePoojapaath. Made with 🙏 in India.</p>
+            <div className="flex items-center gap-2">
+              {/* Green Trust Shield */}
+              <svg viewBox="0 0 24 24" width="25" height="25" xmlns="http://www.w3.org/2000/svg" className="shrink-0 select-none">
+                <path d="M12 2L3 5v6c0 5.5 3.8 10.7 9 12 5.2-1.3 9-6.5 9-12V5l-9-3z" fill="#10B981" />
+                <path d="M22.436 0l-11.91 7.773-1.174 4.276 6.625-4.297L11.65 24h4.391l6.395-24zM14.26 10.098L3.389 17.166 1.564 24h9.008l3.688-13.902Z" fill="#FFFFFF" transform="translate(6, 5.5) scale(0.5)" />
+              </svg>
+              {/* Razorpay Logo for Light Footers */}
+              <img src="https://badges.razorpay.com/badge-light.png" alt="Razorpay Protected" className="h-8 w-auto" />
+            </div>
+          </div>
           <div className="flex gap-4">
             <Link href="/privacy" className="hover:text-saffron transition-colors">Privacy Policy</Link>
             <Link href="/terms" className="hover:text-saffron transition-colors">Terms of Service</Link>
