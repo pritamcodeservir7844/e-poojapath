@@ -101,7 +101,7 @@ export function TempleRegisterCTA() {
               यदि आपके पास एक पवित्र स्थान है, तो इसे लाखों भक्तों तक पहुँचाएं
             </p>
             <p className="text-muted-foreground mb-10 leading-relaxed">
-              Join 500+ temples on ePoojapaath. Reach thousands of devotees across India, manage puja bookings,
+              Join temples on ePoojapaath. Reach thousands of devotees across India, manage puja bookings,
               accept chadawa offerings, and grow your temple&apos;s divine community.
             </p>
 
