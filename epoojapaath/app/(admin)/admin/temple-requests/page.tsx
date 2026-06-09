@@ -133,7 +133,7 @@ export default function TempleRequestsPage() {
     // Prepend India country code if 10 digits
     const targetPhone = cleanDigits.length === 10 ? `91${cleanDigits}` : cleanDigits;
     const text = encodeURIComponent(
-      `Jai Jinendra/Namaste ${contactName}, thank you for requesting a listing for ${templeName} on ePoojapaath. Let's connect to set up your temple profile. 🙏`
+      `Jai Shree Ram/Namaste ${contactName}, thank you for requesting a listing for ${templeName} on ePoojapaath. Let's connect to set up your temple profile. 🙏`
     );
     return `https://api.whatsapp.com/send?phone=${targetPhone}&text=${text}`;
   }
