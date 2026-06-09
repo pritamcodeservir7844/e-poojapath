@@ -214,16 +214,14 @@ export default function BookPujaPage({ params }: { params: { slug: string; id: s
               value={form.devoteeName}
               onChange={(e) => setForm({ ...form, devoteeName: e.target.value })}
             />
-            {!session && (
-              <Input
-                label="WhatsApp Mobile Number"
-                required
-                placeholder="10-digit mobile number"
-                type="tel"
-                value={form.whatsappPhone}
-                onChange={(e) => setForm({ ...form, whatsappPhone: e.target.value })}
-              />
-            )}
+            <Input
+              label="WhatsApp Mobile Number"
+              required
+              placeholder="10-digit mobile number"
+              type="tel"
+              value={form.whatsappPhone}
+              onChange={(e) => setForm({ ...form, whatsappPhone: e.target.value })}
+            />
             <Input
               label="Gotra (Optional)"
               placeholder="e.g. Kashyap, Bharadwaj"

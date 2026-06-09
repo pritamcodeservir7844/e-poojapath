@@ -99,6 +99,7 @@ export function PujaDetailClient({
   });
   const [loading, setLoading] = useState(false);
   const [booked, setBooked] = useState(false);
+  const [showMobileSidebar, setShowMobileSidebar] = useState(false);
 
   useEffect(() => {
     const script = document.createElement("script");
@@ -295,23 +296,25 @@ export function PujaDetailClient({
       )}
 
       {/* Mobile sticky CTA */}
-      <div className="sticky bottom-0 z-30 bg-background/95 backdrop-blur border-t border-border px-4 py-3 md:hidden">
-        <div className="flex items-center justify-between gap-4">
-          <div>
-            <p className="text-xs text-muted-foreground">
-              {selectedPkg ? selectedPkg.persons : "Starting from"}
-              {chadawaTotal > 0 && ` + ${formatCurrency(chadawaTotal)} chadawa`}
-            </p>
-            <p className="font-heading text-xl text-saffron">{formatCurrency(grandTotal)}</p>
+      {!showMobileSidebar && (
+        <div className="sticky bottom-0 z-30 bg-background/95 backdrop-blur border-t border-border px-4 py-3 md:hidden">
+          <div className="flex items-center justify-between gap-4">
+            <div onClick={() => setShowPackages(true)} className="flex-1 cursor-pointer">
+              <p className="text-xs text-muted-foreground flex items-center gap-1">
+                {selectedPkg ? selectedPkg.persons : "Starting from"}
+                <ChevronDown size={14} className="text-saffron" />
+              </p>
+              <p className="font-heading text-xl text-saffron">{formatCurrency(grandTotal)}</p>
+            </div>
+            <button
+              onClick={() => { setBookingStep("details"); setShowMobileSidebar(true); }}
+              className="btn-saffron flex-1 py-3 text-sm font-semibold"
+            >
+              Book Now 🪔
+            </button>
           </div>
-          <button
-            onClick={() => setBookingStep("details")}
-            className="btn-saffron flex-1 py-3 text-sm font-semibold"
-          >
-            Book Now 🪔
-          </button>
         </div>
-      </div>
+      )}
 
       {/* Main content grid */}
       <div className="max-w-7xl mx-auto px-4 md:px-8 py-8">
@@ -614,7 +617,20 @@ export function PujaDetailClient({
 
           {/* ────── RIGHT: BOOKING SIDEBAR ────── */}
           <div className="lg:col-span-1">
-            <div className="hidden md:block sticky top-24">
+            {/* Mobile close button when sidebar is shown */}
+            {showMobileSidebar && (
+              <button 
+                onClick={() => setShowMobileSidebar(false)}
+                className="md:hidden fixed top-4 right-4 z-[60] p-2 bg-background rounded-full shadow-md border border-border text-foreground"
+              >
+                <X size={20} />
+              </button>
+            )}
+            
+            <div className={`
+              ${showMobileSidebar ? 'fixed inset-0 z-50 bg-background overflow-y-auto p-4 pt-16 pb-24 block' : 'hidden'}
+              md:block md:sticky md:top-24 md:p-0 md:bg-transparent md:z-auto
+            `}>
 
               {/* ── Package Step ── */}
               {bookingStep === "package" && (

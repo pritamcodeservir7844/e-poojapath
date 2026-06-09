@@ -3,7 +3,14 @@ import "./globals.css";
 import { ThemeProvider } from "@/components/shared/ThemeProvider";
 import { LanguageProvider } from "@/contexts/LanguageContext";
 import { Toaster } from "sonner";
+import type { Viewport } from "next";
 
+export const viewport: Viewport = {
+  themeColor: "#FFFFFF",
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+};
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000"),
   title: {
