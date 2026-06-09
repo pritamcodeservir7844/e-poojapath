@@ -577,9 +577,7 @@ export default function ChadawaDetailPage({ params }: { params: { id: string } }
                   {selectedItems.length > 0 && <span className="ml-1">({selectedItems.length} items)</span>}
                 </p>
                 <Input label="Devotee Name" required placeholder="Name for Sankalp" value={form.devoteeName} onChange={(e) => setForm({ ...form, devoteeName: e.target.value })} />
-                {!session && (
-                  <Input label="WhatsApp Mobile Number" required placeholder="10-digit mobile number" type="tel" value={form.whatsappPhone} onChange={(e) => setForm({ ...form, whatsappPhone: e.target.value })} />
-                )}
+                <Input label="WhatsApp Mobile Number" required placeholder="10-digit mobile number" type="tel" value={form.whatsappPhone} onChange={(e) => setForm({ ...form, whatsappPhone: e.target.value })} />
                 <Input label="Gotra (Optional)" placeholder="e.g. Kashyap, Bharadwaj" value={form.gotra} onChange={(e) => setForm({ ...form, gotra: e.target.value })} />
                 <Textarea label="Sankalp / Wish" rows={2} placeholder="Your prayer or intention..." value={form.sankalp} onChange={(e) => setForm({ ...form, sankalp: e.target.value })} />
                 <Input label="Offering Date" type="date" required min={new Date().toISOString().split("T")[0]} value={form.date} onChange={(e) => setForm({ ...form, date: e.target.value })} />
@@ -609,9 +607,8 @@ export default function ChadawaDetailPage({ params }: { params: { id: string } }
               <Input label="Your Name" required placeholder="Devotee name" value={form.devoteeName} onChange={(e) => setForm({ ...form, devoteeName: e.target.value })} />
               <Input label="Date" type="date" required min={new Date().toISOString().split("T")[0]} value={form.date} onChange={(e) => setForm({ ...form, date: e.target.value })} />
             </div>
-            {!session && (
-              <Input label="WhatsApp Mobile Number" required placeholder="10-digit number" type="tel" value={form.whatsappPhone} onChange={(e) => setForm({ ...form, whatsappPhone: e.target.value })} />
-            )}
+            <Input label="WhatsApp Mobile Number" required placeholder="10-digit number" type="tel" value={form.whatsappPhone} onChange={(e) => setForm({ ...form, whatsappPhone: e.target.value })} />
+            <Input label="Gotra (Optional)" placeholder="e.g. Kashyap" value={form.gotra} onChange={(e) => setForm({ ...form, gotra: e.target.value })} />
             <Textarea label="Sankalp" rows={1} placeholder="Your prayer..." value={form.sankalp} onChange={(e) => setForm({ ...form, sankalp: e.target.value })} />
             <div className="flex gap-3 items-center">
               <div>
