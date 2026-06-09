@@ -61,6 +61,15 @@ const HOW_IT_WORKS = [
 
 function formatDisplayDate(dateStr: string): string {
   try {
+    if (dateStr.includes("T")) {
+      return new Date(dateStr).toLocaleString("en-US", {
+        weekday: "short",
+        month: "short",
+        day: "numeric",
+        hour: "numeric",
+        minute: "2-digit"
+      });
+    }
     const [year, month, day] = dateStr.split("-").map(Number);
     const dateObj = new Date(year, month - 1, day);
     return dateObj.toLocaleDateString("en-US", {
@@ -133,6 +142,93 @@ export function PujaDetailClient({
   const chadawaTotal = selectedChadawa.reduce((s, sc) => s + sc.item.price * sc.qty, 0);
   const prasadPrice = form.prasadDelivery ? 151 : 0;
   const grandTotal = pujaPrice + chadawaTotal + prasadPrice + Number(form.dakshina || 0);
+
+  // ── Chadawa section renderer ────────────────────────────────────────────────
+  const renderChadawaSection = () => (
+    <section>
+      <div className="flex items-center justify-between mb-5">
+        <div>
+          <h2 className="font-heading text-2xl text-foreground">Add Chadawa to Puja</h2>
+          <p className="text-sm text-muted-foreground mt-0.5">Select sacred offerings to add to your booking</p>
+        </div>
+        {selectedChadawa.length > 0 && (
+          <div className="bg-saffron/10 border border-saffron/30 rounded-full px-3 py-1 flex items-center gap-1.5">
+            <span className="text-saffron text-xs font-semibold">{selectedChadawa.length} selected</span>
+            <span className="text-saffron text-xs">· {formatCurrency(chadawaTotal)}</span>
+          </div>
+        )}
+      </div>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+        {chadawaItems.map((item) => {
+          const selected = isSelected(item._id);
+          const sc = selectedChadawa.find((s) => s.item._id === item._id);
+          return (
+            <div
+              key={item._id}
+              className={`card-devotional overflow-hidden p-0 group transition-all duration-200 ${selected ? "ring-2 ring-saffron shadow-lg shadow-saffron/10" : ""}`}
+            >
+              <div className="relative h-36 overflow-hidden">
+                <Image
+                  src={item.image || "/kasbeswari.jpg"}
+                  alt={item.name}
+                  fill
+                  className="object-cover group-hover:scale-105 transition-transform duration-500"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/65 to-transparent" />
+                {selected && (
+                  <div className="absolute top-2 right-2 w-6 h-6 bg-saffron rounded-full flex items-center justify-center shadow">
+                    <Check size={13} className="text-white" strokeWidth={3} />
+                  </div>
+                )}
+                <div className="absolute bottom-2 left-3 right-3">
+                  <p className="text-white font-heading text-sm leading-tight line-clamp-2">{item.name}</p>
+                </div>
+              </div>
+
+              <div className="p-3">
+                <p className="font-sanskrit text-saffron/80 text-xs mb-0.5">{item.nameHi}</p>
+                <p className="text-muted-foreground text-xs line-clamp-1 mb-3">{item.description}</p>
+
+                <div className="flex items-center justify-between">
+                  <p className="font-heading text-foreground text-base">₹{item.price}</p>
+                  {selected && sc ? (
+                    <div className="flex items-center gap-1.5">
+                      <button onClick={() => updateQty(item._id, -1)} className="w-6 h-6 rounded-full bg-border flex items-center justify-center hover:bg-saffron/20 transition"><Minus size={10} /></button>
+                      <span className="font-heading text-sm text-foreground w-5 text-center">{sc.qty}</span>
+                      <button onClick={() => updateQty(item._id, 1)} className="w-6 h-6 rounded-full bg-border flex items-center justify-center hover:bg-saffron/20 transition"><Plus size={10} /></button>
+                      <button onClick={() => toggleChadawa(item)} className="ml-1 w-6 h-6 rounded-full bg-red-500/10 text-red-400 flex items-center justify-center hover:bg-red-500/20 transition"><X size={11} /></button>
+                    </div>
+                  ) : (
+                    <button onClick={() => toggleChadawa(item)} className="bg-gradient-to-r from-saffron to-deep-gold text-white text-xs font-semibold px-3 py-1.5 rounded-full hover:opacity-90 transition shadow-sm flex items-center gap-1"><Plus size={11} /> Add</button>
+                  )}
+                </div>
+                {selected && sc && sc.qty > 1 && <p className="text-xs text-saffron font-medium mt-2 text-right">Subtotal: ₹{item.price * sc.qty}</p>}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      {selectedChadawa.length > 0 && (
+        <div className="mt-4 bg-gradient-to-r from-saffron/5 to-deep-gold/5 border border-saffron/20 rounded-xl p-4">
+          <p className="text-xs font-semibold text-saffron mb-2 flex items-center gap-1.5">
+            <Gift size={13} /> Selected Chadawa — {formatCurrency(chadawaTotal)} added to your booking
+          </p>
+          <div className="flex flex-wrap gap-2">
+            {selectedChadawa.map((sc) => (
+              <div key={sc.item._id} className="flex items-center gap-1.5 bg-background border border-saffron/30 rounded-full px-2.5 py-1 text-xs">
+                <span className="text-foreground">{sc.item.name}</span>
+                {sc.qty > 1 && <span className="text-muted-foreground">×{sc.qty}</span>}
+                <span className="text-saffron font-medium">₹{sc.item.price * sc.qty}</span>
+                <button onClick={() => toggleChadawa(sc.item)} className="text-muted-foreground hover:text-red-400 transition ml-0.5"><X size={10} /></button>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+    </section>
+  );
 
   // ── Chadawa helpers ───────────────────────────────────────────────────────
   function isSelected(id: string) {
@@ -297,23 +393,32 @@ export function PujaDetailClient({
 
       {/* Mobile sticky CTA */}
       {!showMobileSidebar && (
-        <div className="sticky bottom-0 z-30 bg-background/95 backdrop-blur border-t border-border px-4 py-3 md:hidden">
-          <div className="flex items-center justify-between gap-4">
-            <div onClick={() => setShowPackages(true)} className="flex-1 cursor-pointer">
-              <p className="text-xs text-muted-foreground flex items-center gap-1">
-                {selectedPkg ? selectedPkg.persons : "Starting from"}
-                <ChevronDown size={14} className="text-saffron" />
-              </p>
-              <p className="font-heading text-xl text-saffron">{formatCurrency(grandTotal)}</p>
+        <>
+          <div className="z-30 bg-background/95 backdrop-blur border-y border-border px-4 py-3 md:hidden">
+            <div className="flex items-center justify-between gap-4">
+              <div onClick={() => setShowPackages(true)} className="flex-1 cursor-pointer">
+                <p className="text-xs text-muted-foreground flex items-center gap-1">
+                  {selectedPkg ? selectedPkg.persons : "Starting from"}
+                  <ChevronDown size={14} className="text-saffron" />
+                </p>
+                <p className="font-heading text-xl text-saffron">{formatCurrency(grandTotal)}</p>
+              </div>
+              <button
+                onClick={() => { setBookingStep("details"); setShowMobileSidebar(true); }}
+                className="btn-saffron flex-1 py-3 text-sm font-semibold"
+              >
+                Book Now 🪔
+              </button>
             </div>
-            <button
-              onClick={() => { setBookingStep("details"); setShowMobileSidebar(true); }}
-              className="btn-saffron flex-1 py-3 text-sm font-semibold"
-            >
-              Book Now 🪔
-            </button>
           </div>
-        </div>
+
+          {/* Render Chadawa directly below Book Now on Mobile */}
+          {chadawaItems.length > 0 && (
+            <div className="block lg:hidden px-4 pt-6 pb-2">
+              {renderChadawaSection()}
+            </div>
+          )}
+        </>
       )}
 
       {/* Main content grid */}
@@ -407,128 +512,11 @@ export function PujaDetailClient({
               </section>
             )}
 
-            {/* ── CHADAWA SECTION – direct add/remove ── */}
+            {/* ── CHADAWA SECTION (Desktop Only) ── */}
             {chadawaItems.length > 0 && (
-              <section>
-                <div className="flex items-center justify-between mb-5">
-                  <div>
-                    <h2 className="font-heading text-2xl text-foreground">Add Chadawa to Puja</h2>
-                    <p className="text-sm text-muted-foreground mt-0.5">Select sacred offerings to add to your booking</p>
-                  </div>
-                  {selectedChadawa.length > 0 && (
-                    <div className="bg-saffron/10 border border-saffron/30 rounded-full px-3 py-1 flex items-center gap-1.5">
-                      <span className="text-saffron text-xs font-semibold">{selectedChadawa.length} selected</span>
-                      <span className="text-saffron text-xs">· {formatCurrency(chadawaTotal)}</span>
-                    </div>
-                  )}
-                </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-                  {chadawaItems.map((item) => {
-                    const selected = isSelected(item._id);
-                    const sc = selectedChadawa.find((s) => s.item._id === item._id);
-                    return (
-                      <div
-                        key={item._id}
-                        className={`card-devotional overflow-hidden p-0 group transition-all duration-200 ${selected ? "ring-2 ring-saffron shadow-lg shadow-saffron/10" : ""
-                          }`}
-                      >
-                        {/* Image */}
-                        <div className="relative h-36 overflow-hidden">
-                          <Image
-                            src={item.image || "/kasbeswari.jpg"}
-                            alt={item.name}
-                            fill
-                            className="object-cover group-hover:scale-105 transition-transform duration-500"
-                          />
-                          <div className="absolute inset-0 bg-gradient-to-t from-black/65 to-transparent" />
-                          {/* Selected badge */}
-                          {selected && (
-                            <div className="absolute top-2 right-2 w-6 h-6 bg-saffron rounded-full flex items-center justify-center shadow">
-                              <Check size={13} className="text-white" strokeWidth={3} />
-                            </div>
-                          )}
-                          <div className="absolute bottom-2 left-3 right-3">
-                            <p className="text-white font-heading text-sm leading-tight line-clamp-2">{item.name}</p>
-                          </div>
-                        </div>
-
-                        {/* Info + button */}
-                        <div className="p-3">
-                          <p className="font-sanskrit text-saffron/80 text-xs mb-0.5">{item.nameHi}</p>
-                          <p className="text-muted-foreground text-xs line-clamp-1 mb-3">{item.description}</p>
-
-                          <div className="flex items-center justify-between">
-                            <p className="font-heading text-foreground text-base">₹{item.price}</p>
-
-                            {selected && sc ? (
-                              // Qty + Remove controls
-                              <div className="flex items-center gap-1.5">
-                                <button
-                                  onClick={() => updateQty(item._id, -1)}
-                                  className="w-6 h-6 rounded-full bg-border flex items-center justify-center hover:bg-saffron/20 transition"
-                                >
-                                  <Minus size={10} />
-                                </button>
-                                <span className="font-heading text-sm text-foreground w-5 text-center">{sc.qty}</span>
-                                <button
-                                  onClick={() => updateQty(item._id, 1)}
-                                  className="w-6 h-6 rounded-full bg-border flex items-center justify-center hover:bg-saffron/20 transition"
-                                >
-                                  <Plus size={10} />
-                                </button>
-                                <button
-                                  onClick={() => toggleChadawa(item)}
-                                  className="ml-1 w-6 h-6 rounded-full bg-red-500/10 text-red-400 flex items-center justify-center hover:bg-red-500/20 transition"
-                                >
-                                  <X size={11} />
-                                </button>
-                              </div>
-                            ) : (
-                              // Add button
-                              <button
-                                onClick={() => toggleChadawa(item)}
-                                className="bg-gradient-to-r from-saffron to-deep-gold text-white text-xs font-semibold px-3 py-1.5 rounded-full hover:opacity-90 transition shadow-sm flex items-center gap-1"
-                              >
-                                <Plus size={11} />
-                                Add
-                              </button>
-                            )}
-                          </div>
-
-                          {/* Show subtotal when selected */}
-                          {selected && sc && sc.qty > 1 && (
-                            <p className="text-xs text-saffron font-medium mt-2 text-right">
-                              Subtotal: ₹{item.price * sc.qty}
-                            </p>
-                          )}
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
-
-                {/* Selected summary strip */}
-                {selectedChadawa.length > 0 && (
-                  <div className="mt-4 bg-gradient-to-r from-saffron/5 to-deep-gold/5 border border-saffron/20 rounded-xl p-4">
-                    <p className="text-xs font-semibold text-saffron mb-2 flex items-center gap-1.5">
-                      <Gift size={13} /> Selected Chadawa — {formatCurrency(chadawaTotal)} added to your booking
-                    </p>
-                    <div className="flex flex-wrap gap-2">
-                      {selectedChadawa.map((sc) => (
-                        <div key={sc.item._id} className="flex items-center gap-1.5 bg-background border border-saffron/30 rounded-full px-2.5 py-1 text-xs">
-                          <span className="text-foreground">{sc.item.name}</span>
-                          {sc.qty > 1 && <span className="text-muted-foreground">×{sc.qty}</span>}
-                          <span className="text-saffron font-medium">₹{sc.item.price * sc.qty}</span>
-                          <button onClick={() => toggleChadawa(sc.item)} className="text-muted-foreground hover:text-red-400 transition ml-0.5">
-                            <X size={10} />
-                          </button>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-              </section>
+              <div className="hidden lg:block">
+                {renderChadawaSection()}
+              </div>
             )}
 
             {/* Reviews */}
@@ -695,10 +683,10 @@ export function PujaDetailClient({
                     Proceed to Book 🪔
                   </button>
 
-                  {chadawaItems.length > 0 && selectedChadawa.length === 0 && (
-                    <p className="text-center text-xs text-muted-foreground mt-3">
-                      ↑ Scroll up to add Chadawa offerings
-                    </p>
+                  {chadawaItems.length > 0 && (
+                    <div className="block lg:hidden mt-8 border-t border-border pt-6">
+                      {renderChadawaSection()}
+                    </div>
                   )}
                 </div>
               )}

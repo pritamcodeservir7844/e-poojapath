@@ -10,7 +10,16 @@ interface TimeLeft {
 
 function getTimeLeft(target: Date): TimeLeft {
   const diff = target.getTime() - Date.now();
-  if (diff <= 0) return { hours: 0, minutes: 0, seconds: 0 };
+  if (diff <= 0) {
+    // 3 hours duration buffer
+    const DURATION_BUFFER = 3 * 60 * 60 * 1000;
+    const isCompleted = (target.getTime() + DURATION_BUFFER) - Date.now() <= 0;
+    
+    if (isCompleted) {
+      return { hours: -1, minutes: -1, seconds: -1 }; // completed magic values
+    }
+    return { hours: 0, minutes: 0, seconds: 0 }; // in progress
+  }
   const totalSec = Math.floor(diff / 1000);
   return {
     hours: Math.floor(totalSec / 3600),
@@ -37,7 +46,6 @@ function getNextTargetDate(availableDates?: string[], scheduledAt?: string): Dat
     return scheduledAt ? new Date(scheduledAt) : getDefaultTarget();
   }
 
-  // Get UTC time components from scheduledAt if available
   let hours = 6;
   let minutes = 0;
   let seconds = 0;
@@ -51,19 +59,28 @@ function getNextTargetDate(availableDates?: string[], scheduledAt?: string): Dat
   }
 
   const now = new Date();
+  const DURATION_BUFFER = 3 * 60 * 60 * 1000; // 3 hours window
 
-  // Find the first available date in the future or today
   for (const dateStr of availableDates) {
-    const targetStr = `${dateStr}T${pad(hours)}:${pad(minutes)}:${pad(seconds)}.000Z`;
-    const dateObj = new Date(targetStr);
+    let dateObj: Date;
+    if (dateStr.includes("T")) {
+      dateObj = new Date(dateStr);
+    } else {
+      const targetStr = `${dateStr}T${pad(hours)}:${pad(minutes)}:${pad(seconds)}.000Z`;
+      dateObj = new Date(targetStr);
+    }
     
-    if (dateObj.getTime() > now.getTime()) {
+    // If the puja has not completely finished yet (within 3 hours of start)
+    if (dateObj.getTime() + DURATION_BUFFER > now.getTime()) {
       return dateObj;
     }
   }
 
-  // Fallback to the last available date if all are in the past
+  // Fallback to the last available date if all are completed
   const lastDateStr = availableDates[availableDates.length - 1];
+  if (lastDateStr.includes("T")) {
+    return new Date(lastDateStr);
+  }
   const targetStr = `${lastDateStr}T${pad(hours)}:${pad(minutes)}:${pad(seconds)}.000Z`;
   return new Date(targetStr);
 }
@@ -75,12 +92,10 @@ export function PujaCountdownTimer({
   scheduledAt?: string;
   availableDates?: string[];
 }) {
-  // Start as null to avoid SSR/client mismatch (hydration error)
   const [timeLeft, setTimeLeft] = useState<TimeLeft | null>(null);
 
   useEffect(() => {
     const target = getNextTargetDate(availableDates, scheduledAt);
-    // Set immediately on mount (client only)
     setTimeLeft(getTimeLeft(target));
 
     const interval = setInterval(() => {
@@ -89,13 +104,20 @@ export function PujaCountdownTimer({
     return () => clearInterval(interval);
   }, [scheduledAt, availableDates]);
 
-  // Don't render anything until client has mounted
   if (timeLeft === null) return null;
 
-  const isExpired =
-    timeLeft.hours === 0 && timeLeft.minutes === 0 && timeLeft.seconds === 0;
+  const isCompleted = timeLeft.hours === -1 && timeLeft.minutes === -1 && timeLeft.seconds === -1;
+  const isInProgress = timeLeft.hours === 0 && timeLeft.minutes === 0 && timeLeft.seconds === 0;
 
-  if (isExpired) {
+  if (isCompleted) {
+    return (
+      <span className="inline-flex items-center gap-1.5 bg-muted text-muted-foreground text-xs font-semibold px-3 py-1.5 rounded-full">
+        ✓ Puja Completed
+      </span>
+    );
+  }
+
+  if (isInProgress) {
     return (
       <span className="inline-flex items-center gap-1.5 bg-saffron text-white text-xs font-semibold px-3 py-1.5 rounded-full animate-pulse">
         🪔 Puja in progress

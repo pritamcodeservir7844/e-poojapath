@@ -289,7 +289,7 @@ export default function AdminPujasPage() {
                     <div className="space-y-3 bg-muted/40 p-3.5 rounded-xl border border-border">
                       <div className="flex gap-2">
                         <input
-                          type="date"
+                          type="datetime-local"
                           value={newDateInput}
                           onChange={e => setNewDateInput(e.target.value)}
                           className="flex-1 border border-border bg-card rounded-xl px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-saffron transition"
@@ -299,27 +299,32 @@ export default function AdminPujasPage() {
                           size="sm"
                           onClick={handleAddDate}
                         >
-                          Add Date
+                          Add Date & Time
                         </Button>
                       </div>
 
                       {form.availableDates && form.availableDates.length > 0 ? (
                         <div className="flex flex-wrap gap-1.5 pt-1">
-                          {form.availableDates.map(d => (
-                            <span
-                              key={d}
-                              className="inline-flex items-center gap-1 bg-saffron/10 border border-saffron/20 text-saffron text-xs px-2.5 py-1 rounded-full font-medium"
-                            >
-                              {d}
-                              <button
-                                type="button"
-                                onClick={() => handleRemoveDate(d)}
-                                className="text-saffron/70 hover:text-saffron transition ml-1"
+                          {form.availableDates.map(d => {
+                            const display = d.includes("T") 
+                              ? new Date(d).toLocaleString('en-US', { dateStyle: 'medium', timeStyle: 'short' })
+                              : d;
+                            return (
+                              <span
+                                key={d}
+                                className="inline-flex items-center gap-1 bg-saffron/10 border border-saffron/20 text-saffron text-xs px-2.5 py-1 rounded-full font-medium"
                               >
-                                <X size={12} />
-                              </button>
-                            </span>
-                          ))}
+                                {display}
+                                <button
+                                  type="button"
+                                  onClick={() => handleRemoveDate(d)}
+                                  className="text-saffron/70 hover:text-saffron transition ml-1"
+                                >
+                                  <X size={12} />
+                                </button>
+                              </span>
+                            );
+                          })}
                         </div>
                       ) : (
                         <p className="text-xs text-muted-foreground italic">No dates added yet. Please select and add available dates.</p>
