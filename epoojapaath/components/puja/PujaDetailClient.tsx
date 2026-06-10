@@ -102,7 +102,7 @@ export function PujaDetailClient({
   const [selectedPkg, setSelectedPkg] = useState<IPujaPackage | null>(puja.packages?.[0] ?? null);
   const [bookingStep, setBookingStep] = useState<BookingStep>("package");
   const [form, setForm] = useState({
-    devoteeName: "", whatsappPhone: "", gotra: "", sankalp: "", date: "",
+    devoteeNames: [""], whatsappPhone: "", gotra: "", sankalp: "", date: "",
     prasadDelivery: false, prasadAddress: "",
     dakshina: 0,
   });
@@ -122,6 +122,25 @@ export function PujaDetailClient({
       setForm(f => ({ ...f, date: firstDate }));
     }
   }, [puja.availableDates]);
+
+  useEffect(() => {
+    // Extract max persons from selectedPkg
+    let maxPersons = 1;
+    if (selectedPkg && selectedPkg.persons) {
+      const match = selectedPkg.persons.match(/\d+/);
+      if (match) maxPersons = parseInt(match[0], 10);
+    }
+    setForm((prev) => {
+      const newNames = [...prev.devoteeNames];
+      while (newNames.length < maxPersons) {
+        newNames.push("");
+      }
+      if (newNames.length > maxPersons) {
+        newNames.length = maxPersons;
+      }
+      return { ...prev, devoteeNames: newNames };
+    });
+  }, [selectedPkg]);
 
   const [stats, setStats] = useState({ temples: 0, bookings: 0, devotees: 0 });
 
@@ -258,7 +277,9 @@ export function PujaDetailClient({
     setLoading(true);
     try {
       if (!currentSession) {
-        if (!form.devoteeName.trim()) {
+        // Validation: At least one name should be provided
+        const validNames = form.devoteeNames.filter((n) => n.trim() !== "");
+        if (validNames.length === 0) {
           devToast.error("Devotee Name is required");
           setLoading(false);
           return;
@@ -273,7 +294,7 @@ export function PujaDetailClient({
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            name: form.devoteeName,
+            name: validNames[0], // Use first name for account creation
             phone: form.whatsappPhone,
           }),
         });
@@ -298,7 +319,7 @@ export function PujaDetailClient({
 
         currentSession = {
           user: {
-            name: form.devoteeName,
+            name: form.devoteeNames.filter((n) => n.trim() !== "")[0],
             email: guestData.email,
           }
         } as any;
@@ -340,6 +361,7 @@ export function PujaDetailClient({
               headers: { "Content-Type": "application/json" },
               body: JSON.stringify({
                 ...form,
+                devoteeName: form.devoteeNames.filter((n) => n.trim() !== "").join(", "),
                 temple: temple._id,
                 service: puja._id,
                 serviceType: "puja",
@@ -763,8 +785,22 @@ export function PujaDetailClient({
                     )}
                   </div>
 
-                  <Input label="Devotee Name" required placeholder="Name for Sankalp"
-                    value={form.devoteeName} onChange={(e) => setForm({ ...form, devoteeName: e.target.value })} />
+                  <div className="space-y-3">
+                    {form.devoteeNames.map((name, idx) => (
+                      <Input
+                        key={idx}
+                        label={`Devotee Name ${form.devoteeNames.length > 1 ? idx + 1 : ""}`.trim()}
+                        required={idx === 0} // Only first is strictly required
+                        placeholder="Name for Sankalp"
+                        value={name}
+                        onChange={(e) => {
+                          const newNames = [...form.devoteeNames];
+                          newNames[idx] = e.target.value;
+                          setForm({ ...form, devoteeNames: newNames });
+                        }}
+                      />
+                    ))}
+                  </div>
                   {!session && (
                     <Input label="WhatsApp Mobile Number" required placeholder="10-digit mobile number" type="tel"
                       value={form.whatsappPhone} onChange={(e) => setForm({ ...form, whatsappPhone: e.target.value })} />
