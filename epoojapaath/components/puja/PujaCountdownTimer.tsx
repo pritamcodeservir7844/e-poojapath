@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 
 interface TimeLeft {
+  days: number;
   hours: number;
   minutes: number;
   seconds: number;
@@ -16,13 +17,14 @@ function getTimeLeft(target: Date): TimeLeft {
     const isCompleted = (target.getTime() + DURATION_BUFFER) - Date.now() <= 0;
     
     if (isCompleted) {
-      return { hours: -1, minutes: -1, seconds: -1 }; // completed magic values
+      return { days: -1, hours: -1, minutes: -1, seconds: -1 }; // completed magic values
     }
-    return { hours: 0, minutes: 0, seconds: 0 }; // in progress
+    return { days: 0, hours: 0, minutes: 0, seconds: 0 }; // in progress
   }
   const totalSec = Math.floor(diff / 1000);
   return {
-    hours: Math.floor(totalSec / 3600),
+    days: Math.floor(totalSec / 86400),
+    hours: Math.floor((totalSec % 86400) / 3600),
     minutes: Math.floor((totalSec % 3600) / 60),
     seconds: totalSec % 60,
   };
@@ -107,7 +109,7 @@ export function PujaCountdownTimer({
   if (timeLeft === null) return null;
 
   const isCompleted = timeLeft.hours === -1 && timeLeft.minutes === -1 && timeLeft.seconds === -1;
-  const isInProgress = timeLeft.hours === 0 && timeLeft.minutes === 0 && timeLeft.seconds === 0;
+  const isInProgress = timeLeft.days === 0 && timeLeft.hours === 0 && timeLeft.minutes === 0 && timeLeft.seconds === 0;
 
   if (isCompleted) {
     return (
@@ -133,6 +135,14 @@ export function PujaCountdownTimer({
       </span>
       <span className="text-xs font-medium text-muted-foreground">Puja starts in</span>
       <div className="flex items-center gap-1 font-mono font-bold text-sm">
+        {timeLeft.days > 0 && (
+          <>
+            <span className="bg-saffron text-white rounded-md px-2 py-0.5 min-w-[2rem] text-center tabular-nums">
+              {timeLeft.days}d
+            </span>
+            <span className="text-saffron font-black">:</span>
+          </>
+        )}
         <span className="bg-saffron text-white rounded-md px-2 py-0.5 min-w-[2rem] text-center tabular-nums">
           {pad(timeLeft.hours)}
         </span>

@@ -22,6 +22,7 @@ type Puja = {
   benefits: string[]; includes: string[];
   packages?: PujaPackage[];
   availableDates?: string[];
+  scheduledAt?: string;
 };
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
@@ -79,6 +80,14 @@ function ConfirmDialog({ msg, onConfirm, onCancel, loading }: { msg: string; onC
 }
 
 // ═══════════════════════════════════════════════════════════════════════════════
+const formatDateForInput = (iso?: string) => {
+  if (!iso) return "";
+  const d = new Date(iso);
+  if (isNaN(d.getTime())) return "";
+  const pad = (n: number) => String(n).padStart(2, "0");
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+};
+
 export default function AdminPujasPage() {
   const [pujas, setPujas] = useState<Puja[]>([]);
   const [temples, setTemples] = useState<Temple[]>([]);
@@ -144,7 +153,7 @@ export default function AdminPujasPage() {
       price: String(p.price), duration: p.duration, image: p.image,
       benefits: p.benefits?.join(", ") || "",
       includes: p.includes?.join(", ") || "",
-      scheduledAt: "", templeId: p.temple?._id || "",
+      scheduledAt: formatDateForInput(p.scheduledAt), templeId: p.temple?._id || "",
       availableDates: p.availableDates || [],
     });
     setPackages(p.packages?.length ? p.packages : DEFAULT_PACKAGES);
@@ -177,7 +186,7 @@ export default function AdminPujasPage() {
         benefits: form.benefits.split(",").map(s => s.trim()).filter(Boolean),
         includes: form.includes.split(",").map(s => s.trim()).filter(Boolean),
         packages: packages.filter(p => p.price > 0),
-        scheduledAt: form.scheduledAt ? new Date(form.scheduledAt).toISOString() : undefined,
+        scheduledAt: form.scheduledAt ? new Date(form.scheduledAt).toISOString() : null,
         temple: form.templeId || undefined,
         availableDates: dateMode === "specific" ? form.availableDates : [],
       };
@@ -315,6 +324,16 @@ export default function AdminPujasPage() {
                                 className="inline-flex items-center gap-1 bg-saffron/10 border border-saffron/20 text-saffron text-xs px-2.5 py-1 rounded-full font-medium"
                               >
                                 {display}
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    setNewDateInput(d);
+                                    handleRemoveDate(d);
+                                  }}
+                                  className="text-saffron/70 hover:text-saffron transition ml-1"
+                                >
+                                  <Pencil size={12} />
+                                </button>
                                 <button
                                   type="button"
                                   onClick={() => handleRemoveDate(d)}
