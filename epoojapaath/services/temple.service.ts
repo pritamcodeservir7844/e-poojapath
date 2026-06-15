@@ -63,3 +63,15 @@ export async function updateTempleStatus(id: string, status: "approved" | "rejec
   ]);
   return Temple.findByIdAndUpdate(id, { status }, { new: true });
 }
+
+export async function getAppStats() {
+  await connectDB();
+  const templeCount = await Temple.countDocuments({ status: "approved" });
+  const cities = await Temple.distinct("location.city", { status: "approved" });
+  const pujaCount = await Puja.countDocuments({ status: "approved", isActive: true });
+  return {
+    templeCount,
+    cityCount: cities.length,
+    pujaCount,
+  };
+}
