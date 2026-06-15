@@ -57,7 +57,7 @@ export function BlogForm({ initialData, temples = [] }: BlogFormProps) {
 
     setLoading(true);
     try {
-      const tagsArray = form.tags.split(",").map(t => t.trim()).filter(Boolean);
+      const tagsArray = form.tags.split(",").map((t: string) => t.trim()).filter(Boolean);
       const payload = { ...form, tags: tagsArray, temple: form.temple || undefined };
 
       const url = isEditing ? `/api/admin/blog/${initialData._id}` : "/api/admin/blog";
