@@ -16,8 +16,17 @@ export function PujaPackageModal({ packages, pujaName, onSelect, onClose }: Prop
   const [selected, setSelected] = useState<IPujaPackage | null>(packages[0] ?? null);
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
-      <div className="bg-background rounded-2xl shadow-2xl w-full max-w-2xl">
+    <div 
+      className="fixed inset-0 z-50 flex items-end md:items-center justify-center bg-black/60 backdrop-blur-sm md:p-4 transition-opacity"
+      onClick={onClose}
+    >
+      <div 
+        className="bg-background rounded-t-2xl md:rounded-2xl shadow-2xl w-full max-w-2xl max-h-[85vh] overflow-y-auto transform transition-transform translate-y-0"
+        onClick={(e) => e.stopPropagation()}
+      >
+        {/* Mobile Drag Indicator */}
+        <div className="w-12 h-1.5 bg-muted rounded-full mx-auto mt-3 mb-1 md:hidden" />
+        
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-border">
           <div>
@@ -30,7 +39,7 @@ export function PujaPackageModal({ packages, pujaName, onSelect, onClose }: Prop
         </div>
 
         {/* Packages Grid */}
-        <div className="p-6 grid grid-cols-2 md:grid-cols-4 gap-3">
+        <div className="p-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
           {packages.map((pkg) => {
             const isSelected = selected?.label === pkg.label;
             return (

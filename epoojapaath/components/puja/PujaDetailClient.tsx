@@ -21,7 +21,6 @@ import {
   Check,
   X,
 } from "lucide-react";
-import { PujaPackageModal } from "./PujaPackageModal";
 import { Input, Textarea, Select } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
 import { devToast } from "@/lib/toast";
@@ -404,24 +403,15 @@ export function PujaDetailClient({
         />
       )}
 
-      {showPackages && puja.packages && (
-        <PujaPackageModal
-          packages={puja.packages}
-          pujaName={puja.name}
-          onSelect={(pkg) => { setSelectedPkg(pkg); setShowPackages(false); }}
-          onClose={() => setShowPackages(false)}
-        />
-      )}
-
-      {/* Mobile sticky CTA */}
+      {/* Mobile Package Dropdown Trigger & Selection */}
       {!showMobileSidebar && (
         <>
-          <div className="z-30 bg-background/95 backdrop-blur border-y border-border px-4 py-3 md:hidden">
+          <div className="z-30 bg-background/95 backdrop-blur border-b border-border px-4 py-3 md:hidden relative">
             <div className="flex items-center justify-between gap-4">
-              <div onClick={() => setShowPackages(true)} className="flex-1 cursor-pointer">
+              <div onClick={() => setShowPackages(!showPackages)} className="flex-1 cursor-pointer">
                 <p className="text-xs text-muted-foreground flex items-center gap-1">
                   {selectedPkg ? selectedPkg.persons : "Starting from"}
-                  <ChevronDown size={14} className="text-saffron" />
+                  <ChevronDown size={14} className={`text-saffron transition-transform duration-200 ${showPackages ? 'rotate-180' : ''}`} />
                 </p>
                 <p className="font-heading text-xl text-saffron">{formatCurrency(grandTotal)}</p>
               </div>
@@ -432,6 +422,34 @@ export function PujaDetailClient({
                 Book Now 🪔
               </button>
             </div>
+
+            {/* Dropdown Menu */}
+            {showPackages && puja.packages && puja.packages.length > 0 && (
+              <div className="absolute top-full left-0 right-0 bg-background border-b border-border p-4 shadow-lg z-40 animate-in slide-in-from-top-2 fade-in">
+                <div className="flex items-center justify-between mb-3">
+                  <h3 className="font-heading text-sm text-foreground">Select Package</h3>
+                </div>
+                <div className="space-y-2">
+                  {puja.packages.map((pkg) => (
+                    <button
+                      key={pkg.label}
+                      onClick={() => { setSelectedPkg(pkg); setShowPackages(false); }}
+                      className={`w-full flex items-center justify-between rounded-lg border px-3 py-2.5 text-sm transition-all ${selectedPkg?.label === pkg.label
+                          ? "border-saffron bg-saffron/5 text-foreground"
+                          : "border-border text-muted-foreground hover:border-saffron/40"
+                        }`}
+                    >
+                      <span className="font-medium flex items-center gap-1.5">
+                        <Users size={13} className="text-saffron" />
+                        {pkg.label}
+                      </span>
+                      <span className="text-xs text-muted-foreground">{pkg.persons}</span>
+                      <span className="font-heading text-saffron">{formatCurrency(pkg.price)}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Render Chadawa directly below Book Now on Mobile */}
