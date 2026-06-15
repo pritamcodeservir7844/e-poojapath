@@ -3,6 +3,8 @@ import { redirect } from "next/navigation";
 import { DashboardShell } from "@/components/shared/DashboardShell";
 import { DataTable } from "@/components/ui/DataTable";
 import { Badge } from "@/components/ui/Badge";
+import { Button } from "@/components/ui/Button";
+import Link from "next/link";
 import { BlogAdminActions } from "@/components/admin/BlogAdminActions";
 import { connectDB } from "@/lib/db";
 import Blog from "@/models/Blog";
@@ -34,7 +36,15 @@ export default async function AdminBlogPage() {
   ];
 
   return (
-    <DashboardShell title="Blog Manager" subtitle={`${blogs.length} articles across all authors`}>
+    <DashboardShell 
+      title="Blog Manager" 
+      subtitle={`${blogs.length} articles across all authors`}
+      action={
+        <Link href="/admin/blog/new">
+          <Button className="btn-saffron">Write New Blog</Button>
+        </Link>
+      }
+    >
       <DataTable columns={columns} data={blogs as any} emptyMessage="No blog posts yet." />
     </DashboardShell>
   );

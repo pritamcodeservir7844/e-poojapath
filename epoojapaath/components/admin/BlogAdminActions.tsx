@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/Button";
 import { devToast } from "@/lib/toast";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 interface BlogAdminActionsProps {
   id: string;
@@ -38,6 +39,9 @@ export function BlogAdminActions({ id, isFeatured, status }: BlogAdminActionsPro
 
   return (
     <div className="flex gap-1.5">
+      <Link href={`/admin/blog/${id}`}>
+        <Button size="sm" variant="outline">Edit</Button>
+      </Link>
       <Button size="sm" variant="ghost" onClick={toggleFeature} loading={loading}>{isFeatured ? "Unfeature" : "⭐ Feature"}</Button>
       {status !== "archived" && (
         <Button size="sm" variant="danger" onClick={deleteBlog} loading={loading}>Delete</Button>
