@@ -8,7 +8,7 @@ export const dynamic = "force-dynamic";
 
 async function getBlogById(id: string) {
   await connectDB();
-  return Blog.findById(id).lean();
+  return Blog.findById(id).lean() as any;
 }
 
 export default async function EditBlogPage({ params }: { params: { id: string } }) {
