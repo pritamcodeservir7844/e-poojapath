@@ -403,53 +403,47 @@ export function PujaDetailClient({
         />
       )}
 
-      {/* Mobile Package Dropdown Trigger & Selection */}
+      {/* Mobile Package Selection (Inline Horizontal Row) */}
       {!showMobileSidebar && (
         <>
-          <div className="z-30 bg-background/95 backdrop-blur border-b border-border px-4 py-3 md:hidden relative">
-            <div className="flex items-center justify-between gap-4">
-              <div onClick={() => setShowPackages(!showPackages)} className="flex-1 cursor-pointer">
-                <p className="text-xs text-muted-foreground flex items-center gap-1">
-                  {selectedPkg ? selectedPkg.persons : "Starting from"}
-                  <ChevronDown size={14} className={`text-saffron transition-transform duration-200 ${showPackages ? 'rotate-180' : ''}`} />
-                </p>
-                <p className="font-heading text-xl text-saffron">{formatCurrency(grandTotal)}</p>
-              </div>
-              <button
-                onClick={() => { setBookingStep("details"); setShowMobileSidebar(true); }}
-                className="btn-saffron flex-1 py-3 text-sm font-semibold"
-              >
-                Book Now 🪔
-              </button>
+          <div className="z-30 bg-background px-4 py-4 border-b border-border md:hidden">
+            <div className="flex items-center justify-between mb-3">
+              <h3 className="font-heading text-lg text-foreground">Select Package</h3>
             </div>
-
-            {/* Dropdown Menu */}
-            {showPackages && puja.packages && puja.packages.length > 0 && (
-              <div className="absolute top-full left-0 right-0 bg-background border-b border-border p-4 shadow-lg z-40 animate-in slide-in-from-top-2 fade-in">
-                <div className="flex items-center justify-between mb-3">
-                  <h3 className="font-heading text-sm text-foreground">Select Package</h3>
-                </div>
-                <div className="space-y-2">
-                  {puja.packages.map((pkg) => (
-                    <button
-                      key={pkg.label}
-                      onClick={() => { setSelectedPkg(pkg); setShowPackages(false); }}
-                      className={`w-full flex items-center justify-between rounded-lg border px-3 py-2.5 text-sm transition-all ${selectedPkg?.label === pkg.label
-                          ? "border-saffron bg-saffron/5 text-foreground"
-                          : "border-border text-muted-foreground hover:border-saffron/40"
-                        }`}
-                    >
-                      <span className="font-medium flex items-center gap-1.5">
-                        <Users size={13} className="text-saffron" />
-                        {pkg.label}
-                      </span>
-                      <span className="text-xs text-muted-foreground">{pkg.persons}</span>
-                      <span className="font-heading text-saffron">{formatCurrency(pkg.price)}</span>
-                    </button>
-                  ))}
-                </div>
+            {puja.packages && puja.packages.length > 0 && (
+              <div className={`grid gap-2 w-full ${
+                puja.packages.length === 1 ? 'grid-cols-1' :
+                puja.packages.length === 3 ? 'grid-cols-3' : 'grid-cols-2'
+              }`}>
+                {puja.packages.map((pkg) => (
+                  <button
+                    key={pkg.label}
+                    onClick={() => setSelectedPkg(pkg)}
+                    className={`flex flex-col items-center justify-center rounded-xl border p-2 text-center transition-all ${
+                      selectedPkg?.label === pkg.label
+                        ? "border-saffron bg-saffron/5 ring-1 ring-saffron shadow-sm"
+                        : "border-border bg-background text-muted-foreground hover:border-saffron/40 hover:bg-saffron/5"
+                    }`}
+                  >
+                    <Users size={16} className={`mb-1 ${selectedPkg?.label === pkg.label ? "text-saffron" : "text-muted-foreground"}`} />
+                    <span className={`font-semibold text-xs leading-tight ${selectedPkg?.label === pkg.label ? "text-foreground" : ""}`}>
+                      {pkg.label}
+                    </span>
+                    <span className="text-[9px] text-muted-foreground mt-0.5 leading-tight">{pkg.persons}</span>
+                    <span className={`font-heading text-sm mt-1 ${selectedPkg?.label === pkg.label ? "text-saffron" : "text-foreground"}`}>
+                      {formatCurrency(pkg.price)}
+                    </span>
+                  </button>
+                ))}
               </div>
             )}
+            
+            <button
+              onClick={() => { setBookingStep("details"); setShowMobileSidebar(true); }}
+              className="btn-saffron w-full py-3.5 text-base font-semibold flex items-center justify-center gap-2 shadow-md shadow-saffron/20 mt-3"
+            >
+              Book Now at {formatCurrency(grandTotal)} 🪔
+            </button>
           </div>
 
           {/* Render Chadawa directly below Book Now on Mobile */}
@@ -647,14 +641,14 @@ export function PujaDetailClient({
           <div className="lg:col-span-1">
             {/* Mobile close button when sidebar is shown */}
             {showMobileSidebar && (
-              <button 
+              <button
                 onClick={() => setShowMobileSidebar(false)}
                 className="md:hidden fixed top-4 right-4 z-[60] p-2 bg-background rounded-full shadow-md border border-border text-foreground"
               >
                 <X size={20} />
               </button>
             )}
-            
+
             <div className={`
               ${showMobileSidebar ? 'fixed inset-0 z-50 bg-background overflow-y-auto p-4 pt-16 pb-24 block' : 'hidden'}
               md:block md:sticky md:top-24 md:p-0 md:bg-transparent md:z-auto
@@ -682,8 +676,8 @@ export function PujaDetailClient({
                           key={pkg.label}
                           onClick={() => setSelectedPkg(pkg)}
                           className={`w-full flex items-center justify-between rounded-lg border px-3 py-2.5 text-sm transition-all ${selectedPkg?.label === pkg.label
-                              ? "border-saffron bg-saffron/5 text-foreground"
-                              : "border-border text-muted-foreground hover:border-saffron/40"
+                            ? "border-saffron bg-saffron/5 text-foreground"
+                            : "border-border text-muted-foreground hover:border-saffron/40"
                             }`}
                         >
                           <span className="font-medium flex items-center gap-1.5">
