@@ -39,12 +39,12 @@ export default async function TempleBookingsPage() {
           )}
           {b.selectedChadawa && b.selectedChadawa.length > 0 && (
             <div className="text-[11px] text-saffron mt-0.5">
-              🌸 Chadawa: {b.selectedChadawa.map((c: any) => `${c.name} (x${c.qty})`).join(", ")}
+              🌸 Chadawa: {b.selectedChadawa.map((c: any) => `${c.name} (x${c.qty}) - ${formatCurrency(c.price || c.total)}`).join(", ")}
             </div>
           )}
           {b.selectedItems && b.selectedItems.length > 0 && (
             <div className="text-[11px] text-purple-600 mt-0.5">
-              🌸 Items: {b.selectedItems.map((c: any) => `${c.name} (x${c.qty})`).join(", ")}
+              🌸 Items: {b.selectedItems.map((c: any) => `${c.name} (x${c.qty}) - ${formatCurrency(c.price * c.qty)}`).join(", ")}
             </div>
           )}
         </div>

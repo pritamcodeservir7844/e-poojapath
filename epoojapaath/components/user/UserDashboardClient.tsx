@@ -317,13 +317,13 @@ export function UserDashboardClient({ initialBookings }: UserDashboardClientProp
                             </span>
                           )}
                           {b.selectedChadawa && b.selectedChadawa.length > 0 && (
-                            <span className="inline-flex items-center gap-1 text-[11px] bg-lotus-blue/5 text-lotus-blue px-2 py-0.5 rounded-md border border-lotus-blue/10">
-                              🌸 Offerings: {b.selectedChadawa.map((c: any) => `${c.name} (x${c.qty})`).join(", ")}
+                            <span className="inline-flex items-center gap-1 text-[11px] bg-lotus-blue/5 text-lotus-blue px-2 py-0.5 rounded-md border border-lotus-blue/10 font-medium">
+                              🌸 Offerings: {b.selectedChadawa.map((c: any) => `${c.name} (x${c.qty}) - ${formatCurrency(c.price || c.total)}`).join(", ")}
                             </span>
                           )}
                           {b.selectedItems && b.selectedItems.length > 0 && (
-                            <span className="inline-flex items-center gap-1 text-[11px] bg-lotus-blue/5 text-lotus-blue px-2 py-0.5 rounded-md border border-lotus-blue/10">
-                              🌸 Offerings: {b.selectedItems.map((c: any) => `${c.name} (x${c.qty})`).join(", ")}
+                            <span className="inline-flex items-center gap-1 text-[11px] bg-lotus-blue/5 text-lotus-blue px-2 py-0.5 rounded-md border border-lotus-blue/10 font-medium">
+                              🌸 Offerings: {b.selectedItems.map((c: any) => `${c.name} (x${c.qty}) - ${formatCurrency(c.price * c.qty)}`).join(", ")}
                             </span>
                           )}
                         </div>

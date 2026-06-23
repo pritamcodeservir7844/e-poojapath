@@ -12,6 +12,7 @@ import { Button } from "@/components/ui/Button";
 import { Clock, CheckCircle2, Sparkles } from "lucide-react";
 import { AdBanner } from "@/components/ads/AdBanner";
 import type { IPuja } from "@/types";
+import { PublicPage } from "@/components/shared/PublicPage";
 
 function formatDisplayDate(dateStr: string): string {
   try {
@@ -160,10 +161,18 @@ export default function BookPujaPage({ params }: { params: { slug: string; id: s
     finally { setLoading(false); }
   }
 
-  if (!puja) return <div className="min-h-screen bg-background flex items-center justify-center"><div className="text-4xl animate-float">🛕</div></div>;
+  if (!puja) {
+    return (
+      <PublicPage>
+        <div className="min-h-[50vh] flex items-center justify-center">
+          <div className="text-4xl animate-float">🛕</div>
+        </div>
+      </PublicPage>
+    );
+  }
 
   return (
-    <div className="min-h-screen bg-background pt-20">
+    <PublicPage>
       {booked && <ReactConfetti recycle={false} numberOfPieces={400} colors={["#D4820A","#B8860B","#8B6DB5","#C2567A"]} />}
       <div className="max-w-5xl mx-auto px-4 py-10">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
@@ -306,6 +315,6 @@ export default function BookPujaPage({ params }: { params: { slug: string; id: s
           </div>
         )}
       </div>
-    </div>
+    </PublicPage>
   );
 }

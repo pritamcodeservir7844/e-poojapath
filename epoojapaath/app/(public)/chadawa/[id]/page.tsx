@@ -8,7 +8,7 @@ import Link from "next/link";
 import dynamic from "next/dynamic";
 import {
   Star, MapPin, CheckCircle2, ChevronDown, Flower2,
-  BookOpen, Sparkles, Plus, Minus, ShoppingBasket,
+  BookOpen, Sparkles, Plus, Minus, ShoppingBasket, Check,
 } from "lucide-react";
 import { PublicPage } from "@/components/shared/PublicPage";
 import { Input, Textarea } from "@/components/ui/Input";
@@ -80,11 +80,33 @@ export default function ChadawaDetailPage({ params }: { params: { id: string } }
   const [offered, setOffered] = useState(false);
   const [showForm, setShowForm] = useState(false);
 
+  // States to hold other special offerings from the same temple
+  const [templeSpecialChadawas, setTempleSpecialChadawas] = useState<ChadawaData[]>([]);
+  const [selectedOthers, setSelectedOthers] = useState<Record<string, boolean>>({});
+
   useEffect(() => {
     fetch(`/api/chadawa/${params.id}`)
       .then((r) => r.json())
       .then((d) => setChadawa(d.data));
   }, [params.id]);
+
+  // Fetch other special offerings when the main chadawa is loaded
+  useEffect(() => {
+    if (chadawa) {
+      const templeId = typeof chadawa.temple === "object" ? chadawa.temple._id : chadawa.temple;
+      fetch(`/api/temples/${templeId}/chadawa`)
+        .then((r) => r.json())
+        .then((d) => {
+          if (d.success) {
+            // Filter: only keep other active special chadawas
+            const others = d.data.filter(
+              (item: any) => item.isSpecial && item.isActive && item._id !== chadawa._id
+            );
+            setTempleSpecialChadawas(others);
+          }
+        });
+    }
+  }, [chadawa]);
 
   useEffect(() => {
     const script = document.createElement("script");
@@ -105,7 +127,12 @@ export default function ChadawaDetailPage({ params }: { params: { id: string } }
 
   const itemsTotal = selectedItems.reduce((sum, i) => sum + i.price * i.qty, 0);
   const basePrice  = chadawa?.price ?? 0;
-  const grandTotal = selectedItems.length > 0 ? itemsTotal : basePrice;
+
+  // Calculate selected other offerings
+  const selectedOthersList = templeSpecialChadawas.filter((c) => selectedOthers[c._id]);
+  const othersTotal = selectedOthersList.reduce((sum, c) => sum + c.price, 0);
+
+  const grandTotal = (selectedItems.length > 0 ? itemsTotal : basePrice) + othersTotal;
 
   async function handleOffer(e: React.FormEvent) {
     e.preventDefault();
@@ -158,10 +185,14 @@ export default function ChadawaDetailPage({ params }: { params: { id: string } }
           }
         } as any;
       }
+      // Combine offering names
+      const combinedNames = [chadawa?.name, ...selectedOthersList.map((c) => c.name)].join(" + ");
+      const combinedNamesHi = [chadawa?.nameHi || chadawa?.name, ...selectedOthersList.map((c) => c.nameHi || c.name)].join(" + ");
+
       const orderRes = await fetch("/api/payment/create-order", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ amount: grandTotal, notes: { chadawaName: chadawa?.name } }),
+        body: JSON.stringify({ amount: grandTotal, notes: { chadawaName: combinedNames.length > 250 ? combinedNames.substring(0, 247) + "..." : combinedNames } }),
       });
       const orderData = await orderRes.json();
 
@@ -170,7 +201,7 @@ export default function ChadawaDetailPage({ params }: { params: { id: string } }
         amount: grandTotal * 100,
         currency: "INR",
         name: "ePoojapaath",
-        description: chadawa?.name,
+        description: combinedNames.length > 255 ? combinedNames.substring(0, 252) + "..." : combinedNames,
         order_id: orderData.data.id,
         theme: { color: "#D4820A" },
         prefill: { name: currentSession?.user?.name, email: currentSession?.user?.email },
@@ -199,10 +230,17 @@ export default function ChadawaDetailPage({ params }: { params: { id: string } }
                 temple: templeId,
                 service: params.id,
                 serviceType: "chadawa",
-                serviceName: chadawa?.name,
-                serviceNameHi: chadawa?.nameHi,
+                serviceName: combinedNames,
+                serviceNameHi: combinedNamesHi,
                 amount: grandTotal,
-                selectedItems: selectedItems.map((i) => ({ name: i.name, qty: i.qty, price: i.price })),
+                selectedChadawa: [
+                  { name: chadawa?.name, price: selectedItems.length > 0 ? itemsTotal : basePrice, qty: 1, total: selectedItems.length > 0 ? itemsTotal : basePrice },
+                  ...selectedOthersList.map((c) => ({ name: c.name, price: c.price, qty: 1, total: c.price }))
+                ],
+                selectedItems: [
+                  ...selectedItems.map((i) => ({ name: i.name, qty: i.qty, price: i.price })),
+                  ...selectedOthersList.map((c) => ({ name: c.name, qty: 1, price: c.price }))
+                ],
                 orderId: response.razorpay_order_id,
                 paymentId: response.razorpay_payment_id,
                 paymentStatus: "paid",
@@ -386,6 +424,69 @@ export default function ChadawaDetailPage({ params }: { params: { id: string } }
               </section>
             )}
 
+            {/* ── Add More Special Offerings ── */}
+            {templeSpecialChadawas.length > 0 && (
+              <section className="mt-8 border-t border-border/80 pt-6 animate-fade-in">
+                <div className="flex items-center justify-between mb-4">
+                  <div>
+                    <h2 className="font-heading text-xl text-foreground flex items-center gap-2">
+                      <Sparkles size={18} className="text-saffron animate-pulse" /> Add More Special Offerings
+                    </h2>
+                    <p className="text-xs text-muted-foreground mt-0.5">Select other special offerings to combine with this booking</p>
+                  </div>
+                  {selectedOthersList.length > 0 && (
+                    <span className="text-xs bg-saffron/10 text-saffron font-semibold px-3 py-1 rounded-full border border-saffron/20">
+                      {selectedOthersList.length} extra offering{selectedOthersList.length > 1 ? "s" : ""} selected
+                    </span>
+                  )}
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {templeSpecialChadawas.map((item) => {
+                    const isChecked = !!selectedOthers[item._id];
+                    return (
+                      <div
+                        key={item._id}
+                        onClick={() => setSelectedOthers((prev) => ({ ...prev, [item._id]: !isChecked }))}
+                        className={`flex items-start gap-4 p-4 rounded-2xl border-2 transition-all cursor-pointer select-none ${
+                          isChecked
+                            ? "border-saffron bg-saffron/[0.03] shadow-sm"
+                            : "border-border bg-card/40 hover:border-saffron/40"
+                        }`}
+                      >
+                        {/* Selector checkmark */}
+                        <div className="mt-1">
+                          <div
+                            className={`w-5 h-5 rounded flex items-center justify-center border transition-all ${
+                              isChecked
+                                ? "bg-saffron border-saffron text-white"
+                                : "border-muted-foreground/30 hover:border-saffron"
+                            }`}
+                          >
+                            {isChecked && <Check size={14} className="stroke-[3]" />}
+                          </div>
+                        </div>
+
+                        {/* Thumbnail image */}
+                        {item.image && (
+                          <div className="relative w-14 h-14 rounded-xl overflow-hidden shrink-0 border border-border">
+                            <Image src={item.image} alt={item.name} fill className="object-cover" />
+                          </div>
+                        )}
+
+                        {/* Text details */}
+                        <div className="flex-1 min-w-0">
+                          <p className="font-medium text-foreground text-sm leading-snug line-clamp-1">{item.name}</p>
+                          {item.nameHi && <p className="text-xs text-saffron font-sanskrit truncate">{item.nameHi}</p>}
+                          <p className="text-saffron font-bold text-sm mt-1">{formatCurrency(item.price)}</p>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </section>
+            )}
+
             {/* ── Included Items ── */}
             {chadawa.items.length > 0 && (
               <section>
@@ -537,29 +638,36 @@ export default function ChadawaDetailPage({ params }: { params: { id: string } }
 
                 {/* Live total */}
                 <div className="bg-muted/40 rounded-xl p-3 mb-4">
-                  {selectedItems.length > 0 ? (
-                    <>
-                      <p className="text-xs text-muted-foreground mb-2 font-medium">Selected Items</p>
-                      <div className="space-y-1.5 mb-3">
-                        {selectedItems.map((item) => (
-                          <div key={item.idx} className="flex justify-between text-xs">
-                            <span className="text-muted-foreground truncate mr-2">{item.name} ×{item.qty}</span>
-                            <span className="text-foreground font-medium shrink-0">{formatCurrency(item.price * item.qty)}</span>
-                          </div>
-                        ))}
+                  <p className="text-xs text-muted-foreground mb-2 font-medium">Selected Offerings</p>
+                  <div className="space-y-2 mb-3">
+                    {/* Main offering */}
+                    {selectedItems.length > 0 ? (
+                      selectedItems.map((item) => (
+                        <div key={item.idx} className="flex justify-between text-xs">
+                          <span className="text-muted-foreground truncate mr-2">{item.name} ×{item.qty}</span>
+                          <span className="text-foreground font-medium shrink-0">{formatCurrency(item.price * item.qty)}</span>
+                        </div>
+                      ))
+                    ) : (
+                      <div className="flex justify-between text-xs text-foreground">
+                        <span className="text-muted-foreground truncate mr-2">{chadawa.name}</span>
+                        <span className="font-semibold shrink-0">{formatCurrency(basePrice)}</span>
                       </div>
-                      <div className="border-t border-border pt-2 flex justify-between">
-                        <span className="text-sm font-heading text-foreground">Total</span>
-                        <span className="font-heading text-lg text-saffron">{formatCurrency(itemsTotal)}</span>
+                    )}
+                    
+                    {/* Additional special offerings */}
+                    {selectedOthersList.map((item) => (
+                      <div key={item._id} className="flex justify-between text-xs text-foreground">
+                        <span className="text-muted-foreground truncate mr-2">+ {item.name}</span>
+                        <span className="text-saffron font-semibold shrink-0">{formatCurrency(item.price)}</span>
                       </div>
-                    </>
-                  ) : (
-                    <div className="text-center py-1">
-                      <p className="text-xs text-muted-foreground mb-1">Base offering price</p>
-                      <p className="font-heading text-2xl text-saffron">{formatCurrency(basePrice)}</p>
-                      <p className="text-xs text-muted-foreground mt-1">or select items above to customise</p>
-                    </div>
-                  )}
+                    ))}
+                  </div>
+                  
+                  <div className="border-t border-border pt-2 flex justify-between font-heading text-sm">
+                    <span className="text-foreground">Grand Total</span>
+                    <span className="text-saffron text-lg font-bold">{formatCurrency(grandTotal)}</span>
+                  </div>
                 </div>
 
                 <button
@@ -574,7 +682,11 @@ export default function ChadawaDetailPage({ params }: { params: { id: string } }
                 <h3 className="font-heading text-xl text-foreground mb-1">Make an Offering</h3>
                 <p className="text-xs text-muted-foreground">
                   Total: <span className="text-saffron font-bold text-sm">{formatCurrency(grandTotal)}</span>
-                  {selectedItems.length > 0 && <span className="ml-1">({selectedItems.length} items)</span>}
+                  {(selectedItems.length > 0 || selectedOthersList.length > 0) && (
+                    <span className="ml-1">
+                      ({selectedItems.length + selectedOthersList.length} items)
+                    </span>
+                  )}
                 </p>
                 <Input label="Devotee Name" required placeholder="Name for Sankalp" value={form.devoteeName} onChange={(e) => setForm({ ...form, devoteeName: e.target.value })} />
                 <Input label="WhatsApp Mobile Number" required placeholder="10-digit mobile number" type="tel" value={form.whatsappPhone} onChange={(e) => setForm({ ...form, whatsappPhone: e.target.value })} />
@@ -625,7 +737,9 @@ export default function ChadawaDetailPage({ params }: { params: { id: string } }
           <div className="flex items-center gap-4 px-4 py-3">
             <div className="flex-1 min-w-0">
               <p className="text-xs text-muted-foreground">
-                {selectedItems.length > 0 ? `${selectedItems.length} items selected` : "Total Offering"}
+                {(selectedItems.length > 0 || selectedOthersList.length > 0)
+                  ? `${selectedItems.length + selectedOthersList.length} items selected`
+                  : "Total Offering"}
               </p>
               <p className="font-heading text-xl text-saffron">{formatCurrency(grandTotal)}</p>
             </div>

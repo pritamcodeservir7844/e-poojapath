@@ -33,12 +33,12 @@ export default async function UserBookingsPage() {
           )}
           {b.selectedChadawa && b.selectedChadawa.length > 0 && (
             <div className="text-[11px] text-muted-foreground mt-0.5">
-              🌸 Offerings: {b.selectedChadawa.map((c: any) => `${c.name} (x${c.qty})`).join(", ")}
+              🌸 Offerings: {b.selectedChadawa.map((c: any) => `${c.name} (x${c.qty}) - ${formatCurrency(c.price || c.total)}`).join(", ")}
             </div>
           )}
           {b.selectedItems && b.selectedItems.length > 0 && (
             <div className="text-[11px] text-muted-foreground mt-0.5">
-              🌸 Offerings: {b.selectedItems.map((c: any) => `${c.name} (x${c.qty})`).join(", ")}
+              🌸 Offerings: {b.selectedItems.map((c: any) => `${c.name} (x${c.qty}) - ${formatCurrency(c.price * c.qty)}`).join(", ")}
             </div>
           )}
         </div>

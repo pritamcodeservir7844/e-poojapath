@@ -8,12 +8,12 @@ import { connectDB } from "@/lib/db";
 import Chadawa from "@/models/Chadawa";
 import { serialize } from "@/lib/utils";
 import { Sparkles } from "lucide-react";
-import { TempleChadawaGroup } from "@/components/shared/TempleChadawaGroup";
+import { SpecialChadawaList } from "@/components/shared/SpecialChadawaList";
 
 async function getSpecialChadawa() {
   await connectDB();
   return Chadawa.find({ isActive: true, isSpecial: true })
-    .populate("temple", "name slug")
+    .populate("temple", "name slug coverImage location shortDescription description")
     .lean();
 }
 
@@ -21,6 +21,33 @@ export default async function ChadawaPage() {
   const specialRaw = await getSpecialChadawa().catch(() => []);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const specialItems = serialize(specialRaw) as any[];
+
+  // Group special chadawa by temple
+  const groupsMap = specialItems.reduce((acc: Record<string, any>, item) => {
+    const templeObj = typeof item.temple === "object" ? item.temple : null;
+    const tId = templeObj ? templeObj._id?.toString() : item.temple;
+    const tName = templeObj ? templeObj.name : "Temple";
+    const tSlug = templeObj ? templeObj.slug : "";
+    const tCover = templeObj?.coverImage || "";
+    const tLoc = templeObj?.location || null;
+    const tDesc = templeObj?.shortDescription || templeObj?.description || "";
+    
+    if (!acc[tId]) {
+      acc[tId] = { 
+        templeId: tId,
+        templeName: tName, 
+        templeSlug: tSlug, 
+        templeCoverImage: tCover,
+        templeLocation: tLoc,
+        templeDescription: tDesc,
+        items: [] 
+      };
+    }
+    acc[tId].items.push(item);
+    return acc;
+  }, {});
+
+  const groups = Object.values(groupsMap);
 
   return (
     <PublicPage>
@@ -33,7 +60,7 @@ export default async function ChadawaPage() {
       <MandalaDivider className="!py-1" />
 
       {/* ── Special Chadawa Section ── */}
-      {specialItems.length > 0 ? (
+      {groups.length > 0 ? (
         <section className="pt-4 pb-16 px-4 md:px-8 lg:px-16 max-w-7xl mx-auto">
           {/* Header */}
           <div className="flex flex-col items-center text-center mb-10">
@@ -46,28 +73,11 @@ export default async function ChadawaPage() {
               Special Chadawa Offerings
             </h2>
             <p className="text-muted-foreground max-w-2xl text-sm leading-relaxed">
-              Book these special sacred offerings independently — no puja booking required. Each offering is performed with full devotion by experienced temple pandits.
+              Book these special sacred offerings independently — no puja booking required. Choose a temple below to view and select offerings.
             </p>
           </div>
 
-          {/* Group special chadawa by temple */}
-          {Object.entries(
-            specialItems.reduce((acc: Record<string, { templeName: string; templeSlug: string; items: typeof specialItems }>, item) => {
-              const tId = typeof item.temple === "object" ? item.temple._id?.toString() : item.temple;
-              const tName = typeof item.temple === "object" ? item.temple.name : "Temple";
-              const tSlug = typeof item.temple === "object" ? item.temple.slug : "";
-              if (!acc[tId]) acc[tId] = { templeName: tName, templeSlug: tSlug, items: [] };
-              acc[tId].items.push(item);
-              return acc;
-            }, {})
-          ).map(([tId, group]) => (
-            <TempleChadawaGroup
-              key={tId}
-              templeName={group.templeName}
-              templeSlug={group.templeSlug}
-              items={group.items}
-            />
-          ))}
+          <SpecialChadawaList groups={groups as any} />
         </section>
       ) : (
         <section className="section-padding max-w-7xl mx-auto py-16">
