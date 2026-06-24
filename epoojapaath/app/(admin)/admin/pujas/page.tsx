@@ -23,6 +23,7 @@ type Puja = {
   packages?: PujaPackage[];
   availableDates?: string[];
   scheduledAt?: string;
+  slotsText?: string;
 };
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
@@ -37,6 +38,7 @@ const EMPTY_FORM = {
   name: "", nameHi: "", description: "", descriptionHi: "",
   price: "", duration: "", image: "", benefits: "", includes: "", scheduledAt: "", templeId: "",
   availableDates: [] as string[],
+  slotsText: "",
 };
 
 function Toast({ msg, type, onClose }: { msg: string; type: "success" | "error"; onClose: () => void }) {
@@ -155,6 +157,7 @@ export default function AdminPujasPage() {
       includes: p.includes?.join(", ") || "",
       scheduledAt: formatDateForInput(p.scheduledAt), templeId: p.temple?._id || "",
       availableDates: p.availableDates || [],
+      slotsText: p.slotsText || "",
     });
     setPackages(p.packages?.length ? p.packages : DEFAULT_PACKAGES);
     setEditData(p);
@@ -189,6 +192,7 @@ export default function AdminPujasPage() {
         scheduledAt: form.scheduledAt ? new Date(form.scheduledAt).toISOString() : null,
         temple: form.templeId || undefined,
         availableDates: dateMode === "specific" ? form.availableDates : [],
+        slotsText: form.slotsText || undefined,
       };
       const url = editData ? `/api/admin/pujas/${editData._id}` : `/api/admin/temples/${form.templeId}/pujas`;
       const method = editData ? "PUT" : "POST";
@@ -354,6 +358,7 @@ export default function AdminPujasPage() {
 
                 <Input label="Benefits (comma separated)" value={form.benefits} onChange={e => setForm(f => ({ ...f, benefits: e.target.value }))} placeholder="Health, Prosperity, Peace" />
                 <Input label="Includes (comma separated)" value={form.includes} onChange={e => setForm(f => ({ ...f, includes: e.target.value }))} placeholder="Abhishek, Aarti, Prasad" />
+                <Input label="Availability / Slots Message (optional)" value={form.slotsText} onChange={e => setForm(f => ({ ...f, slotsText: e.target.value }))} placeholder="e.g. Only 18 slots available" />
                 <Textarea label="Description (English)" required rows={3} value={form.description} onChange={e => setForm(f => ({ ...f, description: e.target.value }))} className="md:col-span-2" />
                 <Textarea label="Description (Hindi)" required rows={2} value={form.descriptionHi} onChange={e => setForm(f => ({ ...f, descriptionHi: e.target.value }))} className="md:col-span-2" />
                 <div className="md:col-span-2 flex justify-end">

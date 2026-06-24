@@ -666,6 +666,15 @@ export function PujaDetailClient({
                       {selectedPkg ? selectedPkg.persons : "Select package"}
                     </p>
                     <p className="font-heading text-3xl text-saffron">{formatCurrency(pujaPrice)}</p>
+                    {puja.slotsText && (
+                      <div className="mt-2.5 w-full flex items-center justify-center gap-1.5 bg-gradient-to-r from-orange-500 to-amber-500 text-white text-[11px] px-3 py-1.5 rounded-md font-semibold shadow-sm">
+                        <span className="relative flex h-2 w-2">
+                          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75"></span>
+                          <span className="relative inline-flex rounded-full h-2 w-2 bg-white"></span>
+                        </span>
+                        {puja.slotsText}
+                      </div>
+                    )}
                   </div>
 
                   {/* Package options */}

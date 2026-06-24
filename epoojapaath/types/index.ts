@@ -79,6 +79,7 @@ export interface IPuja {
   temple: string | ITemple;
   isActive: boolean;
   totalBooked: number;
+  slotsText?: string;
   createdAt: string;
 }
 

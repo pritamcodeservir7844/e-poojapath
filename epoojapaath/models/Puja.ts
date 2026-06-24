@@ -33,6 +33,7 @@ export interface IPujaDoc extends Document {
   isActive: boolean;
   status: "pending" | "approved" | "rejected";
   totalBooked: number;
+  slotsText?: string;
   createdAt: Date;
 }
 
@@ -71,6 +72,7 @@ const PujaSchema = new Schema<IPujaDoc>(
     isActive:      { type: Boolean, default: true },
     status:        { type: String, enum: ["pending", "approved", "rejected"], default: "pending" },
     totalBooked:   { type: Number, default: 0 },
+    slotsText:     { type: String },
   },
   { timestamps: true }
 
