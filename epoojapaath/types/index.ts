@@ -43,6 +43,7 @@ export interface ITemple {
   website?: string;
   instagramUrl?: string;
   googleMapsUrl?: string;
+  availableChadawaDates?: string[];
   createdAt: string;
 }
 

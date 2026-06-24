@@ -12,6 +12,7 @@ import { connectDB } from "@/lib/db";
 import Puja from "@/models/Puja";
 import Temple from "@/models/Temple";
 import { serialize } from "@/lib/utils";
+import { WhatsAppWidget } from "@/components/shared/WhatsAppWidget";
 
 async function getPujas(search?: string, templeSlug?: string, ids?: string) {
   await connectDB();
@@ -52,6 +53,7 @@ export default async function PujaPage({ searchParams }: PageProps) {
 
   return (
     <PublicPage>
+      <WhatsAppWidget />
       <PageHero
         sanskrit="पूजा सेवाएँ"
         title="Book a Puja"

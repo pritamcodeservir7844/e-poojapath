@@ -65,6 +65,7 @@ type Temple = {
   location?: { city: string; state: string };
   rating: number;
   reviewCount: number;
+  availableChadawaDates?: string[];
 };
 
 type ChadawaData = {
@@ -115,12 +116,19 @@ export default function ChadawaDetailPage({ params }: { params: { id: string } }
       .then((d) => setChadawa(d.data));
   }, [params.id]);
 
+  const templeObj = typeof chadawa?.temple === "object" ? chadawa.temple : null;
+  const resolvedAvailableDates = (chadawa?.availableDates && chadawa.availableDates.length > 0)
+    ? chadawa.availableDates
+    : (templeObj && templeObj.availableChadawaDates && templeObj.availableChadawaDates.length > 0)
+      ? templeObj.availableChadawaDates
+      : null;
+
   useEffect(() => {
-    if (chadawa && chadawa.availableDates && chadawa.availableDates.length > 0) {
-      const firstDate = chadawa.availableDates[0];
+    if (resolvedAvailableDates && resolvedAvailableDates.length > 0) {
+      const firstDate = resolvedAvailableDates[0];
       setForm(f => ({ ...f, date: firstDate }));
     }
-  }, [chadawa]);
+  }, [resolvedAvailableDates]);
 
   // Fetch other special offerings when the main chadawa is loaded
   useEffect(() => {
@@ -724,13 +732,13 @@ export default function ChadawaDetailPage({ params }: { params: { id: string } }
                 <Input label="WhatsApp Mobile Number" required placeholder="10-digit mobile number" type="tel" value={form.whatsappPhone} onChange={(e) => setForm({ ...form, whatsappPhone: e.target.value })} />
                 <Input label="Gotra (Optional)" placeholder="e.g. Kashyap, Bharadwaj" value={form.gotra} onChange={(e) => setForm({ ...form, gotra: e.target.value })} />
                 <Textarea label="Sankalp / Wish" rows={2} placeholder="Your prayer or intention..." value={form.sankalp} onChange={(e) => setForm({ ...form, sankalp: e.target.value })} />
-                {chadawa.availableDates && chadawa.availableDates.length > 0 ? (
+                {resolvedAvailableDates && resolvedAvailableDates.length > 0 ? (
                   <Select
                     label="Offering Date"
                     required
                     value={form.date}
                     onChange={(e) => setForm({ ...form, date: e.target.value })}
-                    options={chadawa.availableDates.map(d => ({
+                    options={resolvedAvailableDates.map(d => ({
                       value: d,
                       label: formatDisplayDate(d)
                     }))}
@@ -762,13 +770,13 @@ export default function ChadawaDetailPage({ params }: { params: { id: string } }
           <form onSubmit={handleOffer} className="px-4 py-3 space-y-3">
             <div className="grid grid-cols-2 gap-2">
               <Input label="Your Name" required placeholder="Devotee name" value={form.devoteeName} onChange={(e) => setForm({ ...form, devoteeName: e.target.value })} />
-              {chadawa.availableDates && chadawa.availableDates.length > 0 ? (
+              {resolvedAvailableDates && resolvedAvailableDates.length > 0 ? (
                 <Select
                   label="Date"
                   required
                   value={form.date}
                   onChange={(e) => setForm({ ...form, date: e.target.value })}
-                  options={chadawa.availableDates.map(d => ({
+                  options={resolvedAvailableDates.map(d => ({
                     value: d,
                     label: formatDisplayDate(d)
                   }))}

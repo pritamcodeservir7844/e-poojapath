@@ -23,6 +23,7 @@ export interface ITempleDoc extends Document {
   website?: string;
   instagramUrl?: string;
   googleMapsUrl?: string;
+  availableChadawaDates?: string[];
   createdAt: Date;
 }
 
@@ -57,6 +58,7 @@ const TempleSchema = new Schema<ITempleDoc>(
     website: { type: String },
     instagramUrl: { type: String },
     googleMapsUrl: { type: String },
+    availableChadawaDates: [{ type: String }],
   },
   { timestamps: true }
 );

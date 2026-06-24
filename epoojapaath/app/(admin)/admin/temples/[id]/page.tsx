@@ -29,7 +29,7 @@ type Temple = {
   established?: string; contactPhone: string; contactEmail: string;
   website?: string; instagramUrl?: string; googleMapsUrl?: string;
   owner: { name: string; email: string; phone?: string };
-  createdAt: string; tags: string[];
+  createdAt: string; tags: string[]; availableChadawaDates?: string[];
 };
 type Puja = {
   _id: string; name: string; nameHi: string; description: string;
@@ -179,6 +179,21 @@ export default function AdminTempleDetailPage() {
 
   // Temple edit form
   const [templeForm, setTempleForm] = useState<Record<string, any>>({});
+  const [templeNewDateInput, setTempleNewDateInput] = useState("");
+
+  const handleAddTempleDate = () => {
+    if (!templeNewDateInput) return;
+    const currentDates = templeForm.availableChadawaDates || [];
+    if (currentDates.includes(templeNewDateInput)) return;
+    const updated = [...currentDates, templeNewDateInput].sort();
+    setTempleForm(f => ({ ...f, availableChadawaDates: updated }));
+    setTempleNewDateInput("");
+  };
+
+  const handleRemoveTempleDate = (d: string) => {
+    const currentDates = templeForm.availableChadawaDates || [];
+    setTempleForm(f => ({ ...f, availableChadawaDates: currentDates.filter((date: string) => date !== d) }));
+  };
 
   // Puja form state
   const [pujaForm, setPujaForm] = useState(EMPTY_PUJA);
@@ -230,6 +245,7 @@ export default function AdminTempleDetailPage() {
       website: t.website || "", instagramUrl: t.instagramUrl || "", googleMapsUrl: t.googleMapsUrl || "",
       coverImage: t.coverImage,
       images: t.images || [],
+      availableChadawaDates: t.availableChadawaDates || [],
     });
     setEditTemple(true);
   }
@@ -507,6 +523,53 @@ export default function AdminTempleDetailPage() {
                   className="mt-2"
                 />
                 <p className="text-xs text-muted-foreground">Nayi images add karne ke liye upar box me click ya drag-drop karein. Ek se zyada images add kar sakte hain.</p>
+              </div>
+
+              {/* Special Chadawa Dates Section */}
+              <div className="space-y-3 pt-4 border-t border-border mt-4">
+                <label className="block text-sm font-bold text-foreground">
+                  Special Chadawa Dates (Mandir Special Chadawa Dates)
+                </label>
+                <p className="text-xs text-muted-foreground">
+                  Yahan date add karne se, is mandir ke sabhi Special Chadawa me yahi dates automatically option me show hongi.
+                </p>
+                <div className="flex gap-2">
+                  <input
+                    type="date"
+                    value={templeNewDateInput}
+                    onChange={e => setTempleNewDateInput(e.target.value)}
+                    className="flex-1 border border-border bg-card rounded-xl px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-saffron transition"
+                  />
+                  <Button
+                    type="button"
+                    size="sm"
+                    onClick={handleAddTempleDate}
+                  >
+                    Add Date
+                  </Button>
+                </div>
+
+                {templeForm.availableChadawaDates && templeForm.availableChadawaDates.length > 0 ? (
+                  <div className="flex flex-wrap gap-1.5 pt-1">
+                    {templeForm.availableChadawaDates.map((d: string) => (
+                      <span
+                        key={d}
+                        className="inline-flex items-center gap-1 bg-saffron/10 border border-saffron/20 text-saffron text-xs px-2.5 py-1 rounded-full font-medium"
+                      >
+                        {d}
+                        <button
+                          type="button"
+                          onClick={() => handleRemoveTempleDate(d)}
+                          className="text-saffron/70 hover:text-saffron transition ml-1"
+                        >
+                          <X size={12} />
+                        </button>
+                      </span>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="text-xs text-muted-foreground italic">No dates added yet.</p>
+                )}
               </div>
             </div>
           </div>

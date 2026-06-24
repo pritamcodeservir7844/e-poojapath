@@ -5,7 +5,7 @@ import Chadawa from "@/models/Chadawa";
 export async function GET(_: NextRequest, { params }: { params: { id: string } }) {
   try {
     await connectDB();
-    const item = await Chadawa.findById(params.id).populate("temple", "name slug coverImage description location rating reviewCount status").lean();
+    const item = await Chadawa.findById(params.id).populate("temple", "name slug coverImage description location rating reviewCount status availableChadawaDates").lean();
     if (!item) return NextResponse.json({ success: false, error: "Not found" }, { status: 404 });
 
     // Agar temple approved nahi hai to chadawa bhi nahi dikhayenge
