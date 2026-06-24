@@ -37,7 +37,7 @@ export default async function TempleSpecialChadawaPage({ params }: { params: { s
   }).lean();
 
   const temple = serialize(templeRaw);
-  const items = serialize(itemsRaw) as SpecialChadawaItem[];
+  const items = serialize(itemsRaw) as unknown as SpecialChadawaItem[];
 
   return (
     <PublicPage>
