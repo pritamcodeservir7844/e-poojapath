@@ -33,7 +33,7 @@ export function PujaCard({ puja }: { puja: PujaWithTemple }) {
           🛕 {typeof puja.temple === "object" ? puja.temple.name : "Temple"}
         </div>
         {puja.isSubscription && (
-          <div className="absolute top-3 right-3 bg-red-700 border border-yellow-500 text-white text-[10px] px-2.5 py-0.75 rounded-full font-bold uppercase tracking-wider animate-pulse shadow-md">
+          <div className="absolute top-3 right-3 bg-red-700 border border-yellow-500 text-white text-xs px-3 py-1 rounded-full font-bold uppercase tracking-wider animate-pulse shadow-md">
             Subscription
           </div>
         )}
