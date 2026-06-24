@@ -34,6 +34,10 @@ export interface IPujaDoc extends Document {
   status: "pending" | "approved" | "rejected";
   totalBooked: number;
   slotsText?: string;
+  isSubscription?: boolean;
+  subscriptionType?: "weekly" | "monthly";
+  discount3Months?: number;
+  discount6Months?: number;
   createdAt: Date;
 }
 
@@ -73,6 +77,10 @@ const PujaSchema = new Schema<IPujaDoc>(
     status:        { type: String, enum: ["pending", "approved", "rejected"], default: "pending" },
     totalBooked:   { type: Number, default: 0 },
     slotsText:     { type: String },
+    isSubscription: { type: Boolean, default: false },
+    subscriptionType: { type: String, enum: ["weekly", "monthly"], default: "monthly" },
+    discount3Months: { type: Number, default: 0 },
+    discount6Months: { type: Number, default: 0 },
   },
   { timestamps: true }
 

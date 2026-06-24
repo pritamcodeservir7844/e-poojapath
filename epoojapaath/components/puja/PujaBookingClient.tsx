@@ -62,7 +62,11 @@ export function PujaBookingClient({ puja, chadawaItems = [] }: Props) {
     document.body.appendChild(script);
   }, []);
 
-  const pujaPrice = selectedPkg ? selectedPkg.price : puja.price;
+  const [duration, setDuration] = useState<number>(1);
+
+  const basePrice = selectedPkg ? selectedPkg.price : puja.price;
+  const discountPercent = duration === 3 ? (puja.discount3Months || 0) : duration === 6 ? (puja.discount6Months || 0) : 0;
+  const pujaPrice = basePrice * duration * (1 - discountPercent / 100);
   const chadawaTotal = selectedChadawa.reduce((sum, sc) => sum + sc.item.price * sc.qty, 0);
   const prasadPrice = form.prasadDelivery ? 151 : 0;
   const grandTotal = pujaPrice + chadawaTotal + prasadPrice + Number(form.dakshina || 0);
@@ -213,6 +217,7 @@ export function PujaBookingClient({ puja, chadawaItems = [] }: Props) {
                 orderId: response.razorpay_order_id,
                 paymentId: response.razorpay_payment_id,
                 paymentStatus: "paid",
+                subscriptionDuration: duration,
               }),
             });
             setBooked(true);
@@ -333,6 +338,35 @@ export function PujaBookingClient({ puja, chadawaItems = [] }: Props) {
                     <span className="font-heading text-saffron">{formatCurrency(pkg.price)}</span>
                   </button>
                 ))}
+              </div>
+            )}
+
+            {puja.isSubscription && (
+              <div className="mb-5 bg-card-bg/50 border border-border/60 rounded-xl p-3.5">
+                <p className="text-xs text-muted-foreground mb-2.5 font-medium flex items-center gap-1">
+                  📅 Subscription Duration (Upfront Purchase)
+                </p>
+                <div className="grid grid-cols-3 gap-2">
+                  {[
+                    { value: 1, label: "1 Month", desc: "Single" },
+                    { value: 3, label: "3 Months", desc: puja.discount3Months ? `${puja.discount3Months}% Off` : "Save 10%" },
+                    { value: 6, label: "6 Months", desc: puja.discount6Months ? `${puja.discount6Months}% Off` : "Save 15%" },
+                  ].map((opt) => (
+                    <button
+                      key={opt.value}
+                      type="button"
+                      onClick={() => setDuration(opt.value)}
+                      className={`flex flex-col items-center justify-center rounded-xl border p-2.5 text-center transition-all ${
+                        duration === opt.value
+                          ? "border-saffron bg-saffron/10 text-saffron font-semibold scale-105 shadow-sm shadow-saffron/10"
+                          : "border-border text-muted-foreground hover:border-saffron/40 bg-background/50 hover:bg-background"
+                      }`}
+                    >
+                      <span className="text-xs">{opt.label}</span>
+                      <span className="text-[10px] opacity-80 mt-0.5">{opt.desc}</span>
+                    </button>
+                  ))}
+                </div>
               </div>
             )}
 

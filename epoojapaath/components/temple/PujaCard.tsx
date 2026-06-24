@@ -32,6 +32,11 @@ export function PujaCard({ puja }: { puja: PujaWithTemple }) {
         <div className="absolute top-3 left-3 bg-deep-gold/90 text-white text-xs px-2.5 py-1 rounded-full font-medium">
           🛕 {typeof puja.temple === "object" ? puja.temple.name : "Temple"}
         </div>
+        {puja.isSubscription && (
+          <div className="absolute top-3 right-3 bg-red-700 border border-yellow-500 text-white text-[10px] px-2.5 py-0.75 rounded-full font-bold uppercase tracking-wider animate-pulse shadow-md">
+            Subscription
+          </div>
+        )}
       </div>
 
       <h3 className="font-heading text-foreground text-2xl mb-0.5">{name}</h3>

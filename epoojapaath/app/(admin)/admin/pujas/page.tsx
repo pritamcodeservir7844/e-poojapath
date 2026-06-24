@@ -24,6 +24,10 @@ type Puja = {
   availableDates?: string[];
   scheduledAt?: string;
   slotsText?: string;
+  isSubscription?: boolean;
+  subscriptionType?: "weekly" | "monthly";
+  discount3Months?: number;
+  discount6Months?: number;
 };
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
@@ -39,6 +43,10 @@ const EMPTY_FORM = {
   price: "", duration: "", image: "", benefits: "", includes: "", scheduledAt: "", templeId: "",
   availableDates: [] as string[],
   slotsText: "",
+  isSubscription: false,
+  subscriptionType: "monthly",
+  discount3Months: "",
+  discount6Months: "",
 };
 
 function Toast({ msg, type, onClose }: { msg: string; type: "success" | "error"; onClose: () => void }) {
@@ -104,7 +112,7 @@ export default function AdminPujasPage() {
   const [confirmDelete, setConfirmDelete] = useState<Puja | null>(null);
   const [form, setForm] = useState(EMPTY_FORM);
   const [packages, setPackages] = useState<PujaPackage[]>(DEFAULT_PACKAGES);
-  const [activeTab, setActiveTab] = useState<"basic" | "packages">("basic");
+  const [activeTab, setActiveTab] = useState<"basic" | "packages" | "subscription">("basic");
   const [dateMode, setDateMode] = useState<"any" | "specific">("any");
   const [newDateInput, setNewDateInput] = useState("");
 
@@ -158,6 +166,10 @@ export default function AdminPujasPage() {
       scheduledAt: formatDateForInput(p.scheduledAt), templeId: p.temple?._id || "",
       availableDates: p.availableDates || [],
       slotsText: p.slotsText || "",
+      isSubscription: !!p.isSubscription,
+      subscriptionType: p.subscriptionType || "monthly",
+      discount3Months: p.discount3Months !== undefined ? String(p.discount3Months) : "",
+      discount6Months: p.discount6Months !== undefined ? String(p.discount6Months) : "",
     });
     setPackages(p.packages?.length ? p.packages : DEFAULT_PACKAGES);
     setEditData(p);
@@ -193,6 +205,10 @@ export default function AdminPujasPage() {
         temple: form.templeId || undefined,
         availableDates: dateMode === "specific" ? form.availableDates : [],
         slotsText: form.slotsText || undefined,
+        isSubscription: form.isSubscription,
+        subscriptionType: form.subscriptionType,
+        discount3Months: Number(form.discount3Months || 0),
+        discount6Months: Number(form.discount6Months || 0),
       };
       const url = editData ? `/api/admin/pujas/${editData._id}` : `/api/admin/temples/${form.templeId}/pujas`;
       const method = editData ? "PUT" : "POST";
@@ -239,10 +255,10 @@ export default function AdminPujasPage() {
         <Modal title={editData ? `Edit: ${editData.name}` : "Naya Puja Add Karo 🪔"} onClose={() => setShowForm(false)}>
           {/* Tab nav */}
           <div className="flex gap-1 bg-muted rounded-lg p-1 mb-5">
-            {(["basic", "packages"] as const).map(t => (
+            {(["basic", "packages", "subscription"] as const).map(t => (
               <button key={t} type="button" onClick={() => setActiveTab(t)}
                 className={`flex-1 px-3 py-1.5 text-xs rounded-md font-medium transition-colors ${activeTab === t ? "bg-background text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"}`}>
-                {t === "basic" ? "Basic Info" : "Pricing Packages"}
+                {t === "basic" ? "Basic Info" : t === "packages" ? "Pricing Packages" : "Subscription Options"}
               </button>
             ))}
           </div>
@@ -388,6 +404,58 @@ export default function AdminPujasPage() {
                 </div>
                 <div className="flex justify-between pt-2">
                   <Button type="button" size="sm" variant="outline" onClick={() => setActiveTab("basic")}>← Back</Button>
+                  <Button type="button" size="sm" onClick={() => setActiveTab("subscription")}>Next: Subscription →</Button>
+                </div>
+              </div>
+            )}
+
+            {activeTab === "subscription" && (
+              <div className="space-y-4">
+                <div className="flex items-center gap-2 mb-4 bg-muted/40 p-3.5 rounded-xl border border-border">
+                  <input
+                    type="checkbox"
+                    id="is-sub"
+                    className="w-4 h-4 accent-saffron"
+                    checked={form.isSubscription}
+                    onChange={(e) => setForm(prev => ({ ...prev, isSubscription: e.target.checked }))}
+                  />
+                  <label htmlFor="is-sub" className="text-sm font-semibold text-foreground cursor-pointer">
+                    Enable Subscription for this Puja (मंथली/वीकली सब्सक्रिप्शन चालू करें)
+                  </label>
+                </div>
+
+                {form.isSubscription && (
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="md:col-span-2">
+                      <label className="block text-sm font-medium text-foreground mb-1.5">Subscription Interval</label>
+                      <select
+                        value={form.subscriptionType}
+                        onChange={(e) => setForm(prev => ({ ...prev, subscriptionType: e.target.value as any }))}
+                        className="w-full border border-border bg-card rounded-xl px-4 py-3 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-saffron transition"
+                      >
+                        <option value="weekly">Weekly (पूजा हर हफ्ते होगी)</option>
+                        <option value="monthly">Monthly (पूजा हर महीने होगी)</option>
+                      </select>
+                    </div>
+                    <Input
+                      label="3 Months Discount (%)"
+                      type="number"
+                      placeholder="e.g. 10"
+                      value={form.discount3Months}
+                      onChange={(e) => setForm(prev => ({ ...prev, discount3Months: e.target.value }))}
+                    />
+                    <Input
+                      label="6 Months Discount (%)"
+                      type="number"
+                      placeholder="e.g. 15"
+                      value={form.discount6Months}
+                      onChange={(e) => setForm(prev => ({ ...prev, discount6Months: e.target.value }))}
+                    />
+                  </div>
+                )}
+
+                <div className="flex justify-between pt-2">
+                  <Button type="button" size="sm" variant="outline" onClick={() => setActiveTab("packages")}>← Back</Button>
                   <Button type="submit" loading={saving} size="sm">
                     {editData ? "Puja Update Karo 🙏" : "Puja Add Karo 🙏"}
                   </Button>

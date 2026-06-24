@@ -28,11 +28,15 @@ export interface IBookingDoc extends Document {
     qty: number;
     total: number;
   }>;
-  selectedItems?: Array<{
+    selectedItems?: Array<{
     name: string;
     qty: number;
     price: number;
   }>;
+  subscriptionParentId?: string;
+  subscriptionDuration?: number;
+  subscriptionCycleIndex?: number;
+  whatsappPhone?: string;
   createdAt: Date;
 }
 
@@ -74,6 +78,10 @@ const BookingSchema = new Schema<IBookingDoc>(
         price: { type: Number },
       }
     ],
+    subscriptionParentId: { type: String },
+    subscriptionDuration: { type: Number },
+    subscriptionCycleIndex: { type: Number },
+    whatsappPhone: { type: String },
   },
   { timestamps: true }
 );

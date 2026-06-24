@@ -67,61 +67,6 @@ export default async function PujaDetailPage({ params }: { params: { id: string 
 
   return (
     <PublicPage>
-      {/* ── Hero Banner ── */}
-      <div className="relative h-64 md:h-80 w-full">
-        <Image
-          src={puja.image || (temple.images?.[0] ?? temple.coverImage)}
-          alt={puja.name}
-          fill
-          className="object-cover"
-          priority
-        />
-        <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-black/20 to-black/70" />
-        <div className="absolute bottom-0 left-0 right-0 p-6 max-w-7xl mx-auto">
-          <p className="text-white/80 text-sm font-medium mb-1 flex items-center gap-1.5">
-            <span>🛕 Puja Booking at <span className="text-saffron font-semibold">{temple.name}</span></span>
-          </p>
-          <h1 className="text-white font-heading text-2xl md:text-3xl leading-tight max-w-3xl">
-            {puja.name}
-          </h1>
-          <p className="text-white/70 font-sanskrit text-base mt-1">{puja.nameHi}</p>
-        </div>
-      </div>
-
-      {/* ── Meta Bar ── */}
-      <div className="bg-card border-b border-border">
-        <div className="max-w-7xl mx-auto px-4 md:px-8 py-3 flex flex-wrap items-center gap-4">
-          <Link
-            href={`/temples/${temple.slug}`}
-            className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-saffron transition-colors"
-          >
-            <MapPin size={14} />
-            <span>{temple.name}, {temple.location?.city}</span>
-          </Link>
-          <span className="text-border">|</span>
-          <div className="flex items-center gap-1 text-sm">
-            {Array.from({ length: 5 }).map((_, i) => (
-              <Star
-                key={i}
-                size={13}
-                className={i < Math.round(displayRating) ? "fill-saffron text-saffron" : "text-muted"}
-              />
-            ))}
-            <span className="text-saffron font-semibold ml-1">{displayRating.toFixed(1)}</span>
-            <span className="text-muted-foreground ml-1">Stars</span>
-            <span className="text-muted-foreground ml-1">• {displayReviews}+ Reviews</span>
-          </div>
-          <span className="text-border">|</span>
-          <div className="flex items-center gap-1 text-sm text-muted-foreground">
-            <Clock size={14} />
-            <span>{puja.duration}</span>
-          </div>
-          <span className="text-border">|</span>
-          <PujaCountdownTimer scheduledAt={puja.scheduledAt} availableDates={puja.availableDates} />
-        </div>
-      </div>
-
-      {/* ── All interactive content (shared chadawa state) ── */}
       <PujaDetailClient
         puja={puja as unknown as IPuja & { _id: string }}
         temple={temple as unknown as ITemple & { _id: string }}

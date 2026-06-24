@@ -80,6 +80,10 @@ export interface IPuja {
   isActive: boolean;
   totalBooked: number;
   slotsText?: string;
+  isSubscription?: boolean;
+  subscriptionType?: "weekly" | "monthly";
+  discount3Months?: number;
+  discount6Months?: number;
   createdAt: string;
 }
 
@@ -142,6 +146,10 @@ export interface IBooking {
     qty: number;
     price: number;
   }>;
+  subscriptionParentId?: string;
+  subscriptionDuration?: number;
+  subscriptionCycleIndex?: number;
+  whatsappPhone?: string;
   createdAt: string;
 }
 

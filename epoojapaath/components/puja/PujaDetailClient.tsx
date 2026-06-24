@@ -20,7 +20,9 @@ import {
   ChevronDown,
   Check,
   X,
+  Clock,
 } from "lucide-react";
+import { PujaCountdownTimer } from "./PujaCountdownTimer";
 import { Input, Textarea, Select } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
 import { devToast } from "@/lib/toast";
@@ -155,7 +157,10 @@ export function PujaDetailClient({
   }, []);
 
   // ── Price calculations ────────────────────────────────────────────────────
-  const pujaPrice = selectedPkg ? selectedPkg.price : puja.price;
+  const [duration, setDuration] = useState<number>(1);
+  const basePrice = selectedPkg ? selectedPkg.price : puja.price;
+  const discountPercent = duration === 3 ? (puja.discount3Months || 0) : duration === 6 ? (puja.discount6Months || 0) : 0;
+  const pujaPrice = basePrice * duration * (1 - discountPercent / 100);
   const displayName = selectedPkg ? selectedPkg.label : puja.name;
   const chadawaTotal = selectedChadawa.reduce((s, sc) => s + sc.item.price * sc.qty, 0);
   const prasadPrice = form.prasadDelivery ? 151 : 0;
@@ -378,6 +383,7 @@ export function PujaDetailClient({
                 orderId: response.razorpay_order_id,
                 paymentId: response.razorpay_payment_id,
                 paymentStatus: "paid",
+                subscriptionDuration: duration,
               }),
             });
             setBooked(true);
@@ -393,8 +399,89 @@ export function PujaDetailClient({
     }
   }
 
+  function handleSubscriptionBadgeClick() {
+    if (!session) {
+      const currentUrl = window.location.pathname;
+      router.push(`/login?callbackUrl=${encodeURIComponent(currentUrl)}`);
+      return;
+    }
+    setBookingStep("package");
+    const sidebar = document.querySelector(".lg\\:col-span-1");
+    if (sidebar) {
+      sidebar.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+    setShowMobileSidebar(true);
+  }
+
   return (
     <>
+      {/* ── Hero Banner ── */}
+      <div className="relative h-64 md:h-80 w-full overflow-hidden">
+        <Image
+          src={puja.image || (temple.images?.[0] ?? temple.coverImage)}
+          alt={puja.name}
+          fill
+          className="object-cover"
+          priority
+        />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-black/20 to-black/70" />
+        
+        {/* Subscription Badge */}
+        {puja.isSubscription && (
+          <button
+            onClick={handleSubscriptionBadgeClick}
+            type="button"
+            className="absolute top-4 left-6 z-10 bg-red-700/95 text-white border-2 border-amber-400 hover:border-white rounded-full px-4 py-1.5 text-xs font-bold tracking-wider uppercase shadow-lg transition-all transform hover:scale-105 flex items-center gap-1.5 animate-pulse"
+          >
+            <span className="w-1.5 h-1.5 rounded-full bg-green-400"></span>
+            {puja.subscriptionType === "weekly" ? "Weekly Subscription" : "Monthly Subscription"}
+          </button>
+        )}
+
+        <div className="absolute bottom-0 left-0 right-0 p-6 max-w-7xl mx-auto">
+          <p className="text-white/80 text-sm font-medium mb-1 flex items-center gap-1.5">
+            <span>🛕 Puja Booking at <span className="text-saffron font-semibold">{temple.name}</span></span>
+          </p>
+          <h1 className="text-white font-heading text-2xl md:text-3xl leading-tight max-w-3xl">
+            {puja.name}
+          </h1>
+          <p className="text-white/70 font-sanskrit text-base mt-1">{puja.nameHi}</p>
+        </div>
+      </div>
+
+      {/* ── Meta Bar ── */}
+      <div className="bg-card border-b border-border">
+        <div className="max-w-7xl mx-auto px-4 md:px-8 py-3 flex flex-wrap items-center gap-4">
+          <Link
+            href={`/temples/${temple.slug}`}
+            className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-saffron transition-colors"
+          >
+            <MapPin size={14} />
+            <span>{temple.name}, {temple.location?.city}</span>
+          </Link>
+          <span className="text-border">|</span>
+          <div className="flex items-center gap-1 text-sm">
+            {Array.from({ length: 5 }).map((_, i) => (
+              <Star
+                key={i}
+                size={13}
+                className={i < Math.round(displayRating) ? "fill-saffron text-saffron" : "text-muted"}
+              />
+            ))}
+            <span className="text-saffron font-semibold ml-1">{displayRating.toFixed(1)}</span>
+            <span className="text-muted-foreground ml-1">Stars</span>
+            <span className="text-muted-foreground ml-1">• {displayReviews}+ Reviews</span>
+          </div>
+          <span className="text-border">|</span>
+          <div className="flex items-center gap-1 text-sm text-muted-foreground">
+            <Clock size={14} />
+            <span>{puja.duration}</span>
+          </div>
+          <span className="text-border">|</span>
+          <PujaCountdownTimer scheduledAt={puja.scheduledAt} availableDates={puja.availableDates} />
+        </div>
+      </div>
+
       {booked && (
         <ReactConfetti
           recycle={false}
@@ -697,6 +784,35 @@ export function PujaDetailClient({
                           <span className="font-heading text-saffron">{formatCurrency(pkg.price)}</span>
                         </button>
                       ))}
+                    </div>
+                  )}
+
+                  {puja.isSubscription && (
+                    <div className="mb-4 bg-card-bg/50 border border-border/60 rounded-xl p-3.5">
+                      <p className="text-xs text-muted-foreground mb-2.5 font-medium flex items-center gap-1">
+                        📅 Subscription Duration
+                      </p>
+                      <div className="grid grid-cols-3 gap-2">
+                        {[
+                          { value: 1, label: "1 Month", desc: "Single" },
+                          { value: 3, label: "3 Months", desc: puja.discount3Months ? `${puja.discount3Months}% Off` : "Save 10%" },
+                          { value: 6, label: "6 Months", desc: puja.discount6Months ? `${puja.discount6Months}% Off` : "Save 15%" },
+                        ].map((opt) => (
+                          <button
+                            key={opt.value}
+                            type="button"
+                            onClick={() => setDuration(opt.value)}
+                            className={`flex flex-col items-center justify-center rounded-xl border p-2 text-center transition-all ${
+                              duration === opt.value
+                                ? "border-saffron bg-saffron/10 text-saffron font-semibold scale-105 shadow-sm shadow-saffron/10"
+                                : "border-border text-muted-foreground hover:border-saffron/40 bg-background/50 hover:bg-background"
+                            }`}
+                          >
+                            <span className="text-xs">{opt.label}</span>
+                            <span className="text-[10px] opacity-80 mt-0.5">{opt.desc}</span>
+                          </button>
+                        ))}
+                      </div>
                     </div>
                   )}
 

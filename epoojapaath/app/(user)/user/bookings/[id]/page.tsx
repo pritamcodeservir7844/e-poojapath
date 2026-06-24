@@ -9,6 +9,7 @@ import { formatCurrency, formatDate } from "@/lib/utils";
 import Link from "next/link";
 import type { IBooking, ITemple } from "@/types";
 import Review from "@/models/Review";
+import Booking from "@/models/Booking";
 import { connectDB } from "@/lib/db";
 import { BookingReviewForm } from "@/components/bookings/BookingReviewForm";
 import { AdminBookingStatusChanger } from "@/components/admin/AdminBookingStatusChanger";
@@ -35,6 +36,14 @@ export default async function BookingDetailPage({ params }: { params: { id: stri
   await connectDB();
   const reviewRaw = await Review.findOne({ booking: params.id }).lean();
   const review = reviewRaw ? JSON.parse(JSON.stringify(reviewRaw)) : null;
+
+  let subscriptionBookings: any[] = [];
+  if (booking.subscriptionParentId) {
+    const rawSubs = await Booking.find({ subscriptionParentId: booking.subscriptionParentId })
+      .sort({ date: 1 })
+      .lean();
+    subscriptionBookings = JSON.parse(JSON.stringify(rawSubs));
+  }
 
   const backLink = session.user.role === "admin" ? "/admin/bookings" : "/user/bookings";
 
@@ -119,6 +128,47 @@ export default async function BookingDetailPage({ params }: { params: { id: stri
             ) : null}
           </dl>
         </div>
+
+        {/* Subscription Schedule */}
+        {subscriptionBookings.length > 0 && (
+          <div className="card-devotional">
+            <h2 className="font-heading text-lg text-foreground mb-4">📅 Subscription Schedule ({booking.subscriptionDuration} Months)</h2>
+            <div className="space-y-3">
+              {subscriptionBookings.map((b: any, idx: number) => (
+                <div 
+                  key={b._id} 
+                  className={`flex items-center justify-between p-3.5 rounded-xl border text-sm transition-all ${
+                    b._id === booking._id.toString() 
+                      ? "border-saffron bg-saffron/5 shadow-sm" 
+                      : "border-border bg-card-bg/40 hover:bg-card-bg/70"
+                  }`}
+                >
+                  <div>
+                    <div className="font-medium text-foreground flex items-center gap-1.5">
+                      <span>Cycle {b.subscriptionCycleIndex} of {b.subscriptionDuration}</span>
+                      {b._id === booking._id.toString() && (
+                        <span className="bg-saffron text-white text-[9px] px-1.5 py-0.5 rounded font-bold uppercase">
+                          Viewing
+                        </span>
+                      )}
+                    </div>
+                    <p className="text-xs text-muted-foreground mt-0.5">{formatDate(b.date)}</p>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <Badge variant={({ pending: "pending", confirmed: "approved", completed: "completed", cancelled: "cancelled" } as any)[b.status] || "pending"}>
+                      {b.status}
+                    </Badge>
+                    {b._id !== booking._id.toString() && (
+                      <Link href={`/user/bookings/${b._id}`} className="text-xs text-saffron hover:underline font-semibold">
+                        Details →
+                      </Link>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
 
         {/* Price Breakdown & Items */}
         <div className="card-devotional">

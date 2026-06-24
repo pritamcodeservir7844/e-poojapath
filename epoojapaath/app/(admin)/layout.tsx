@@ -4,6 +4,7 @@ import Image from "next/image";
 import {
   LayoutDashboard, Landmark, Users, BookOpen,
   FileText, Megaphone, Settings, Flower2, ScrollText, ClipboardList, Mail,
+  CalendarDays
 } from "lucide-react";
 import { AdminLogoutButton } from "@/components/admin/AdminLogoutButton";
 
@@ -15,6 +16,7 @@ const adminNav = [
   { href: "/admin/chadawa",         label: "Chadawa Manager",  icon: Flower2         },
   { href: "/admin/users",           label: "Users",            icon: Users           },
   { href: "/admin/bookings",        label: "Bookings",         icon: BookOpen        },
+  { href: "/admin/subscriptions",   label: "Subscriptions",    icon: CalendarDays    },
   { href: "/admin/blog",            label: "Blog Manager",     icon: FileText        },
   { href: "/admin/ads",             label: "Ads Manager",      icon: Megaphone       },
   { href: "/admin/enquiries",       label: "Enquiries",        icon: Mail            },
