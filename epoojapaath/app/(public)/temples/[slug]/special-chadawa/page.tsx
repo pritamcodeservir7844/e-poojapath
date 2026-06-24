@@ -27,7 +27,7 @@ export default async function TempleSpecialChadawaPage({ params }: { params: { s
 
   // Find the temple by slug
   const templeRaw = await Temple.findOne({ slug: params.slug }).lean();
-  if (!templeRaw) notFound();
+  if (!templeRaw || Array.isArray(templeRaw)) notFound();
   
   // Find all active special offerings for this temple
   const itemsRaw = await Chadawa.find({
