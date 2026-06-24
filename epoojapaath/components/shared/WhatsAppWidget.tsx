@@ -3,7 +3,7 @@
 import { motion } from "framer-motion";
 
 export function WhatsAppWidget() {
-  const whatsappNumber = "919876543210"; // support contact number
+  const whatsappNumber = "919165057755"; // support contact number
   const message = "Hello ePoojapaath Support! I have a query regarding puja bookings / services.";
   const url = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
 
