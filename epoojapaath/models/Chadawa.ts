@@ -21,6 +21,7 @@ export interface IChadawaDoc extends Document {
   temple: mongoose.Types.ObjectId;
   isActive: boolean;
   isSpecial: boolean;
+  availableDates?: string[];
   status: "pending" | "approved" | "rejected";
   createdAt: Date;
 }
@@ -47,9 +48,14 @@ const ChadawaSchema = new Schema<IChadawaDoc>(
     temple:        { type: Schema.Types.ObjectId, ref: "Temple", required: true },
     isActive:      { type: Boolean, default: true },
     isSpecial:     { type: Boolean, default: false },
+    availableDates: [{ type: String }],
     status:        { type: String, enum: ["pending", "approved", "rejected"], default: "pending" },
   },
   { timestamps: true }
 );
+
+if (process.env.NODE_ENV === "development") {
+  delete models.Chadawa;
+}
 
 export default models.Chadawa || mongoose.model<IChadawaDoc>("Chadawa", ChadawaSchema);

@@ -109,6 +109,7 @@ export interface IChadawa {
   temple: string | ITemple;
   isActive: boolean;
   isSpecial: boolean;
+  availableDates?: string[];
   createdAt: string;
 }
 

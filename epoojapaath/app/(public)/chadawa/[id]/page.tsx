@@ -11,10 +11,34 @@ import {
   BookOpen, Sparkles, Plus, Minus, ShoppingBasket, Check,
 } from "lucide-react";
 import { PublicPage } from "@/components/shared/PublicPage";
-import { Input, Textarea } from "@/components/ui/Input";
+import { Input, Textarea, Select } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
 import { devToast } from "@/lib/toast";
 import { formatCurrency } from "@/lib/utils";
+
+function formatDisplayDate(dateStr: string): string {
+  try {
+    if (dateStr.includes("T")) {
+      return new Date(dateStr).toLocaleString("en-US", {
+        weekday: "short",
+        month: "short",
+        day: "numeric",
+        hour: "numeric",
+        minute: "2-digit"
+      });
+    }
+    const [year, month, day] = dateStr.split("-").map(Number);
+    const dateObj = new Date(year, month - 1, day);
+    return dateObj.toLocaleDateString("en-US", {
+      weekday: "long",
+      year: "numeric",
+      month: "long",
+      day: "numeric"
+    });
+  } catch {
+    return dateStr;
+  }
+}
 
 const ReactConfetti = dynamic(() => import("react-confetti"), { ssr: false });
 
@@ -55,6 +79,7 @@ type ChadawaData = {
   offeringItems: OfferingItem[];
   deity: string;
   temple: Temple | string;
+  availableDates?: string[];
 };
 
 const HOW_IT_WORKS = [
@@ -89,6 +114,13 @@ export default function ChadawaDetailPage({ params }: { params: { id: string } }
       .then((r) => r.json())
       .then((d) => setChadawa(d.data));
   }, [params.id]);
+
+  useEffect(() => {
+    if (chadawa && chadawa.availableDates && chadawa.availableDates.length > 0) {
+      const firstDate = chadawa.availableDates[0];
+      setForm(f => ({ ...f, date: firstDate }));
+    }
+  }, [chadawa]);
 
   // Fetch other special offerings when the main chadawa is loaded
   useEffect(() => {
@@ -692,7 +724,20 @@ export default function ChadawaDetailPage({ params }: { params: { id: string } }
                 <Input label="WhatsApp Mobile Number" required placeholder="10-digit mobile number" type="tel" value={form.whatsappPhone} onChange={(e) => setForm({ ...form, whatsappPhone: e.target.value })} />
                 <Input label="Gotra (Optional)" placeholder="e.g. Kashyap, Bharadwaj" value={form.gotra} onChange={(e) => setForm({ ...form, gotra: e.target.value })} />
                 <Textarea label="Sankalp / Wish" rows={2} placeholder="Your prayer or intention..." value={form.sankalp} onChange={(e) => setForm({ ...form, sankalp: e.target.value })} />
-                <Input label="Offering Date" type="date" required min={new Date().toISOString().split("T")[0]} value={form.date} onChange={(e) => setForm({ ...form, date: e.target.value })} />
+                {chadawa.availableDates && chadawa.availableDates.length > 0 ? (
+                  <Select
+                    label="Offering Date"
+                    required
+                    value={form.date}
+                    onChange={(e) => setForm({ ...form, date: e.target.value })}
+                    options={chadawa.availableDates.map(d => ({
+                      value: d,
+                      label: formatDisplayDate(d)
+                    }))}
+                  />
+                ) : (
+                  <Input label="Offering Date" type="date" required min={new Date().toISOString().split("T")[0]} value={form.date} onChange={(e) => setForm({ ...form, date: e.target.value })} />
+                )}
                 <div className="border-t border-deep-gold/20 pt-3">
                   <div className="flex justify-between font-heading text-lg">
                     <span className="text-foreground">Total</span>
@@ -717,7 +762,20 @@ export default function ChadawaDetailPage({ params }: { params: { id: string } }
           <form onSubmit={handleOffer} className="px-4 py-3 space-y-3">
             <div className="grid grid-cols-2 gap-2">
               <Input label="Your Name" required placeholder="Devotee name" value={form.devoteeName} onChange={(e) => setForm({ ...form, devoteeName: e.target.value })} />
-              <Input label="Date" type="date" required min={new Date().toISOString().split("T")[0]} value={form.date} onChange={(e) => setForm({ ...form, date: e.target.value })} />
+              {chadawa.availableDates && chadawa.availableDates.length > 0 ? (
+                <Select
+                  label="Date"
+                  required
+                  value={form.date}
+                  onChange={(e) => setForm({ ...form, date: e.target.value })}
+                  options={chadawa.availableDates.map(d => ({
+                    value: d,
+                    label: formatDisplayDate(d)
+                  }))}
+                />
+              ) : (
+                <Input label="Date" type="date" required min={new Date().toISOString().split("T")[0]} value={form.date} onChange={(e) => setForm({ ...form, date: e.target.value })} />
+              )}
             </div>
             <Input label="WhatsApp Mobile Number" required placeholder="10-digit number" type="tel" value={form.whatsappPhone} onChange={(e) => setForm({ ...form, whatsappPhone: e.target.value })} />
             <Input label="Gotra (Optional)" placeholder="e.g. Kashyap" value={form.gotra} onChange={(e) => setForm({ ...form, gotra: e.target.value })} />

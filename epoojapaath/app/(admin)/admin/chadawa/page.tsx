@@ -17,13 +17,14 @@ type Temple = { _id: string; name: string; slug: string; coverImage: string; loc
 type Chadawa = {
   _id: string; name: string; nameHi: string; description: string; descriptionHi: string;
   price: number; image: string; isActive: boolean; isSpecial: boolean;
-  deity: string; items: string[]; temple: Temple;
+  deity: string; items: string[]; temple: Temple; availableDates?: string[];
 };
 
 // ── Empty form ─────────────────────────────────────────────────────────────────
 const EMPTY_FORM = {
   name: "", nameHi: "", description: "", descriptionHi: "",
   price: "", deity: "", image: "", items: "", isSpecial: false, templeId: "",
+  availableDates: [] as string[],
 };
 
 // ── Sub-components ──────────────────────────────────────────────────────────────
@@ -82,6 +83,20 @@ export default function AdminChadawaPage() {
   const [editData, setEditData] = useState<Chadawa | null>(null);
   const [confirmDelete, setConfirmDelete] = useState<Chadawa | null>(null);
   const [form, setForm] = useState<typeof EMPTY_FORM>(EMPTY_FORM);
+  const [dateMode, setDateMode] = useState<"any" | "specific">("any");
+  const [newDateInput, setNewDateInput] = useState("");
+
+  function handleAddDate() {
+    if (!newDateInput) return;
+    if (form.availableDates.includes(newDateInput)) return;
+    const updated = [...form.availableDates, newDateInput].sort();
+    setForm(f => ({ ...f, availableDates: updated }));
+    setNewDateInput("");
+  }
+
+  function handleRemoveDate(d: string) {
+    setForm(f => ({ ...f, availableDates: f.availableDates.filter(date => date !== d) }));
+  }
 
   const showToast = (msg: string, type: "success" | "error" = "success") => {
     setToast({ msg, type });
@@ -113,7 +128,8 @@ export default function AdminChadawaPage() {
   });
 
   function openAdd() {
-    setForm(EMPTY_FORM);
+    setForm({ ...EMPTY_FORM, availableDates: [] });
+    setDateMode("any");
     setEditData(null);
     setShowForm(true);
   }
@@ -125,7 +141,9 @@ export default function AdminChadawaPage() {
       items: c.items?.join(", ") || "",
       isSpecial: c.isSpecial,
       templeId: c.temple?._id || "",
+      availableDates: c.availableDates || [],
     });
+    setDateMode(c.availableDates && c.availableDates.length > 0 ? "specific" : "any");
     setEditData(c);
     setShowForm(true);
   }
@@ -140,6 +158,7 @@ export default function AdminChadawaPage() {
         items: form.items.split(",").map(s => s.trim()).filter(Boolean),
         isSpecial: form.isSpecial,
         temple: form.templeId || undefined,
+        availableDates: dateMode === "specific" ? form.availableDates : [],
       };
       const url = editData ? `/api/admin/chadawa/${editData._id}` : `/api/admin/temples/${form.templeId}/chadawa`;
       const method = editData ? "PUT" : "POST";
@@ -239,6 +258,77 @@ export default function AdminChadawaPage() {
               <Input label="Includes / Items (comma separated)" value={form.items} onChange={e => setForm(f => ({ ...f, items: e.target.value }))} placeholder="Red Flowers, Lotus" className="md:col-span-2" />
               <Textarea label="Description (English)" required rows={3} value={form.description} onChange={e => setForm(f => ({ ...f, description: e.target.value }))} className="md:col-span-2" />
               <Textarea label="Description (Hindi)" required rows={2} value={form.descriptionHi} onChange={e => setForm(f => ({ ...f, descriptionHi: e.target.value }))} className="md:col-span-2" />
+
+              {/* Date Mode Picker */}
+              <div className="md:col-span-2 border-t border-border pt-4">
+                <label className="block text-sm font-medium text-foreground mb-1.5 font-bold">Booking Date Mode</label>
+                <div className="flex gap-4 mb-3">
+                  <label className="flex items-center gap-2 text-sm text-foreground cursor-pointer">
+                    <input
+                      type="radio"
+                      name="dateMode"
+                      value="any"
+                      checked={dateMode === "any"}
+                      onChange={() => setDateMode("any")}
+                      className="text-saffron focus:ring-saffron"
+                    />
+                    Any Future Date
+                  </label>
+                  <label className="flex items-center gap-2 text-sm text-foreground cursor-pointer">
+                    <input
+                      type="radio"
+                      name="dateMode"
+                      value="specific"
+                      checked={dateMode === "specific"}
+                      onChange={() => setDateMode("specific")}
+                      className="text-saffron focus:ring-saffron"
+                    />
+                    Specific Dates Only
+                  </label>
+                </div>
+
+                {dateMode === "specific" && (
+                  <div className="space-y-3 bg-muted/40 p-3.5 rounded-xl border border-border">
+                    <div className="flex gap-2">
+                      <input
+                        type="date"
+                        value={newDateInput}
+                        onChange={e => setNewDateInput(e.target.value)}
+                        className="flex-1 border border-border bg-card rounded-xl px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-saffron transition"
+                      />
+                      <Button
+                        type="button"
+                        size="sm"
+                        onClick={handleAddDate}
+                      >
+                        Add Date
+                      </Button>
+                    </div>
+
+                    {form.availableDates && form.availableDates.length > 0 ? (
+                      <div className="flex flex-wrap gap-1.5 pt-1">
+                        {form.availableDates.map(d => (
+                          <span
+                            key={d}
+                            className="inline-flex items-center gap-1 bg-saffron/10 border border-saffron/20 text-saffron text-xs px-2.5 py-1 rounded-full font-medium"
+                          >
+                            {d}
+                            <button
+                              type="button"
+                              onClick={() => handleRemoveDate(d)}
+                              className="text-saffron/70 hover:text-saffron transition ml-1"
+                            >
+                              <X size={12} />
+                            </button>
+                          </span>
+                        ))}
+                      </div>
+                    ) : (
+                      <p className="text-xs text-muted-foreground italic">No dates added yet. Please select and add available dates.</p>
+                    )}
+                  </div>
+                )}
+              </div>
             </div>
 
             <Button type="submit" loading={saving} fullWidth>
