@@ -154,6 +154,24 @@ export default function ChadawaDetailPage({ params }: { params: { id: string } }
     document.body.appendChild(script);
   }, []);
 
+  useEffect(() => {
+    if (session?.user?.id) {
+      fetch(`/api/users/${session.user.id}`)
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.success && data.data) {
+            setForm((f) => ({
+              ...f,
+              devoteeName: f.devoteeName || data.data.name || "",
+              whatsappPhone: f.whatsappPhone || data.data.phone || "",
+              gotra: f.gotra || data.data.gotra || "",
+            }));
+          }
+        })
+        .catch((err) => console.error("Error prefilling form:", err));
+    }
+  }, [session]);
+
   const changeQty = useCallback((idx: number, delta: number) => {
     setQty((prev) => {
       const next = Math.max(0, (prev[idx] ?? 0) + delta);

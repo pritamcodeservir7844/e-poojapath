@@ -14,6 +14,7 @@ export default function LoginPage() {
   const [loginMethod, setLoginMethod] = useState<"email" | "whatsapp">("email");
   const [email,    setEmail]    = useState("");
   const [password, setPassword] = useState("");
+  const [name,     setName]     = useState("");
   const [phone,    setPhone]    = useState("");
   const [otp,      setOtp]      = useState("");
   const [otpSent,  setOtpSent]  = useState(false);
@@ -42,6 +43,10 @@ export default function LoginPage() {
 
   async function handleSendOtp(e: React.FormEvent) {
     e.preventDefault();
+    if (!name || name.trim().length < 2) {
+      devToast.error("Please enter a valid Name (at least 2 characters)");
+      return;
+    }
     if (!phone || phone.trim().length < 10) {
       devToast.error("Please enter a valid 10-digit mobile number");
       return;
@@ -66,7 +71,7 @@ export default function LoginPage() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          name: "Devotee",
+          name: name,
           phone: phone,
         }),
       });
@@ -163,8 +168,16 @@ export default function LoginPage() {
             </form>
           ) : (
             <div className="space-y-4">
-              {!otpSent ? (
+               {!otpSent ? (
                 <form onSubmit={handleSendOtp} className="space-y-4">
+                  <Input
+                    label="Full Name"
+                    type="text"
+                    required
+                    placeholder="Enter your name"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                  />
                   <Input
                     label="WhatsApp Mobile Number"
                     type="tel"

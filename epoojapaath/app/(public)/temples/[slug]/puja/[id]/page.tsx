@@ -71,6 +71,24 @@ export default function BookPujaPage({ params }: { params: { slug: string; id: s
     document.body.appendChild(script);
   }, []);
 
+  useEffect(() => {
+    if (session?.user?.id) {
+      fetch(`/api/users/${session.user.id}`)
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.success && data.data) {
+            setForm((f) => ({
+              ...f,
+              devoteeName: f.devoteeName || data.data.name || "",
+              whatsappPhone: f.whatsappPhone || data.data.phone || "",
+              gotra: f.gotra || data.data.gotra || "",
+            }));
+          }
+        })
+        .catch((err) => console.error("Error prefilling form:", err));
+    }
+  }, [session]);
+
   async function handleBook(e: React.FormEvent) {
     e.preventDefault();
     let currentSession = session;
