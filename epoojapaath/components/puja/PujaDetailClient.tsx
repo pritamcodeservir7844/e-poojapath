@@ -335,6 +335,35 @@ export function PujaDetailClient({
       });
       const orderData = await orderRes.json();
 
+      const bookingRes = await fetch("/api/bookings", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          ...form,
+          devoteeName: form.devoteeNames.filter((n) => n.trim() !== "").join(", "),
+          temple: temple._id,
+          service: puja._id,
+          serviceType: "puja",
+          serviceName: puja.name,
+          serviceNameHi: puja.nameHi,
+          amount: grandTotal,
+          selectedPackage: selectedPkg?.label,
+          selectedPackagePrice: selectedPkg?.price,
+          selectedChadawa: selectedChadawa.map((sc) => ({
+            name: sc.item.name,
+            price: sc.item.price,
+            qty: sc.qty,
+            total: sc.item.price * sc.qty,
+          })),
+          orderId: orderData.data.id,
+          paymentStatus: "pending",
+          status: "pending",
+          subscriptionDuration: duration,
+        }),
+      });
+      const bookingJson = await bookingRes.json();
+      const bookingId = bookingJson.data._id;
+
       new window.Razorpay({
         key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
         amount: grandTotal * 100,
@@ -360,30 +389,13 @@ export function PujaDetailClient({
           });
           const verifyData = await verifyRes.json();
           if (verifyData.success) {
-            await fetch("/api/bookings", {
-              method: "POST",
+            await fetch(`/api/bookings/${bookingId}`, {
+              method: "PUT",
               headers: { "Content-Type": "application/json" },
               body: JSON.stringify({
-                ...form,
-                devoteeName: form.devoteeNames.filter((n) => n.trim() !== "").join(", "),
-                temple: temple._id,
-                service: puja._id,
-                serviceType: "puja",
-                serviceName: puja.name,
-                serviceNameHi: puja.nameHi,
-                amount: grandTotal,
-                selectedPackage: selectedPkg?.label,
-                selectedPackagePrice: selectedPkg?.price,
-                selectedChadawa: selectedChadawa.map((sc) => ({
-                  name: sc.item.name,
-                  price: sc.item.price,
-                  qty: sc.qty,
-                  total: sc.item.price * sc.qty,
-                })),
-                orderId: response.razorpay_order_id,
                 paymentId: response.razorpay_payment_id,
                 paymentStatus: "paid",
-                subscriptionDuration: duration,
+                status: "confirmed",
               }),
             });
             setBooked(true);
@@ -391,7 +403,20 @@ export function PujaDetailClient({
             setTimeout(() => router.push("/user/bookings"), 3000);
           }
         },
+        modal: {
+          ondismiss: async () => {
+            await fetch(`/api/bookings/${bookingId}`, {
+              method: "PUT",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                paymentStatus: "failed",
+              }),
+            });
+            setLoading(false);
+          }
+        }
       }).open();
+
     } catch {
       devToast.error("Booking failed. Please try again.");
     } finally {

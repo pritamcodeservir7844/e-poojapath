@@ -24,3 +24,11 @@ export function verifyPaymentSignature(orderId: string, paymentId: string, signa
     .digest("hex");
   return expectedSignature === signature;
 }
+
+export async function refundRazorpayPayment(paymentId: string, amount?: number) {
+  const options: Record<string, any> = {};
+  if (amount) {
+    options.amount = amount * 100;
+  }
+  return await razorpay.payments.refund(paymentId, options);
+}

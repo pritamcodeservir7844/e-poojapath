@@ -15,7 +15,7 @@ import Link from "next/link";
 type BookingRow = IBooking & { _id: string; user: Partial<IUser>; temple: Partial<ITemple> };
 
 interface PageProps {
-  searchParams: { status?: string; serviceType?: string };
+  searchParams: { status?: string; serviceType?: string; paymentStatus?: string };
 }
 
 export default async function AdminBookingsPage({ searchParams }: PageProps) {
@@ -25,10 +25,27 @@ export default async function AdminBookingsPage({ searchParams }: PageProps) {
   const bookings = await getAllBookingsAdmin({
     status:      searchParams.status,
     serviceType: searchParams.serviceType,
-  }).catch(() => []) as BookingRow[];
+    paymentStatus: searchParams.paymentStatus,
+  }).catch((err) => {
+    console.error("GET_ALL_BOOKINGS_ADMIN_ERROR:", err);
+    return [];
+  }) as BookingRow[];
 
   const columns: any[] = [
-    { key: "devoteeName", header: "Devotee" },
+    { 
+      key: "devoteeName", 
+      header: "Devotee",
+      render: (b: BookingRow) => (
+        <div>
+          <div className="font-semibold text-foreground">{b.devoteeName}</div>
+          {b.whatsappPhone ? (
+            <div className="text-[11px] text-muted-foreground mt-0.5">{b.whatsappPhone}</div>
+          ) : (b.user as Partial<IUser>)?.phone ? (
+            <div className="text-[11px] text-muted-foreground mt-0.5">{(b.user as Partial<IUser>)?.phone}</div>
+          ) : null}
+        </div>
+      )
+    },
     { 
       key: "serviceName", 
       header: "Service",
@@ -87,8 +104,11 @@ export default async function AdminBookingsPage({ searchParams }: PageProps) {
         <Select name="serviceType" defaultValue={searchParams.serviceType} className="py-2 text-sm w-40"
           placeholder="All Types"
           options={[{ value: "puja", label: "Puja" }, { value: "chadawa", label: "Chadawa" }]} />
+        <Select name="paymentStatus" defaultValue={searchParams.paymentStatus} className="py-2 text-sm w-40"
+          placeholder="All Payments"
+          options={[{ value: "pending", label: "Pending" }, { value: "paid", label: "Paid" }, { value: "failed", label: "Failed" }]} />
         <Button type="submit" size="sm">Filter</Button>
-        {(searchParams.status || searchParams.serviceType) && (
+        {(searchParams.status || searchParams.serviceType || searchParams.paymentStatus) && (
           <a href="/admin/bookings" className="btn-outline-gold py-2 px-4 text-sm">Clear</a>
         )}
       </form>

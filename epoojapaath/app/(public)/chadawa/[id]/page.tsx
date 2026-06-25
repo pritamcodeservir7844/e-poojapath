@@ -236,6 +236,34 @@ export default function ChadawaDetailPage({ params }: { params: { id: string } }
       });
       const orderData = await orderRes.json();
 
+      const templeId = typeof chadawa?.temple === "object" ? chadawa.temple._id : chadawa?.temple;
+      const bookingRes = await fetch("/api/bookings", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          ...form,
+          temple: templeId,
+          service: params.id,
+          serviceType: "chadawa",
+          serviceName: combinedNames,
+          serviceNameHi: combinedNamesHi,
+          amount: grandTotal,
+          selectedChadawa: [
+            { name: chadawa?.name, price: selectedItems.length > 0 ? itemsTotal : basePrice, qty: 1, total: selectedItems.length > 0 ? itemsTotal : basePrice },
+            ...selectedOthersList.map((c) => ({ name: c.name, price: c.price, qty: 1, total: c.price }))
+          ],
+          selectedItems: [
+            ...selectedItems.map((i) => ({ name: i.name, qty: i.qty, price: i.price })),
+            ...selectedOthersList.map((c) => ({ name: c.name, qty: 1, price: c.price }))
+          ],
+          orderId: orderData.data.id,
+          paymentStatus: "pending",
+          status: "pending",
+        }),
+      });
+      const bookingJson = await bookingRes.json();
+      const bookingId = bookingJson.data._id;
+
       new window.Razorpay({
         key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
         amount: grandTotal * 100,
@@ -261,29 +289,13 @@ export default function ChadawaDetailPage({ params }: { params: { id: string } }
           });
           const verifyData = await verifyRes.json();
           if (verifyData.success) {
-            const templeId = typeof chadawa?.temple === "object" ? chadawa.temple._id : chadawa?.temple;
-            await fetch("/api/bookings", {
-              method: "POST",
+            await fetch(`/api/bookings/${bookingId}`, {
+              method: "PUT",
               headers: { "Content-Type": "application/json" },
               body: JSON.stringify({
-                ...form,
-                temple: templeId,
-                service: params.id,
-                serviceType: "chadawa",
-                serviceName: combinedNames,
-                serviceNameHi: combinedNamesHi,
-                amount: grandTotal,
-                selectedChadawa: [
-                  { name: chadawa?.name, price: selectedItems.length > 0 ? itemsTotal : basePrice, qty: 1, total: selectedItems.length > 0 ? itemsTotal : basePrice },
-                  ...selectedOthersList.map((c) => ({ name: c.name, price: c.price, qty: 1, total: c.price }))
-                ],
-                selectedItems: [
-                  ...selectedItems.map((i) => ({ name: i.name, qty: i.qty, price: i.price })),
-                  ...selectedOthersList.map((c) => ({ name: c.name, qty: 1, price: c.price }))
-                ],
-                orderId: response.razorpay_order_id,
                 paymentId: response.razorpay_payment_id,
                 paymentStatus: "paid",
+                status: "confirmed",
               }),
             });
             setOffered(true);
@@ -291,7 +303,20 @@ export default function ChadawaDetailPage({ params }: { params: { id: string } }
             setTimeout(() => router.push("/user/bookings"), 3000);
           }
         },
+        modal: {
+          ondismiss: async () => {
+            await fetch(`/api/bookings/${bookingId}`, {
+              method: "PUT",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                paymentStatus: "failed",
+              }),
+            });
+            setLoading(false);
+          }
+        }
       }).open();
+
     } catch {
       devToast.error("Offering failed. Please try again.");
     } finally {
